@@ -1,0 +1,45 @@
+*				text=auto
+
+# Documents
+*.pdf           	 diff=astextplain
+*.md			text
+*.txt			text
+*.sql			text
+
+# Graphics
+*.png			binary
+*.jpg			binary
+*.jpeg			binary
+*.gif			binary
+*.ico			binary
+*.svg			binary
+
+# Scripts
+*.sh			text eol=lf
+
+# Serialisation
+*.json			text
+*.xml			text
+*.yaml			text
+*.yml			text
+
+# sources
+*.java			text diff=java
+*.css           text diff=css
+*.html          text diff=html
+*.js            text
+*.vue			text
+*.xml           text
+
+# Configs
+*.properties    text
+
+
+#
+# Exclude files from exporting
+#
+
+.gitattributes	export-ignore
+.gitignore    	export-ignore
+*/.gitmessage	export-ignore
+*.sh          	export-ignore

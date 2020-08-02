@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- Mybatis를 활용해 DB의 스네이크 표기법 <-> Java 카멜 표기법 자동 변경 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <setting name="callSettersOnNulls" value="true"/>
+        <setting name="jdbcTypeForNull" value="NULL"/>
+    </settings>
+    <mappers>
+        <mapper resource="mapper/user_query.xml"/>
+        <mapper resource="mapper/place_query.xml"/>
+        <mapper resource="mapper/group_query.xml"/>
+        <mapper resource="mapper/bookmark_query.xml"/>
+        <mapper resource="mapper/theme_query.xml"/>
+    </mappers>
+</configuration>

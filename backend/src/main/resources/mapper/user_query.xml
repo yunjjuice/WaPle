@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.waple.user.dao.UserDao">
+    <insert id="create" parameterType="com.ssafy.waple.user.dto.UserDto">
+        insert into USERS (user_id, last_date, name)
+        values (#{userId}, now(), #{name})
+    </insert>
+
+    <select id="read" resultType="com.ssafy.waple.user.dto.UserDto" parameterType="long">
+        select *
+        from USERS
+        where user_id = #{userId}
+    </select>
+
+    <update id="update" parameterType="com.ssafy.waple.user.dto.UserDto">
+        update USERS
+        set name = #{name}
+        where user_id = #{userId}
+    </update>
+
+    <delete id="delete" parameterType="long">
+        delete
+        from USERS
+        where user_id = #{userId}
+    </delete>
+
+    <update id="updateTime" parameterType="long">
+        update USERS
+        set last_date = now()
+        where user_id = #{userId}
+    </update>
+
+    <select id="readAll" resultType="com.ssafy.waple.user.dto.UserDto">
+        select *
+        from USERS
+    </select>
+</mapper>
