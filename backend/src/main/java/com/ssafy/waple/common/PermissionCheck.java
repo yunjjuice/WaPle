@@ -5,13 +5,20 @@ import java.util.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+
 import com.google.gson.Gson;
 
 import com.ssafy.waple.user.dto.UserDto;
 
+@Component
 public class PermissionCheck {
 	private static final Logger logger = LoggerFactory.getLogger(PermissionCheck.class);
 
