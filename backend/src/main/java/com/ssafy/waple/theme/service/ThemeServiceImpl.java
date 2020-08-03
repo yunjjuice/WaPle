@@ -6,15 +6,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.ssafy.waple.error.exception.InvalidValueException;
 import com.ssafy.waple.group.dto.GroupDto;
+import com.ssafy.waple.group.exception.GroupNotFoundException;
 import com.ssafy.waple.group.service.GroupService;
 import com.ssafy.waple.theme.dao.ThemeDao;
 import com.ssafy.waple.theme.dto.ThemeDto;
+import com.ssafy.waple.theme.exception.DuplicatedThemeException;
 import com.ssafy.waple.theme.exception.ThemeNotFoundException;
 import com.ssafy.waple.theme.exception.UserNotInGroupException;
 
 @Service
 public class ThemeServiceImpl implements ThemeService {
+
+	private static final String PRIMARY_KEY_CONSTRAINT_MSG = "for key 'PRIMARY'";
+	private static final String GROUP_FOREIGN_KEY_CONSTRAINT_MSG = " a foreign key constraint fails (`WAPLE`.`THEMES`, CONSTRAINT `FK_GROUPS_THEMES` FOREIGN KEY (`GROUP_ID`) REFERENCES `GROUPS` (`GROUP_ID`)";
+
 	@Autowired
 	ThemeDao dao;
 
@@ -26,12 +33,18 @@ public class ThemeServiceImpl implements ThemeService {
 
 		// AOP를 이용해서 그룹 아이디가 존재하는것인지 체크 할 필요가 있을듯!
 
+		if(theme.getName() == "" || theme.getName() == null || theme.getIcon() == "" || theme.getIcon() == null) {
+			throw new InvalidValueException("Name or Icon is not null or Empty");
+		}
 		try {
-			// 1. 테마 이름 정규식을 통해서 유효성 검사
-			// 2. 테마 아이콘 역시 유효성 검사 필요
 			dao.create(theme);
 		} catch (DataAccessException e) {
-			e.printStackTrace();
+			if(e.getMessage().contains(PRIMARY_KEY_CONSTRAINT_MSG)) {
+				throw new DuplicatedThemeException(groupId, theme.getThemeId());
+			}
+			if(e.getMessage().contains(GROUP_FOREIGN_KEY_CONSTRAINT_MSG)) {
+				throw new GroupNotFoundException(groupId);
+			}
 		}
 	}
 
