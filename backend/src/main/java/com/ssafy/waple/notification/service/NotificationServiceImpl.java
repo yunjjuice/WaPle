@@ -49,4 +49,11 @@ public class NotificationServiceImpl implements NotificationService {
 		}
 	}
 
+	// 알림 조회
+	@Override
+	public NotificationDto read(String token, int groupId, int notificationId) {
+		// 유저가 그룹에 속해있는지 AOP 검사
+		return dao.read(groupId, notificationId);
+	}
+
 }

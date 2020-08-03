@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +51,27 @@ public class NotificationController {
 		logger.debug("알림 생성 호출");
 		service.create(token, notification);
 		return new ResponseEntity<>(notification, HttpStatus.CREATED);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/{groupId}/{notificationId}", produces = "application/json")
+	@ApiOperation(value = "알림 조회", notes = "그룹 알림 조회")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "notificationId", value = "알림 아이디", example = "1"),
+		@ApiImplicitParam(name = "groupId", value = "그룹 아이디", example = "1"),
+		@ApiImplicitParam(name = "token", value = "회원 토큰")
+	})
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "알림 조회 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "알림 조회 실패")
+	})
+	private ResponseEntity<?> read(@PathVariable("groupId")int groupId,
+		@PathVariable("notificationId")int notificationId, @RequestHeader(value = "token")String token) {
+		logger.debug("알림 조회 호출");
+		NotificationDto dto = service.read(token, groupId, notificationId);
+		return new ResponseEntity<>(dto, HttpStatus.OK);
 	}
 
 }

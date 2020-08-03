@@ -11,4 +11,7 @@
             (#{groupId}, 1, #{message}, now());
     </insert>
 
+    <select id="read" parameterType="map" resultType="com.ssafy.waple.notification.dto.NotificationDto">
+        select * from NOTIFICATIONS where GROUP_ID = #{groupId} and NOTIFICATION_ID = #{notificationId}
+    </select>
 </mapper>
