@@ -13,4 +13,7 @@ public interface ReviewService {
 	// 리뷰 조회
 	List<ReviewDto> read(String token, SearchType type, String placeId);
 
+	// 리뷰 상세 조회
+	ReviewDto read(String token, int reviewId);
+
 }

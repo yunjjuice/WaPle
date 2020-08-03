@@ -13,4 +13,8 @@
         ORDER BY REVIEW_ID DESC
     </select>
 
+    <select id="read" parameterType="int" resultType="com.ssafy.waple.review.dto.ReviewDto">
+        select * from REVIEWS where REVIEW_ID = #{reviewId}
+    </select>
+
 </mapper>

@@ -17,4 +17,7 @@ public interface ReviewDao {
 	// 리뷰 조회
 	List<ReviewDto> readAll(@Param("groupId") int groupId, @Param("placeId") String placeId);
 
+	// 리뷰 상세 조회
+	ReviewDto read(int reviewId);
+
 }

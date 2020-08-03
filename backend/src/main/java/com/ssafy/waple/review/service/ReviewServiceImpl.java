@@ -15,6 +15,7 @@ import com.ssafy.waple.group.exception.GroupNotFoundException;
 import com.ssafy.waple.review.dao.ReviewDao;
 import com.ssafy.waple.review.dto.ReviewDto;
 import com.ssafy.waple.review.error.NameNotEmptyException;
+import com.ssafy.waple.review.error.ReviewNotFoundException;
 import com.ssafy.waple.user.exception.UserNotFoundException;
 
 @Service
@@ -81,5 +82,9 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 	}
 
+	@Override
+	public ReviewDto read(String token, int reviewId) {
+		return dao.read(reviewId);
+	}
 
 }
