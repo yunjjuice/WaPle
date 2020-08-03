@@ -36,4 +36,13 @@
         insert into VOTES (GROUP_ID, PROMISE_ID, USER_ID, PLACE_ID)
         values (#{groupId}, #{promiseId}, #{userId}, #{placeId});
     </insert>
+
+    <delete id="deleteVote">
+        delete
+        from VOTES
+        where GROUP_ID = #{groupId}
+          and PROMISE_ID = #{promiseId}
+          and PLACE_ID = #{placeId}
+          and USER_ID = #{userId}
+    </delete>
 </mapper>

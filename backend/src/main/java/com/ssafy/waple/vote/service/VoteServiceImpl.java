@@ -29,4 +29,9 @@ public class VoteServiceImpl implements VoteService {
 	public void createVote(VoteDto vote) {
 		dao.createVote(vote);
 	}
+
+	@Override
+	public void deleteVote(int groupId, int promiseId, String placeId, long userId) {
+		dao.deleteVote(groupId, promiseId, placeId, userId);
+	}
 }

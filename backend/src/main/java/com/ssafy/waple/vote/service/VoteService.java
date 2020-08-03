@@ -12,4 +12,6 @@ public interface VoteService {
 	List<PromisePlaceResponseDto> readAll(int groupId, int promiseId, long userId);
 
 	void createVote(VoteDto vote);
+
+	void deleteVote(int groupId, int promiseId, String placeId, long userId);
 }

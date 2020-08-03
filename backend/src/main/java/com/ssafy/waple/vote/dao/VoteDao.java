@@ -16,4 +16,6 @@ public interface VoteDao {
 	List<PromisePlaceResponseDto> readAll(int groupId, int promiseId, long userId);
 
 	int createVote(VoteDto vote);
+
+	int deleteVote(int groupId, int promiseId, String placeId, long userId);
 }
