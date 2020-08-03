@@ -1,5 +1,7 @@
 package com.ssafy.waple.promise.service;
 
-public interface PromiseService {
+import com.ssafy.waple.promise.dto.PromiseDto;
 
+public interface PromiseService {
+	void create(PromiseDto promise);
 }

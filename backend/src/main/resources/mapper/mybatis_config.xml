@@ -14,5 +14,6 @@
         <mapper resource="mapper/group_query.xml"/>
         <mapper resource="mapper/bookmark_query.xml"/>
         <mapper resource="mapper/theme_query.xml"/>
+        <mapper resource="mapper/promise_query.xml"/>
     </mappers>
 </configuration>

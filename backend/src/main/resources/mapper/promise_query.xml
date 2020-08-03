@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssafy.waple.promise.dao.PromiseDao">
+    <insert id="create" parameterType="com.ssafy.waple.promise.dto.PromiseDto">
+        insert into PROMISES (GROUP_ID, TITLE, PROMISE_DATE, PROMISE_ID)
+        VALUES (#{groupId}, #{title}, #{promiseDate},
+                (select count(*) + 1 from PROMISES p where p.GROUP_ID = #{groupId}))
+    </insert>
+</mapper>
