@@ -31,4 +31,9 @@
         where GROUP_ID = #{groupId}
           and PROMISE_ID = #{promiseId}
     </select>
+
+    <insert id="createVote" parameterType="com.ssafy.waple.vote.dto.VoteDto">
+        insert into VOTES (GROUP_ID, PROMISE_ID, USER_ID, PLACE_ID)
+        values (#{groupId}, #{promiseId}, #{userId}, #{placeId});
+    </insert>
 </mapper>

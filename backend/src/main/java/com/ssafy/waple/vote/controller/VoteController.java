@@ -26,6 +26,7 @@ import com.ssafy.waple.common.PermissionCheck;
 import com.ssafy.waple.group.controller.GroupController;
 import com.ssafy.waple.vote.dto.PromisePlaceDto;
 import com.ssafy.waple.vote.dto.PromisePlaceResponseDto;
+import com.ssafy.waple.vote.dto.VoteDto;
 import com.ssafy.waple.vote.service.VoteService;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
@@ -70,5 +71,20 @@ public class VoteController {
 		logger.debug("readAll 호출");
 		long userId = permissionCheck.check(token).getUserId();
 		return new ResponseEntity<>(service.readAll(groupId, promiseId, userId), HttpStatus.OK);
+	}
+
+	@PostMapping("/to")
+	@ApiOperation(value = "투표하기", notes = "후보 장소에 투표한다. 중복 투표는 불가.")
+	@ApiResponses({
+		@ApiResponse(code = 201, message = "투표 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "투표 실패")
+	})
+	private ResponseEntity<?> createVote(@RequestBody VoteDto vote) {
+		logger.debug("createVote 호출");
+		service.createVote(vote);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 }

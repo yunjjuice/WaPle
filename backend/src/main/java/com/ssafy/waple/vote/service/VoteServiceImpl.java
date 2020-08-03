@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.ssafy.waple.vote.dao.VoteDao;
 import com.ssafy.waple.vote.dto.PromisePlaceDto;
 import com.ssafy.waple.vote.dto.PromisePlaceResponseDto;
+import com.ssafy.waple.vote.dto.VoteDto;
 
 @Service
 public class VoteServiceImpl implements VoteService {
@@ -22,5 +23,10 @@ public class VoteServiceImpl implements VoteService {
 	@Override
 	public List<PromisePlaceResponseDto> readAll(int groupId, int promiseId, long userId) {
 		return dao.readAll(groupId, promiseId, userId);
+	}
+
+	@Override
+	public void createVote(VoteDto vote) {
+		dao.createVote(vote);
 	}
 }
