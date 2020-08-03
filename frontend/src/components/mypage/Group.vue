@@ -12,11 +12,15 @@
         :key="i"
         class="mt-4 border border-primary"
       >
-        <v-expansion-panel-header> 토핑스 그룹 {{ i }} </v-expansion-panel-header>
+        <v-expansion-panel-header> <strong>토핑스 그룹 {{ i }}</strong> </v-expansion-panel-header>
         <v-expansion-panel-content>
           <!-- 그룹 눌렀을때 안쪽 내용 -->
           <!-- 회원목록 -->
-          <h3 style="color: white; background-color: gray;"> 회원목록 </h3>
+          <div>
+            <h3 style="color: white; background-color: gray;" class="d-inline"> 회원목록 </h3>
+            <v-icon v-if="isAdmin">mdi-plus-circle-outline</v-icon>
+            <hr class="border border-primary">
+          </div>
           <v-container>
             <v-row class="my-4">
               <div class="col-6" v-for="i in 3" :key=i>
@@ -28,7 +32,11 @@
             </v-row>
           </v-container>
           <!-- 테마목록 -->
-          <h3 style="color: white; background-color: gray;">테마</h3>
+          <div>
+            <h3 style="color: white; background-color: gray;" class="d-inline"> 테마 </h3>
+            <v-icon v-if="isAdmin">mdi-plus-circle-outline</v-icon>
+            <hr class="border border-primary">
+          </div>
           <v-container>
             <v-row class="my-4">
               <div class="col-6" v-for="i in 4" :key=i>
@@ -44,41 +52,35 @@
     </v-expansion-panels>
 
     <!-- 그룹 만들기 버튼&모달 -->
-    <group-add class="mt-5" />
+    <!-- <group-add class="mt-5" /> -->
+    <group-add2 class="mt-5" />
   </v-flex>
 </template>
 
 <script>
-import GroupAdd from '@/components/mypage/GroupAdd.vue';
-import axios from 'axios';
+// import GroupAdd from '@/components/mypage/GroupAdd.vue';
+// import axios from 'axios';
+import GroupAdd2 from '@/components/mypage/GroupAdd2.vue';
 
 export default {
   name: 'Group',
   components: {
-    GroupAdd,
+    // GroupAdd,
+    GroupAdd2,
   },
   data() {
     return {
-      isAdmin: false, // 매니저이어야 삭제버튼 보이게 하려고 만듦
+      isAdmin: true, // 매니저이어야 삭제버튼 보이게 하려고 만듦 ( false )
     };
   },
   methods: {
-    isManager() {
-      axios.get('http://i3a204.p.ssafy.io:8888/users/1412733569')
-        .then((res) => {
-          console.log(res.data);
-          this.isAdmin = res.data.managerFlag;
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    },
+
   },
   created() {
-    console.log(this.$session.get('uid')); // session 에 저장된 유저 id 가져와서 manager OR 그룹장인지 확인하기
+    // this.isAdmin = this.$session.get('admin');
   },
   mounted() {
-    this.isManager();
+
   },
 };
 </script>

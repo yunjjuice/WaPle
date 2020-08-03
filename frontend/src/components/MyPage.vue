@@ -18,7 +18,7 @@
                   </v-list-item-title>
                   <v-list-item-subtitle class="mt-2 ml-4">
                     <span class="mdi mdi-account-box"></span>
-                    your_NickName
+                    {{ uname }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -41,6 +41,20 @@
                   </v-list-item-icon>
                   <v-list-item-content>
                       <v-list-item-title>{{ item.title }}</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
+
+                <!-- 관리자일때만 보임 - 회원 목록 조회 -->
+                <v-list-item
+                  link
+                  to="/mypage/admin"
+                  v-if="isAdmin"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-calendar-check</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                      <v-list-item-title>회원 목록 조회</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
               </v-list>
@@ -72,13 +86,14 @@ export default {
           icon: 'mdi-calendar-check',
           address: '/mypage/myschedule',
         },
-        {
-          title: '회원 목록 조회',
-          icon: 'mdi-calendar-check',
-          address: '/mypage/admin',
-        },
       ],
+      uname: '',
+      isAdmin: false,
     };
+  },
+  created() {
+    this.uname = this.$session.get('uname');
+    this.isAdmin = this.$session.get('admin');
   },
 };
 </script>
