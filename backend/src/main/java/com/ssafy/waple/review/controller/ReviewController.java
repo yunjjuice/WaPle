@@ -172,4 +172,24 @@ public class ReviewController {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
+	@RequestMapping(method = RequestMethod.DELETE, value = "/{reviewId}",produces = "application/json")
+	@ApiOperation(value = "리뷰 삭제", notes = "리뷰 아이디로 리뷰 삭제")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "token", value = "회원 토큰"),
+		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디"),
+	})
+	@ApiResponses({
+		@ApiResponse(code = 204, message = "리뷰 삭제 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "리뷰 삭제 실패")
+	})
+	private ResponseEntity<?> delete(@PathVariable("reviewId")int reviewId,
+		@RequestHeader(value = "token")String token) {
+		logger.debug("리뷰 삭제 호출");
+		service.delete(token, reviewId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
 }

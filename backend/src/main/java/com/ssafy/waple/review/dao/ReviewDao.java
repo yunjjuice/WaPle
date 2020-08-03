@@ -24,4 +24,6 @@ public interface ReviewDao {
 	int update(@Param("reviewId")int reviewId, @Param("title")String title ,@Param("content")String content,
 		@Param("media")String media);
 
+	// 리뷰 삭제
+	int delete(int reviewId);
 }

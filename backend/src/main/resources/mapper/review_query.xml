@@ -24,4 +24,7 @@
                     where REVIEW_ID = #{reviewId}
     </update>
 
+    <delete id="delete" parameterType="int">
+        delete from REVIEWS where REVIEW_ID = #{reviewId}
+    </delete>
 </mapper>

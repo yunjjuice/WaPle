@@ -97,4 +97,10 @@ public class ReviewServiceImpl implements ReviewService {
 		}
 	}
 
+	@Override
+	public void delete(String token, int reviewId) {
+		if(dao.delete(reviewId) < 1) {
+			throw new ReviewNotFoundException(reviewId);
+		}
+	}
 }

@@ -19,5 +19,6 @@ public interface ReviewService {
 	// 리뷰 업데이트
 	void update(String token, int reviewId, String title ,String content, String media);
 
-
+	// 리뷰 삭제
+	void delete(String token, int reviewId);
 }
