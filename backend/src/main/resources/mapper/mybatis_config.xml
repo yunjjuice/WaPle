@@ -15,7 +15,8 @@
         <mapper resource="mapper/bookmark_query.xml"/>
         <mapper resource="mapper/theme_query.xml"/>
         <mapper resource="mapper/promise_query.xml"/>
-        <mapper resource="mapper/calendar_query.xml" />
-        <mapper resource="mapper/review_query.xml" />
+        <mapper resource="mapper/calendar_query.xml"/>
+        <mapper resource="mapper/review_query.xml"/>
+        <mapper resource="mapper/vote_query.xml"/>
     </mappers>
 </configuration>
