@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssafy.waple.theme.dao.ThemeDao">
-    <select id="readLastId" parameterType="int" resultType="int">
-        select count(*)
-        FROM THEMES
-        where GROUP_ID = #{groupId}
-    </select>
 
     <insert id="create" parameterType="com.ssafy.waple.theme.dto.ThemeDto">
         insert into THEMES (GROUP_ID, THEME_ID, NAME, ICON)
-        values (#{groupId}, #{themeId}, #{name}, #{icon})
+        values (#{groupId}, (SELECT t.THEME_ID + 1 FROM THEMES t WHERE t.GROUP_ID = #{groupId} ORDER BY t.THEME_ID DESC LIMIT 1), #{name}, #{icon})
     </insert>
 
-    <select id="read" parameterType="int" resultType="com.ssafy.waple.theme.dto.ThemeDto">
+    <select id="readAll" parameterType="int" resultType="com.ssafy.waple.theme.dto.ThemeDto">
         select *
         FROM THEMES
         where GROUP_ID = #{groupId}
