@@ -6,4 +6,11 @@
         insert into REVIEWS (GROUP_ID, PLACE_ID, USER_ID, VISIT_DATE, TITLE, CONTENT, MEDIA) VALUES
             (#{groupId}, #{placeId}, #{userId}, #{visitDate}, #{title}, #{content}, #{media})
     </insert>
+
+    <select id="readAll" parameterType="map"
+            resultType="com.ssafy.waple.review.dto.ReviewDto">
+        select * from REVIEWS where PLACE_ID = #{placeId} AND GROUP_ID = #{groupId}
+        ORDER BY REVIEW_ID DESC
+    </select>
+
 </mapper>
