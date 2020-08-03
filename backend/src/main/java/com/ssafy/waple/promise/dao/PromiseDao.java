@@ -11,4 +11,6 @@ public interface PromiseDao {
 	void create(PromiseDto promise);
 
 	List<PromiseDto> readAll(long userId);
+
+	int update(PromiseDto promise);
 }

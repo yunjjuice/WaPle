@@ -12,4 +12,12 @@
         from PROMISES
         where GROUP_ID in (select GROUP_MEMBERS.GROUP_ID from GROUP_MEMBERS where GROUP_MEMBERS.USER_ID = #{userId})
     </select>
+
+    <update id="update" parameterType="com.ssafy.waple.promise.dto.PromiseDto">
+        update PROMISES
+        set TITLE        = #{title},
+            PROMISE_DATE = #{promiseDate}
+        where GROUP_ID = #{groupId}
+          and PROMISE_ID = #{promiseId}
+    </update>
 </mapper>

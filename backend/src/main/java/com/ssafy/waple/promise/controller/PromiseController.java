@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -73,6 +74,22 @@ public class PromiseController {
 		@ApiParam(value = "유저 id", required = true, example = "1412733569") @PathVariable long userId) {
 		logger.debug("readAll 호출");
 		return new ResponseEntity<>(service.readAll(userId), HttpStatus.OK);
+	}
+
+	@PutMapping
+	@ApiOperation(value = "약속 수정", notes = "약속 일시, 이름을 수정한다.")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "약속 수정 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "약속 수정 실패")
+	})
+	private ResponseEntity<PromiseDto> update(
+		@ApiParam(value = "수정할 약속 정보", required = true) @RequestBody PromiseDto promise) {
+		logger.debug("update 호출");
+		service.update(promise);
+		return new ResponseEntity<>(promise, HttpStatus.OK);
 	}
 
 	public class PromiseRequest {

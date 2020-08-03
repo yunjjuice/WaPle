@@ -23,4 +23,9 @@ public class PromiseServiceImpl implements PromiseService {
 	public List<PromiseDto> readAll(long userId) {
 		return dao.readAll(userId);
 	}
+
+	@Override
+	public void update(PromiseDto promise) {
+		dao.update(promise);
+	}
 }

@@ -8,4 +8,6 @@ public interface PromiseService {
 	void create(PromiseDto promise);
 
 	List<PromiseDto> readAll(long userId);
+
+	void update(PromiseDto promise);
 }
