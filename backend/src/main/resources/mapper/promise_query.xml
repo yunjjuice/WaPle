@@ -6,4 +6,10 @@
         VALUES (#{groupId}, #{title}, #{promiseDate},
                 (select count(*) + 1 from PROMISES p where p.GROUP_ID = #{groupId}))
     </insert>
+
+    <select id="readAll" resultType="com.ssafy.waple.promise.dto.PromiseDto">
+        select *
+        from PROMISES
+        where GROUP_ID in (select GROUP_MEMBERS.GROUP_ID from GROUP_MEMBERS where GROUP_MEMBERS.USER_ID = #{userId})
+    </select>
 </mapper>
