@@ -7,6 +7,11 @@
         values (#{groupId}, (SELECT t.THEME_ID + 1 FROM THEMES t WHERE t.GROUP_ID = #{groupId} ORDER BY t.THEME_ID DESC LIMIT 1), #{name}, #{icon})
     </insert>
 
+    <insert id="createInit" parameterType="com.ssafy.waple.theme.dto.ThemeDto">
+        insert into THEMES (GROUP_ID, THEME_ID, NAME, ICON)
+        values (#{groupId}, 1, #{name}, #{icon})
+    </insert>
+
     <select id="readAll" parameterType="int" resultType="com.ssafy.waple.theme.dto.ThemeDto">
         select *
         FROM THEMES

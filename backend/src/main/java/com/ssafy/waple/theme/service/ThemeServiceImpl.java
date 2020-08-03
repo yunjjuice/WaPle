@@ -21,6 +21,7 @@ public class ThemeServiceImpl implements ThemeService {
 
 	private static final String PRIMARY_KEY_CONSTRAINT_MSG = "for key 'PRIMARY'";
 	private static final String GROUP_FOREIGN_KEY_CONSTRAINT_MSG = " a foreign key constraint fails (`WAPLE`.`THEMES`, CONSTRAINT `FK_GROUPS_THEMES` FOREIGN KEY (`GROUP_ID`) REFERENCES `GROUPS` (`GROUP_ID`)";
+	private static final String PROIMARY_KEY_NULL_MSG = "'THEME_ID' cannot be null";
 
 	@Autowired
 	ThemeDao dao;
@@ -33,18 +34,23 @@ public class ThemeServiceImpl implements ThemeService {
 
 		// AOP를 이용해서 그룹 아이디가 존재하는것인지 체크 할 필요가 있을듯!
 
-		if(theme.getName() == "" || theme.getName() == null || theme.getIcon() == "" || theme.getIcon() == null) {
+		if(theme.getName() == null || theme.getName() == "" || theme.getIcon() == null || theme.getIcon() == "") {
 			throw new InvalidValueException("Name or Icon is not null or Empty");
 		}
 		try {
 			dao.create(theme);
 		} catch (DataAccessException e) {
+			if(e.getMessage().contains(PROIMARY_KEY_NULL_MSG)) {
+				dao.createInit(theme);
+				return;
+			}
 			if(e.getMessage().contains(PRIMARY_KEY_CONSTRAINT_MSG)) {
 				throw new DuplicatedThemeException(groupId, theme.getThemeId());
 			}
 			if(e.getMessage().contains(GROUP_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new GroupNotFoundException(groupId);
 			}
+			throw e;
 		}
 	}
 
