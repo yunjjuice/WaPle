@@ -5,4 +5,30 @@
         insert into PROMISES_AND_PLACES (GROUP_ID, PROMISE_ID, USER_ID, PLACE_ID)
         values (#{groupId}, #{promiseId}, #{userId}, #{placeId})
     </insert>
+
+    <select id="readAll" resultType="com.ssafy.waple.vote.dto.PromisePlaceResponseDto">
+        select P.PLACE_ID,
+               P.NAME,
+               ADDRESS,
+               LNG,
+               LAT,
+               URL,
+               U.NAME                        pickedUserName,
+               (select count(*)
+                from VOTES
+                where GROUP_ID = #{groupId}
+                  and PROMISE_ID = #{promiseId}
+                  and PLACE_ID = P.PLACE_ID) voteNum,
+               (select count(*) = 1
+                from VOTES
+                where GROUP_ID = #{groupId}
+                  and PROMISE_ID = #{promiseId}
+                  and PLACE_ID = P.PLACE_ID
+                  and USER_ID = #{userId})   isVoted
+        from PROMISES_AND_PLACES
+                 inner join PLACES P on P.PLACE_ID = PROMISES_AND_PLACES.PLACE_ID
+                 inner join USERS U on PROMISES_AND_PLACES.USER_ID = U.USER_ID
+        where GROUP_ID = #{groupId}
+          and PROMISE_ID = #{promiseId}
+    </select>
 </mapper>
