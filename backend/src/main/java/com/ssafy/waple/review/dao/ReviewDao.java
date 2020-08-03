@@ -20,4 +20,8 @@ public interface ReviewDao {
 	// 리뷰 상세 조회
 	ReviewDto read(int reviewId);
 
+	// 리뷰 업데이트
+	int update(@Param("reviewId")int reviewId, @Param("title")String title ,@Param("content")String content,
+		@Param("media")String media);
+
 }

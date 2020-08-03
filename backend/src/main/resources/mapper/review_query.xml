@@ -17,4 +17,11 @@
         select * from REVIEWS where REVIEW_ID = #{reviewId}
     </select>
 
+    <update id="update" parameterType="map">
+        update REVIEWS set CONTENT = #{content},
+                           TITLE = #{title},
+                           MEDIA = #{media}
+                    where REVIEW_ID = #{reviewId}
+    </update>
+
 </mapper>

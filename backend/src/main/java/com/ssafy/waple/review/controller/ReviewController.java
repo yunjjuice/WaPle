@@ -25,6 +25,7 @@ import com.ssafy.waple.review.service.ReviewService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -36,6 +37,43 @@ import io.swagger.annotations.ApiResponses;
 public class ReviewController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
+
+	// 리뷰 수정 임시 테이블
+	public static class UpdateData {
+
+		@ApiModelProperty(value = "제목", example = "사장님이 쏜다")
+		String title;
+
+		@ApiModelProperty(value = "내용", example = "내 자식에게 밥을 준다는 마인드!")
+		String content;
+
+		@ApiModelProperty(value = "미디어", example = "hahaha.jpg")
+		String media;
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
+		public String getContent() {
+			return content;
+		}
+
+		public void setContent(String content) {
+			this.content = content;
+		}
+
+		public String getMedia() {
+			return media;
+		}
+
+		public void setMedia(String media) {
+			this.media = media;
+		}
+	}
 
 	@Autowired
 	ReviewService service;
@@ -111,6 +149,27 @@ public class ReviewController {
 		logger.debug("리뷰 상세 조회 호출");
 		ReviewDto review = service.read(token, reviewId);
 		return new ResponseEntity<>(review, HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.PUT, value = "/{reviewId}",produces = "application/json")
+	@ApiOperation(value = "리뷰 수정", notes = "리뷰 아이디로 리뷰 수정")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "token", value = "회원 토큰"),
+		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디"),
+		@ApiImplicitParam(name = "review", value = "수정 할 리뷰 정보", dataTypeClass = UpdateData.class)
+	})
+	@ApiResponses({
+		@ApiResponse(code = 201, message = "리뷰 수정 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "리뷰 수정 실패")
+	})
+	private ResponseEntity<?> update(@PathVariable("reviewId") int reviewId, @RequestBody UpdateData review,
+		@RequestHeader(value = "token")String token) {
+		logger.debug("리뷰 업데이트 호출");
+		service.update(token, reviewId, review.title, review.content, review.media);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 }

@@ -87,4 +87,14 @@ public class ReviewServiceImpl implements ReviewService {
 		return dao.read(reviewId);
 	}
 
+	@Override
+	public void update(String token, int reviewId, String title, String content, String media) {
+		if(title == null || title == "") {
+			throw new NameNotEmptyException();
+		}
+		if(dao.update(reviewId, title, content, media) < 1) {
+			throw new ReviewNotFoundException(reviewId);
+		}
+	}
+
 }

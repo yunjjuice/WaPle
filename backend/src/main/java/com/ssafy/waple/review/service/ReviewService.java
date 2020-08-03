@@ -16,4 +16,8 @@ public interface ReviewService {
 	// 리뷰 상세 조회
 	ReviewDto read(String token, int reviewId);
 
+	// 리뷰 업데이트
+	void update(String token, int reviewId, String title ,String content, String media);
+
+
 }
