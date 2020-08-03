@@ -16,5 +16,6 @@
         <mapper resource="mapper/theme_query.xml"/>
         <mapper resource="mapper/promise_query.xml"/>
         <mapper resource="mapper/calendar_query.xml" />
+        <mapper resource="mapper/review_query.xml" />
     </mappers>
 </configuration>
