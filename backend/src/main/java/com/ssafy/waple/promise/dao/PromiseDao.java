@@ -13,4 +13,6 @@ public interface PromiseDao {
 	List<PromiseDto> readAll(long userId);
 
 	int update(PromiseDto promise);
+
+	int delete(int groupId, int promiseId);
 }

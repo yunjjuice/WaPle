@@ -28,4 +28,9 @@ public class PromiseServiceImpl implements PromiseService {
 	public void update(PromiseDto promise) {
 		dao.update(promise);
 	}
+
+	@Override
+	public void delete(int groupId, int promiseId) {
+		dao.delete(groupId, promiseId);
+	}
 }

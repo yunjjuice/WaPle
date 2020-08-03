@@ -4,7 +4,11 @@
     <insert id="create" parameterType="com.ssafy.waple.promise.dto.PromiseDto">
         insert into PROMISES (GROUP_ID, TITLE, PROMISE_DATE, PROMISE_ID)
         VALUES (#{groupId}, #{title}, #{promiseDate},
-                (select count(*) + 1 from PROMISES p where p.GROUP_ID = #{groupId}))
+                (select p.PROMISE_ID + 1
+                 from PROMISES p
+                 where p.GROUP_ID = #{groupId}
+                 order by PROMISE_ID desc
+                 limit 1))
     </insert>
 
     <select id="readAll" resultType="com.ssafy.waple.promise.dto.PromiseDto">
@@ -20,4 +24,11 @@
         where GROUP_ID = #{groupId}
           and PROMISE_ID = #{promiseId}
     </update>
+
+    <delete id="delete">
+        delete
+        from PROMISES
+        where GROUP_ID = #{groupId}
+          and PROMISE_ID = #{promiseId}
+    </delete>
 </mapper>

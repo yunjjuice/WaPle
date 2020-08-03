@@ -10,4 +10,6 @@ public interface PromiseService {
 	List<PromiseDto> readAll(long userId);
 
 	void update(PromiseDto promise);
+
+	void delete(int groupId, int promiseId);
 }
