@@ -55,9 +55,9 @@ public class ThemeServiceImpl implements ThemeService {
 	}
 
 	@Override
-	public List<ThemeDto> read(String token, int groupId) {
+	public List<ThemeDto> readAll(String token, int groupId) {
 
-		return dao.read(groupId);
+		return dao.readAll(groupId);
 	}
 
 	@Override

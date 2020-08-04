@@ -69,10 +69,10 @@ public class ThemeController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "테마 조회 실패")
 	})
-	private ResponseEntity<?> read(@PathVariable("groupId") int groupId, @RequestHeader(value = "token") String token) {
+	private ResponseEntity<?> readAll(@PathVariable("groupId") int groupId, @RequestHeader(value = "token") String token) {
 		logger.debug("테마 조회 호출");
 
-		return new ResponseEntity<>(service.read(token, groupId), HttpStatus.OK);
+		return new ResponseEntity<>(service.readAll(token, groupId), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{groupId}/{themeId}", produces = "application/json")

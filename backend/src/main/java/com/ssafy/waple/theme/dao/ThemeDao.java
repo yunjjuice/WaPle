@@ -17,7 +17,7 @@ public interface ThemeDao {
 	int createInit(ThemeDto theme);
 
 	// 테마 조회
-	List<ThemeDto> read(int groupId);
+	List<ThemeDto> readAll(int groupId);
 
 	// 테마 수정
 	int update(ThemeDto theme);

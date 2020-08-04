@@ -10,7 +10,7 @@ public interface ThemeService {
 	void create(String token, int groupId, ThemeDto theme);
 
 	// 테마 조회
-	List<ThemeDto> read(String token, int groupId);
+	List<ThemeDto> readAll(String token, int groupId);
 
 	// 테마 수정
 	void update(String token, int groupId, int themeId, ThemeDto theme);
