@@ -33,7 +33,7 @@ import io.swagger.annotations.ApiResponses;
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RequestMapping("/reviews")
 @RestController
-@Api(value = "Review Controller", tags = "Review")
+@Api(value = "리뷰 관리", tags = "Review")
 public class ReviewController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ReviewController.class);
@@ -136,7 +136,7 @@ public class ReviewController {
 	@ApiOperation(value = "리뷰 상세 조회", notes = "리뷰 아이디로 리뷰 상세 조회", response = ReviewDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
-		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디")
+		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디", example = "1")
 	})
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "리뷰 상세 조회 성공"),
@@ -145,7 +145,8 @@ public class ReviewController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "리뷰 상세 조회 실패")
 	})
-	private ResponseEntity<?> read(@PathVariable("reviewId")int reviewId, @RequestHeader(value = "token")String token) {
+	private ResponseEntity<?> read(@PathVariable("reviewId") int reviewId,
+		@RequestHeader(value = "token")String token) {
 		logger.debug("리뷰 상세 조회 호출");
 		ReviewDto review = service.read(token, reviewId);
 		return new ResponseEntity<>(review, HttpStatus.OK);
@@ -155,7 +156,7 @@ public class ReviewController {
 	@ApiOperation(value = "리뷰 수정", notes = "리뷰 아이디로 리뷰 수정")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
-		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디"),
+		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디", example = "1"),
 		@ApiImplicitParam(name = "review", value = "수정 할 리뷰 정보", dataTypeClass = UpdateData.class)
 	})
 	@ApiResponses({
@@ -176,7 +177,7 @@ public class ReviewController {
 	@ApiOperation(value = "리뷰 삭제", notes = "리뷰 아이디로 리뷰 삭제")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
-		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디"),
+		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디", example = "1")
 	})
 	@ApiResponses({
 		@ApiResponse(code = 204, message = "리뷰 삭제 성공"),
@@ -185,7 +186,7 @@ public class ReviewController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "리뷰 삭제 실패")
 	})
-	private ResponseEntity<?> delete(@PathVariable("reviewId")int reviewId,
+	private ResponseEntity<?> delete(@PathVariable("reviewId") int reviewId,
 		@RequestHeader(value = "token")String token) {
 		logger.debug("리뷰 삭제 호출");
 		service.delete(token, reviewId);
