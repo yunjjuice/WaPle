@@ -50,9 +50,7 @@ public class ThemeController {
 	})
 	private ResponseEntity<?> create(@RequestBody ThemeDto theme, @RequestHeader("token") String token) {
 		logger.debug("테마 생성 호출");
-
 		service.create(token, theme.getGroupId(), theme);
-
 		return new ResponseEntity<>(theme, HttpStatus.OK);
 	}
 
@@ -71,7 +69,6 @@ public class ThemeController {
 	})
 	private ResponseEntity<?> readAll(@PathVariable("groupId") int groupId, @RequestHeader(value = "token") String token) {
 		logger.debug("테마 조회 호출");
-
 		return new ResponseEntity<>(service.readAll(token, groupId), HttpStatus.OK);
 	}
 
@@ -93,9 +90,7 @@ public class ThemeController {
 	private ResponseEntity<?> update(@RequestBody ThemeDto theme, @PathVariable("groupId") int groupId,
 		@PathVariable("themeId") int themeId, @RequestHeader(value = "token") String token) {
 		logger.debug("테마 수정 호출");
-
 		service.update(token, groupId, themeId, theme);
-
 		return new ResponseEntity<>(theme, HttpStatus.CREATED);
 	}
 
@@ -117,9 +112,7 @@ public class ThemeController {
 	private ResponseEntity<?> delete(@PathVariable("groupId") int groupId, @PathVariable("themeId") int themeId,
 		@RequestHeader(value = "token") String token) {
 		logger.debug("테마 삭제 호출");
-
 		service.delete(token, groupId, themeId);
-
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 

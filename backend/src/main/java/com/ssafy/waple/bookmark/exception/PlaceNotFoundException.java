@@ -1,4 +1,4 @@
-package com.ssafy.waple.bookmark.error;
+package com.ssafy.waple.bookmark.exception;
 
 import com.ssafy.waple.error.exception.EntityNotFoundException;
 

@@ -13,9 +13,6 @@ public interface ThemeDao {
 	// 테마 생성
 	int create(ThemeDto theme);
 
-	// 테마 초기 생성
-	int createInit(ThemeDto theme);
-
 	// 테마 조회
 	List<ThemeDto> readAll(int groupId);
 

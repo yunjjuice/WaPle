@@ -2,9 +2,7 @@ package com.ssafy.waple.bookmark.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,30 +26,30 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import com.ssafy.waple.bookmark.dto.BookMarkDto;
+import com.ssafy.waple.bookmark.dto.BookmarkDto;
 import com.ssafy.waple.bookmark.dto.PlaceDto;
 import com.ssafy.waple.bookmark.dto.SearchType;
-import com.ssafy.waple.bookmark.service.BookMarkService;
+import com.ssafy.waple.bookmark.service.BookmarkService;
 import com.ssafy.waple.bookmark.service.PlaceService;
 import com.ssafy.waple.common.PermissionCheck;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RestController
 @RequestMapping("/bookmarks")
-@Api(value = "BookMark Controller", tags = "BookMark")
-public class BookMarkController {
-	private static final Logger logger = LoggerFactory.getLogger(BookMarkController.class);
+@Api(value = "북마크 관리", tags = "Bookmark")
+public class BookmarkController {
+	private static final Logger logger = LoggerFactory.getLogger(BookmarkController.class);
 	private static final PermissionCheck permissionCheck = new PermissionCheck();
 
 	@Autowired
-	BookMarkService service;
+	BookmarkService service;
 
 	@Autowired
 	PlaceService placeService;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ApiOperation(value = "북마크 생성", notes = "북마크 생성하는 API")
-	@ApiImplicitParam(name = "bookMark", value = "북마크 생성", required = true, dataTypeClass = BookMarkDto.class)
+	@ApiImplicitParam(name = "bookmark", value = "북마크 생성", required = true, dataTypeClass = BookmarkDto.class)
 	@ApiResponses({
 		@ApiResponse(code = 201, message = "북마크 생성 성공"),
 		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
@@ -59,14 +57,10 @@ public class BookMarkController {
 		@ApiResponse(code = 404, message = "북마크 생성 실패")
 	})
 
-	private ResponseEntity<?> create(@RequestBody BookMarkDto bookMark) {
+	private ResponseEntity<?> create(@RequestBody BookmarkDto bookmark) {
 		logger.debug("북마크 생성 호출");
-		boolean success = service.create(bookMark);
-		if (success) {
-			return new ResponseEntity<>(HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		service.create(bookmark);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
@@ -105,28 +99,8 @@ public class BookMarkController {
 			e.printStackTrace();
 		}
 
-		boolean success = false;
-
-		List<BookMarkDto> list = service.read(type);
-
-		// 장소 저장
-		Map<BookMarkDto, PlaceDto> result = new HashMap<>();
-
-		if (list != null) {
-			logger.debug("검색 결과가 있습니다.");
-			success = true;
-			for (BookMarkDto bookmark : list) {
-				PlaceDto place = placeService.read(bookmark.getPlaceId());
-				if (place != null) {
-					result.put(bookmark, place);
-				}
-			}
-		}
-		if (success) {
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		List<BookmarkDto> result = service.read(type);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{groupId}/{placeId}/{themeId}",
@@ -146,13 +120,8 @@ public class BookMarkController {
 	})
 	private ResponseEntity<?> delete(@PathVariable("groupId") int groupId, @PathVariable("placeId") String placeId,
 		@PathVariable("themeId") int themeId, @RequestHeader(value = "token") String token) {
-		System.out.println(token);
 		long userId = permissionCheck.check(token).getUserId();
-		boolean success = service.delete(userId, themeId, groupId, placeId);
-		if (success) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		service.delete(userId, themeId, groupId, placeId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 }
