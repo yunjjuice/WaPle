@@ -1,5 +1,7 @@
 package com.ssafy.waple.notification.dao;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -16,4 +18,6 @@ public interface NotificationDao {
 
 	// 알림 조회
 	NotificationDto read(@Param("groupId")int groupId, @Param("notificationId")int notificationId);
+
+	List<NotificationDto> readAll(long userId);
 }

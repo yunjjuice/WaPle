@@ -1,5 +1,7 @@
 package com.ssafy.waple.notification.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -56,4 +58,10 @@ public class NotificationServiceImpl implements NotificationService {
 		return dao.read(groupId, notificationId);
 	}
 
+	// 알림 리스트 조회
+	@Override
+	public List<NotificationDto> readAll(String token, long userId) {
+		// 토큰만으로 유저 아이디 받아올 예정
+		return dao.readAll(userId);
+	}
 }

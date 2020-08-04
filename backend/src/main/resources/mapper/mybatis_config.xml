@@ -18,7 +18,7 @@
         <mapper resource="mapper/calendar_query.xml"/>
         <mapper resource="mapper/review_query.xml"/>
         <mapper resource="mapper/vote_query.xml"/>
-        <mapper resource="mapper/calendar_query.xml" />
-        <mapper resource="mapper/notification_query.xml" />
+        <mapper resource="mapper/calendar_query.xml"/>
+        <mapper resource="mapper/notification_query.xml"/>
     </mappers>
 </configuration>

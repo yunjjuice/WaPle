@@ -14,4 +14,8 @@
     <select id="read" parameterType="map" resultType="com.ssafy.waple.notification.dto.NotificationDto">
         select * from NOTIFICATIONS where GROUP_ID = #{groupId} and NOTIFICATION_ID = #{notificationId}
     </select>
+
+    <select id="readAll" parameterType="long" resultType="com.ssafy.waple.notification.dto.NotificationDto">
+        select * from NOTIFICATIONS where GROUP_ID IN (select GROUP_ID from GROUP_MEMBERS where USER_ID = #{userId})
+    </select>
 </mapper>
