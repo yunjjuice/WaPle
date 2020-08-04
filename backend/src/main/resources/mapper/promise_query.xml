@@ -2,13 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ssafy.waple.promise.dao.PromiseDao">
     <insert id="create" parameterType="com.ssafy.waple.promise.dto.PromiseDto">
+        <selectKey keyProperty="promiseId" resultType="int" order="BEFORE">
+            select ifnull(p.PROMISE_ID + 1, 1)
+            from PROMISES p
+            where p.GROUP_ID = #{groupId}
+            order by PROMISE_ID desc
+            limit 1
+        </selectKey>
         insert into PROMISES (GROUP_ID, TITLE, PROMISE_DATE, PROMISE_ID)
-        VALUES (#{groupId}, #{title}, #{promiseDate},
-                (select p.PROMISE_ID + 1
-                 from PROMISES p
-                 where p.GROUP_ID = #{groupId}
-                 order by PROMISE_ID desc
-                 limit 1))
+        VALUES (#{groupId}, #{title}, #{promiseDate}, #{promiseId})
     </insert>
 
     <select id="readAll" resultType="com.ssafy.waple.promise.dto.PromiseDto">
