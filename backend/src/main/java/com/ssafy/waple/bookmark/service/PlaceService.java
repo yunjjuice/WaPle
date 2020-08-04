@@ -7,8 +7,8 @@ public interface PlaceService {
 	PlaceDto read(String placeId);
 
 	// 장소 추가
-	boolean create(PlaceDto placeData);
+	void create(PlaceDto placeData);
 
 	// 장소 업데이트
-	boolean update(PlaceDto placeData);
+	void update(PlaceDto placeData);
 }

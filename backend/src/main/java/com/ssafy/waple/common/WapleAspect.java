@@ -14,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ssafy.waple.bookmark.dto.BookmarkDto;
+import com.ssafy.waple.bookmark.dto.PlaceDto;
+import com.ssafy.waple.bookmark.service.PlaceService;
 import com.ssafy.waple.group.service.GroupService;
 import com.ssafy.waple.user.service.UserService;
 
@@ -30,8 +33,28 @@ public class WapleAspect {
 	@Autowired
 	UserService userService;
 
+	@Autowired
+	PlaceService placeService;
+
+	@Pointcut("execution(void com.ssafy.waple.bookmark.service.*.*(*,*))")
+	private void placeCheck() {}
+
 	@Pointcut("execution(* com.ssafy.waple.theme.service.*.*(..)))")
 	private void themeCheckUser() {}
+
+
+	@Before("placeCheck()")
+	private void placeChecking(JoinPoint point) {
+		logger.debug("해당 장소가 디비에 있는지 체크 시작");
+		Object[] parameterValues = point.getArgs();
+
+		BookmarkDto dto = (BookmarkDto) parameterValues[0];
+		PlaceDto placeDto = new PlaceDto(dto.getPlaceId(), dto.getName(), dto.getAddress(), dto.getLng(), dto.getLat(),
+			dto.getUrl());
+		placeService.create(placeDto);
+
+	}
+
 
 
 	// 해당 그룹에 유저가 있나요 체크 추가시 => || 포인트컷 메서드 네임 ex(" themeCheckUser() || hi()")

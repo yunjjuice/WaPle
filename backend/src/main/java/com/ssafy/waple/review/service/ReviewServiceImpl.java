@@ -8,7 +8,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.waple.bookmark.dto.SearchType;
-import com.ssafy.waple.bookmark.error.PlaceNotFoundException;
+import com.ssafy.waple.bookmark.exception.PlaceNotFoundException;
 import com.ssafy.waple.error.exception.IncorrectFormatException;
 import com.ssafy.waple.error.exception.PageNotFoundException;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
