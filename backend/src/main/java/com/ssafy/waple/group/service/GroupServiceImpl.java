@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.ssafy.waple.group.dao.GroupDao;
 import com.ssafy.waple.group.dto.GroupDto;
+import com.ssafy.waple.group.dto.GroupMemberDto;
 import com.ssafy.waple.group.exception.DuplicatedMemberException;
 import com.ssafy.waple.group.exception.GroupIsNotEmptyException;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
@@ -28,12 +29,12 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	public List<GroupDto> readGroupMembers(int groupId) {
-		List<GroupDto> groups = dao.readGroupMembers(groupId);
-		if (groups == null || groups.size() < 1) { //그룹에 멤버는 최소 1명 (그룹장)
+	public List<GroupMemberDto> readGroupMembers(int groupId) {
+		List<GroupMemberDto> members = dao.readGroupMembers(groupId);
+		if (members == null || members.size() < 1) { //그룹에 멤버는 최소 1명 (그룹장)
 			throw new GroupNotFoundException(groupId);
 		}
-		return groups;
+		return members;
 	}
 
 	@Override
@@ -76,7 +77,7 @@ public class GroupServiceImpl implements GroupService {
 	public void delete(int groupId, long userId) {
 		boolean isOwner = isOwner(groupId, userId);
 		if (isOwner) {
-			List<GroupDto> members = readGroupMembers(groupId);
+			List<GroupMemberDto> members = readGroupMembers(groupId);
 			if (members.size() > 1 || members.get(0).getUserId() != userId) {
 				throw new GroupIsNotEmptyException(groupId);
 			}

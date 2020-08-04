@@ -16,9 +16,10 @@
           and USER_ID = #{userId}
     </select>
 
-    <select id="readGroupMembers" resultType="com.ssafy.waple.group.dto.GroupDto">
-        select GROUP_ID, USER_ID
+    <select id="readGroupMembers" resultType="com.ssafy.waple.group.dto.GroupMemberDto">
+        select U.USER_ID, U.NAME
         from GROUP_MEMBERS
+                 inner join USERS U on GROUP_MEMBERS.USER_ID = U.USER_ID
         where GROUP_ID = #{groupId}
     </select>
 

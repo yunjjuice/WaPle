@@ -5,12 +5,13 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.waple.group.dto.GroupDto;
+import com.ssafy.waple.group.dto.GroupMemberDto;
 
 @Mapper
 public interface GroupDao {
 	List<GroupDto> readAll(long userId);
 
-	List<GroupDto> readGroupMembers(int groupId);
+	List<GroupMemberDto> readGroupMembers(int groupId);
 
 	int isOwner(int groupId, long userId);
 
