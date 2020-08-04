@@ -40,38 +40,42 @@
   >
     <v-card align="center">
       <v-card-title class="headline yellow lighten-3">북마크등록</v-card-title>
-      <v-form ref="form" v-model="valid">
-      <v-row justify="center">
-        <v-col cols="15" sm="6">
-          <v-select
-            :items="groups"
-            v-model="group"
-            item-text="name"
-            label="group"
-            return-object
-            required
-            :rules="[v => !!v || 'group is required']"
-            @change="findTheme"
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-col class="d-flex" cols="15" sm="6">
-          <v-select
-            :items="themes"
-            v-model="theme"
-            item-text="name"
-            label="theme"
-            return-object
-            required
-            :rules="[v => !!v || 'theme is required']"
-          ></v-select>
-        </v-col>
-      </v-row>
-      <v-row justify="center">
-        <v-btn depressed color="primary" @click="isValid">추가하기</v-btn>
-      </v-row>
-      </v-form>
+      <validation-observer ref="observer">
+        <v-row justify="center">
+          <v-col cols="15" sm="6">
+            <validation-provider v-slot="{ errors }" name="group" rules="required">
+              <v-select
+                :items="groups"
+                v-model="group"
+                item-text="name"
+                label="group"
+                return-object
+                required
+                :error-messages="errors"
+                @change="findTheme"
+              ></v-select>
+            </validation-provider>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-col class="d-flex" cols="15" sm="6">
+            <validation-provider v-slot="{ errors }" name="theme" rules="required">
+              <v-select
+                :items="themes"
+                v-model="theme"
+                item-text="name"
+                label="theme"
+                return-object
+                required
+                :error-messages="errors"
+              ></v-select>
+            </validation-provider>
+          </v-col>
+        </v-row>
+        <v-row justify="center">
+          <v-btn depressed color="primary" @click="isValid">추가하기</v-btn>
+        </v-row>
+      </validation-observer>
     </v-card>
   </v-dialog>
   </v-main>
@@ -80,6 +84,13 @@
 <script>
 import store from '@/store/index';
 import api from '@/utils/api';
+import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
+
+extend('required', {
+  ...required,
+  message: '{_field_} can not be empty',
+});
 
 export default {
   data() {
@@ -90,8 +101,11 @@ export default {
       group: {}, // 선택된 그룹
       themes: [], // 데이터에서 받아온 테마 목록
       theme: {}, // 선택된 테마
-      valid: true,
     };
+  },
+  components: {
+    ValidationObserver,
+    ValidationProvider,
   },
   computed: {
     searchResult: () => store.getters.result,
@@ -113,7 +127,9 @@ export default {
       this.themes = [];
       this.group = null;
       this.theme = null;
-      this.$refs.form.resetValidation();
+      requestAnimationFrame(() => {
+        this.$refs.observer.reset();
+      });
     },
     makeBookmark() {
       // 장소 추가
@@ -140,14 +156,16 @@ export default {
       this.dialog = false;
     },
     isValid() { // 그룹과 테마가 다 선택되었는지 확인
-      this.$refs.form.validate();
-      if (this.valid) {
-        this.makeBookmark();
-      }
+      this.$refs.observer.validate()
+        .then((result) => {
+          if (result) { // 입력이 다 되었다면 요청 보내기
+            this.makeBookmark();
+          }
+        });
     },
   },
   created() {
-    api.get(`/groups/${this.$session.get('uid')}`)
+    api.get(`/groups/of/${this.$session.get('uid')}`)
       .then(({ data }) => {
         this.groups = data;
       });
