@@ -17,6 +17,6 @@ public interface BookmarkDao {
 	List<BookmarkDto> read(SearchType.Group group);
 
 	//북마크 삭제
-	int delete(@Param("userId") long userId, @Param("themeId") int themeId, @Param("groupId") int groupId,
+	int delete(@Param("themeId") int themeId, @Param("groupId") int groupId,
 		@Param("placeId") String placeId);
 }

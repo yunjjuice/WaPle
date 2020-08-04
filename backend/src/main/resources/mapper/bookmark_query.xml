@@ -23,7 +23,6 @@
         delete
         from BOOKMARKS
         where GROUP_ID = #{groupId}
-          and USER_ID = #{userId}
           and PLACE_ID = #{placeId}
           and THEME_ID = #{themeId}
     </delete>

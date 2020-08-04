@@ -33,7 +33,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	BookmarkDao dao;
 
 	@Override
-	public void create(BookmarkDto bookmark) {
+	public void create(String token, BookmarkDto bookmark) {
 		try {
 			dao.create(bookmark);
 		} catch (DataAccessException e) {
@@ -57,7 +57,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	}
 
 	@Override
-	public List<BookmarkDto> read(SearchType type) {
+	public List<BookmarkDto> read(String token, SearchType type) {
 
 		// 유저가 해당 그룹인지 유효성 처리
 		long userId = type.getUserId();
@@ -104,8 +104,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 	}
 
 	@Override
-	public void delete(long userId, int themeId, int groupId, String placeId) {
-		if(dao.delete(userId, themeId, groupId, placeId) > 0) {
+	public void delete(String token, int themeId, int groupId, String placeId) {
+		if(dao.delete(themeId, groupId, placeId) < 1) {
 			throw new BookmarkNotFonudException(groupId, themeId, placeId);
 		}
 	}

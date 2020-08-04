@@ -36,7 +36,7 @@ public class WapleAspect {
 	@Autowired
 	PlaceService placeService;
 
-	@Pointcut("execution(void com.ssafy.waple.bookmark.service.*.*(*))")
+	@Pointcut("execution(void com.ssafy.waple.bookmark.service.*.*(*,*))")
 	private void placeCheck() {}
 
 	@Pointcut("execution(* com.ssafy.waple.theme.service.*.*(..)))")
