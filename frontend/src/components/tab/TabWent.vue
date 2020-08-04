@@ -16,13 +16,13 @@
             >
               </v-card-title>
               <v-card-actions>
-                <v-btn icon>
+                <v-btn icon @click.stop="showDialog(item)">
                   <v-icon>mdi-calendar-plus</v-icon>
                 </v-btn>
-                <v-btn icon>
+                <v-btn icon @click.stop="readReview(i);">
                   <v-icon>mdi-text-box-multiple-outline</v-icon>
                 </v-btn>
-                <v-btn icon>
+                <v-btn icon @click.stop="writeReview(i);">
                   <v-icon>mdi-pencil-plus-outline</v-icon>
                 </v-btn>
               </v-card-actions>
@@ -31,10 +31,15 @@
       </v-card>
     </v-col>
   </v-row>
+
+  <appointment-modal :dialog="appointmentDialog" />
+
 </v-container>
 </template>
 
 <script>
+import store from '@/store/index';
+
 export default {
   data() {
     return {
@@ -66,12 +71,30 @@ export default {
       ],
     };
   },
+  components: {
+    AppointmentModal: () => import('@/components/items/AppointmentModal.vue'),
+  },
   mounted() {
     this.$store.dispatch('doUpdate', this.items);
+  },
+  computed: {
+    appointmentDialog: () => store.getters.appointmentDialog,
   },
   methods: {
     click() {
       alert('click');
+    },
+    showDialog(item) {
+      store.dispatch('selectPlace', item);
+      store.dispatch('openAppointmentDialog');
+      store.dispatch('getGroups');
+      store.dispatch('getAppointments');
+    },
+    readReview(i) {
+      alert(`read review ${i}`);
+    },
+    writeReview(i) {
+      alert(`write review ${i}`);
     },
   },
 };

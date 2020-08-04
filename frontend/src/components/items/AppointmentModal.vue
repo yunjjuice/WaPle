@@ -8,20 +8,35 @@
         </v-tab>
         <v-tab-item>
           <v-card flat width="400" height="250" justify="center">
-            <v-text-field label="약속명" v-model="appointmentName" />
-            <v-select label="그룹 선택" :items="groups" />
-            <!-- date picker -->
-            <V-menu ref="menu" v-model="menu" :close-on-content-click="false"
-              transition="scale-transition" offset-y min-width="290px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field v-model="date" label="약속날짜" v-bind="attrs" v-on="on" readonly>
-                </v-text-field>
-              </template>
-              <v-date-picker v-model="date" @input="menu=false">
-              </v-date-picker>
-            </V-menu>
-            <v-btn @click="makeAppointment" color="primary">만들기</v-btn>
-            <v-btn @click="cancelModal" color="error">취소하기</v-btn>
+            <v-form ref="formByNew" v-model="validByNew">
+              <v-text-field
+                label="약속명"
+                v-model="appointmentName"
+                :rules="[v => !!v || '약속명을 입력해주세요']"
+              />
+              <v-select
+                label="그룹 선택"
+                :items="groups"
+                v-model="group"
+                item-text="name"
+                return-object
+                required
+                :rules="[v => !!v || '그룹을 선택해주세요']"
+              />
+              <v-datetime-picker
+                label="약속날짜"
+                v-model="appointmentDate"
+              >
+                <template slot="dateIcon">
+                  <v-icon>mdi-calendar</v-icon>
+                </template>
+                <template slot="timeIcon">
+                  <v-icon>mdi-clock-time-four-outline</v-icon>
+                </template>
+              </v-datetime-picker>
+              <v-btn @click="isValidByNew" color="primary">만들기</v-btn>
+              <v-btn @click="cancelModal" color="error">취소하기</v-btn>
+            </v-form>
           </v-card>
         </v-tab-item>
         <v-tab>
@@ -29,9 +44,19 @@
         </v-tab>
         <v-tab-item>
           <v-card flat width="400" height="250" align="center" justify="center">
-            <v-select label="약속 선택" :items="appointments" />
-            <v-btn @click="addAppointment" color="primary">추가하기</v-btn>
-            <v-btn @click="cancelModal" color="error">취소하기</v-btn>
+            <v-form ref="formByExisting" v-model="validByExisting">
+              <v-select
+                label="약속 선택"
+                :items="appointments"
+                v-model="appointment"
+                item-text="title"
+                return-object
+                required
+                :rules="[v => !!v || '약속을 선택해주세요']"
+              />
+              <v-btn @click="isValidByExisting" color="primary">추가하기</v-btn>
+              <v-btn @click="cancelModal" color="error">취소하기</v-btn>
+            </v-form>
           </v-card>
         </v-tab-item>
       </v-tabs>
@@ -40,26 +65,62 @@
 </template>
 
 <script>
+import store from '@/store/index';
+
 export default {
   data() {
     return {
-      appointmentName: '', // 약속명
-      groups: ['그룹1', '그룹2', '그룹3'], // 그룹명
-      appointments: ['약속1', '약속2', '약속3'], // 기존에 만들어진 약속 리스트
-      date: new Date().toISOString().substr(0, 10),
-      menu: false,
+      appointmentName: '',
+      group: null,
+      appointmentDate: null,
+      appointment: null,
+      validByNew: true,
+      validByExisting: true,
     };
   },
   props: ['dialog'],
+  computed: {
+    groups: () => store.getters.groups,
+    appointments: () => store.getters.appointments,
+  },
   methods: {
-    makeAppointment() {
-      this.$emit('childs-event');
+    clearModel() {
+      this.appointmentName = '';
+      this.group = null;
+      this.appointmentDate = null;
+      this.appointment = null;
+      this.$refs.formByNew.reset();
+      this.$refs.formByExisting.reset();
     },
-    addAppointment() {
-      this.$emit('childs-event');
+    makeAppointment() { // 새 약속 만들기
+      store.dispatch('updateAppointmentName', this.appointmentName);
+      store.dispatch('updateGroup', this.group);
+      store.dispatch('updateAppointmentDate', this.appointmentDate);
+      store.dispatch('makeAppointment');
+      store.dispatch('closeAppointmentDialog');
+      this.clearModel();
+    },
+    addAppointment() { // 기존 약속에 추가하기
+      store.dispatch('updateAppointment', this.appointment);
+      store.dispatch('addAppointment');
+      store.dispatch('closeAppointmentDialog');
+      this.clearModel();
     },
     cancelModal() {
-      this.$emit('childs-event');
+      store.dispatch('closeAppointmentDialog');
+      this.clearModel();
+    },
+    isValidByNew() { // 내용이 다 작성되었는지 확인
+      this.$refs.formByNew.validate();
+      if (this.validByNew) {
+        this.makeAppointment();
+      }
+    },
+    isValidByExisting() {
+      this.$refs.formByExisting.validate();
+      if (this.validByExisting) {
+        this.addAppointment();
+      }
     },
   },
 };
