@@ -2,7 +2,7 @@ package com.ssafy.waple.vote.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class VoteDto {
+public class PromisePlaceDto {
 	@ApiModelProperty(value = "그룹 Id", example = "1")
 	private int groupId;
 
@@ -12,7 +12,7 @@ public class VoteDto {
 	@ApiModelProperty(value = "투표 장소 Id", example = "19781214")
 	private String placeId;
 
-	@ApiModelProperty(value = "투표한 유저 Id", example = "1412733569")
+	@ApiModelProperty(value = "장소 추가한 유저 Id", example = "1412733569")
 	private long userId;
 
 	public int getGroupId() {
@@ -49,7 +49,7 @@ public class VoteDto {
 
 	@Override
 	public String toString() {
-		return "VoteDto{" +
+		return "PromisePlaceDto{" +
 			"groupId=" + groupId +
 			", promiseId=" + promiseId +
 			", placeId='" + placeId + '\'' +
