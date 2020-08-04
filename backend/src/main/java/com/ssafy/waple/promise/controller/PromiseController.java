@@ -56,10 +56,10 @@ public class PromiseController {
 			name = "promise",
 			dataTypeClass = PromiseRequest.class)
 	})
-	private ResponseEntity<?> create(@RequestBody PromiseDto promise) {
+	private ResponseEntity<Integer> create(@RequestBody PromiseDto promise) {
 		logger.debug("create 호출");
 		service.create(promise);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		return new ResponseEntity<>(promise.getPromiseId(), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{userId}")
