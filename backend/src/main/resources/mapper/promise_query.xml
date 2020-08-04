@@ -3,11 +3,10 @@
 <mapper namespace="com.ssafy.waple.promise.dao.PromiseDao">
     <insert id="create" parameterType="com.ssafy.waple.promise.dto.PromiseDto">
         <selectKey keyProperty="promiseId" resultType="int" order="BEFORE">
-            select ifnull(p.PROMISE_ID + 1, 1)
-            from PROMISES p
+            select ifnull((select p.PROMISE_ID + 1 from PROMISES p
             where p.GROUP_ID = #{groupId}
             order by PROMISE_ID desc
-            limit 1
+            limit 1), 1)
         </selectKey>
         insert into PROMISES (GROUP_ID, TITLE, PROMISE_DATE, PROMISE_ID)
         VALUES (#{groupId}, #{title}, #{promiseDate}, #{promiseId})
