@@ -5,8 +5,10 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,8 +41,10 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import com.ssafy.waple.common.PermissionCheck;
+import com.ssafy.waple.error.exception.InvalidValueException;
 import com.ssafy.waple.user.dto.UserDto;
 import com.ssafy.waple.user.service.UserService;
+import com.ssafy.waple.error.exception.InvalidValueException;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RestController
@@ -48,8 +52,10 @@ import com.ssafy.waple.user.service.UserService;
 @Api(value = "User Controller", tags = "User")
 public class UserController {
 	private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-	private static final PermissionCheck permissionCheck = new PermissionCheck();
-	
+
+	@Autowired
+	PermissionCheck permissionCheck;
+
 	@Autowired
 	UserService service;
 
@@ -72,29 +78,20 @@ public class UserController {
 
 		long userId = Integer.parseInt(userInfo.id);
 		String name = userInfo.data.get("nickname");
-		boolean isAdmin = false;
 
 		// 유저 정보 조회
-		UserDto user = service.read(userId);
+		UserDto user = service.read(this.getToken(userId, name, false), userId);
 
-		// Access 토큰이 넘어온건 카카오 로그인이 정상적으로 처리되었다는 것을 의미한다고 생각했다.
-		Boolean success = false;
-
-		// DB 조회 후 없으면 추가 후 개인 그룹 생성 있으면 최근 접속 일자 업데이트
-		if (user == null) {
-			success = service.create(new UserDto(userId, name));
+		if(user == null) {
+			// 회원가입
+			user = new UserDto(userId, name);
+			service.create(user);
 		} else {
-			isAdmin = user.isManagerFlag();
-			success = service.updateTime(userId);
+			// 로그인
+			service.login(user);
 		}
-
-		String token = this.getToken(userId, name, isAdmin);
-
-		if (success) {
-			return new ResponseEntity<>(token, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		String token = this.getToken(user.getUserId(), user.getName(), user.isManagerFlag());
+		return new ResponseEntity<>(token, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{userId}", produces = "application/json")
@@ -113,15 +110,11 @@ public class UserController {
 	})
 	private ResponseEntity<?> read(@PathVariable("userId") Long userId, @RequestHeader(value = "token") String token) {
 		logger.debug("회원정보 조회 호출");
-		if (userId != permissionCheck.check(token).getUserId()) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-		UserDto user = service.read(userId);
-		if (user != null) {
-			return new ResponseEntity<>(user, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		// if (userId != permissionCheck.check(token).getUserId()) {
+		// 	return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		// }
+		UserDto user = service.read(token, userId);
+		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{userId}", produces = "application/json")
@@ -142,15 +135,11 @@ public class UserController {
 	private ResponseEntity<?> update(@PathVariable("userId") long userId, @RequestHeader(value = "token") String token,
 		@RequestBody UserDto user) {
 		logger.debug("회원정보 업데이트 호출");
-		if (userId != permissionCheck.check(token).getUserId()) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-		Boolean success = service.update(user);
-		if (success) {
-			return new ResponseEntity<>(user, HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		// if (userId != permissionCheck.check(token).getUserId()) {
+		// 	return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		// }
+		service.update(token, user);
+		return new ResponseEntity<>(user, HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{userId}/{refreshToken}", produces = "application/json")
@@ -173,22 +162,18 @@ public class UserController {
 		@PathVariable("refreshToken") String refreshToken) {
 		logger.debug("회원정보 삭제 호출");
 
-		long userTempId = permissionCheck.check(token).getUserId();
-		if (userId != userTempId) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
+		// long userTempId = permissionCheck.check(token).getUserId();
+		// if (userId != userTempId) {
+		// 	return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		// }
 		String accessToken = this.getAccessToken(refreshToken);
-
-		if (userId != this.getUnlinkId(accessToken)) {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		if (userId != Long.valueOf(this.getUserInfo(accessToken).id)) {
+			throw new InvalidValueException("User ID is different from Kakao ID");
 		}
-		Boolean success = service.delete(userId);
+		userId = this.getUnlinkId(accessToken);
+		service.delete(token, userId);
 
-		if (success) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
@@ -202,15 +187,8 @@ public class UserController {
 		@ApiResponse(code = 404, message = "회원 리스트 조회 실패")
 	})
 	private ResponseEntity<?> readAll(@RequestHeader(value = "token") String token) {
-		if (permissionCheck.check(token).isManagerFlag()) {
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
-		}
-		List<UserDto> userList = service.readAll();
-		if (userList.size() != 0) {
-			return new ResponseEntity<>(userList, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		List<UserDto> userList = service.readAll(token);
+		return new ResponseEntity<>(userList, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/logout", produces = "application/json")
@@ -229,15 +207,12 @@ public class UserController {
 	})
 	private ResponseEntity<?> logOut(@RequestBody String refreshToken, @RequestHeader(value = "token") String token) {
 		logger.debug("로그아웃 호출");
-		long userId = permissionCheck.check(token).getUserId();
-		Boolean success = false;
+		long userId = 0;
 		Gson gson = new Gson();
 		Response response = gson.fromJson(refreshToken, Response.class);
-		System.out.println("RefreshToken: " + response.refreshToken);
 
 		// Refresh Token으로 Access Token 받기
 		String accessToken = this.getAccessToken(response.refreshToken);
-		logger.debug("AccessToken is " + accessToken);
 
 		String reqURL = "https://kapi.kakao.com/v1/user/logout";
 		try {
@@ -257,16 +232,11 @@ public class UserController {
 			response = gson.fromJson(temp, Response.class);
 
 			userId = Integer.parseInt(response.id);
-			success = true;
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new InvalidValueException("AccessToken is invalid");
 		}
 		String tempToken = this.getToken(userId, "", false);
-		if (success) {
-			return new ResponseEntity<>(tempToken, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		return new ResponseEntity<>(tempToken, HttpStatus.OK);
 	}
 
 	private Response getUserInfo(String accessToken) {
@@ -288,7 +258,7 @@ public class UserController {
 			response = gson.fromJson(result, Response.class);
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new InvalidValueException("AccessToken is invalid");
 		}
 		return response;
 	}
@@ -330,7 +300,7 @@ public class UserController {
 			accessToken = response.accessToken;
 			bw.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new InvalidValueException("RefreshToken is invalid");
 		}
 		return accessToken;
 	}
@@ -358,8 +328,7 @@ public class UserController {
 			Gson gson = new Gson();
 			response = gson.fromJson(result, Response.class);
 		} catch (IOException e) {
-			e.printStackTrace();
-			return 0;
+			throw new InvalidValueException("AccessToken is invalid");
 		}
 		return Long.valueOf(response.id);
 	}
@@ -367,8 +336,6 @@ public class UserController {
 	private String getResponseBody(HttpURLConnection conn) throws IOException {
 		logger.debug("ResponseBody 요청 호출");
 		int responseCode = conn.getResponseCode();
-		System.out.println("responseCode : " + responseCode);
-
 		BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
 		String line = "";
@@ -377,7 +344,6 @@ public class UserController {
 		while ((line = br.readLine()) != null) {
 			result += line;
 		}
-		System.out.println("response body : " + result);
 		br.close();
 		return result;
 	}

@@ -6,6 +6,15 @@
         values (#{userId}, now(), #{name})
     </insert>
 
+    <update id="login">
+        <selectKey keyProperty="name,managerFlag" resultType="com.ssafy.waple.user.dto.UserDto" order="AFTER">
+            select NAME, MANAGER_FLAG from USERS where USER_ID = #{userId}
+        </selectKey>
+        update USERS
+        set LAST_DATE = now()
+        where USER_ID = #{userId}
+    </update>
+
     <select id="read" resultType="com.ssafy.waple.user.dto.UserDto" parameterType="long">
         select *
         from USERS
@@ -23,12 +32,6 @@
         from USERS
         where user_id = #{userId}
     </delete>
-
-    <update id="updateTime" parameterType="long">
-        update USERS
-        set last_date = now()
-        where user_id = #{userId}
-    </update>
 
     <select id="readAll" resultType="com.ssafy.waple.user.dto.UserDto">
         select *
