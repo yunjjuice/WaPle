@@ -64,7 +64,7 @@ public class BookmarkController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	@ApiOperation(value = "북마크 조회", notes = "회원이 속한 모든 그룹, 모든 테마 북마크 조회", response = PlaceDto.class)
+	@ApiOperation(value = "북마크 조회", notes = "회원이 속한 모든 그룹, 모든 테마 북마크 조회", response = BookmarkDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "searchType", value = "북마크 조회", required = true, dataTypeClass = SearchType.class),
 		@ApiImplicitParam(name = "token", value = "회원 토큰")
@@ -127,5 +127,26 @@ public class BookmarkController {
 		@PathVariable("themeId") int themeId, @RequestHeader(value = "token") String token) {
 		service.delete(token, themeId, groupId, placeId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/all/{userId}/{limit}/{offset}", produces = "application/json")
+	@ApiOperation(value = "북마크 조회", notes = "회원이 속한 모든 그룹, 모든 테마 북마크 조회", response = BookmarkDto.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "token", value = "회원 토큰"),
+		@ApiImplicitParam(name = "userId", value = "Kakao에서 제공하는 회원 아이디" , example = "1412733569"),
+		@ApiImplicitParam(name = "limit", value = "페이지내 표시 할 북마크 리스트 수", example = "10"),
+		@ApiImplicitParam(name = "offset", value = "페이지 위치", example = "1")
+	})
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "북마크 전체 조회 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "북마크 전체 조회 실패")
+	})
+	private ResponseEntity<?> readAll(@RequestHeader(value = "token")String token, @PathVariable("userId")long userId,
+		@PathVariable("limit")int limit, @PathVariable("offset")int offset) {
+		List<BookmarkDto> result = service.readAll(token, userId, limit, offset);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }

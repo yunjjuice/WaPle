@@ -26,4 +26,17 @@
           and PLACE_ID = #{placeId}
           and THEME_ID = #{themeId}
     </delete>
+
+    <select id="readAll" parameterType="map" resultType="com.ssafy.waple.bookmark.dto.BookmarkDto">
+        select DISTINCT B.USER_ID, B.GROUP_ID, B.THEME_ID, P.*
+        FROM BOOKMARKS B
+        inner join PLACES P on B.PLACE_ID = P.PLACE_ID
+            inner join THEMES T on B.GROUP_ID IN
+                (select GROUP_ID
+                FROM GROUP_MEMBERS
+                WHERE USER_ID = #{userId})
+            and B.THEME_ID = T.THEME_ID
+        ORDER BY B.GROUP_ID, THEME_ID
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
 </mapper>

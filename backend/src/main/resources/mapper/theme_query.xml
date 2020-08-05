@@ -10,7 +10,7 @@
         values (#{groupId}, #{groupId}, #{name}, #{icon})
     </insert>
 
-    <select id="readAll" parameterType="int" resultType="com.ssafy.waple.theme.dto.ThemeDto">
+    <select id="read" parameterType="int" resultType="com.ssafy.waple.theme.dto.ThemeDto">
         select *
         FROM THEMES
         where GROUP_ID = #{groupId}
@@ -29,4 +29,15 @@
         where GROUP_ID = #{groupId}
           and THEME_ID = #{themeId}
     </delete>
+    
+    <select id="readAll" parameterType="long" resultType="com.ssafy.waple.theme.dto.ThemeGroupAll">
+        select G.GROUP_ID, GROUP_CONCAT(T.THEME_ID SEPARATOR ',') as "themes"
+        from (
+            select GROUP_ID
+            FROM GROUP_MEMBERS
+            WHERE USER_ID = #{userId}
+            ) G
+        inner join THEMES T WHERE T.GROUP_ID = G.GROUP_ID
+        GROUP BY G.GROUP_ID
+    </select>
 </mapper>
