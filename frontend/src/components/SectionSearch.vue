@@ -132,26 +132,19 @@ export default {
       });
     },
     makeBookmark() {
-      // 장소 추가
-      api.post('/places', {
+      // 북마크 등록
+      api.post('/bookmarks', {
         address: this.place.road_address_name,
+        groupId: this.group.groupId,
         lat: this.place.y,
         lng: this.place.x,
         name: this.place.place_name,
         placeId: this.place.id,
-        url: this.place.place_url,
-      });
-      // .then(({ res }) => {
-      // console.log(`status code : ${res.status}`);
-      // });
-      // 북마크 등록
-      api.post('/bookmarks', {
-        groupId: this.group.groupId,
-        placeId: this.place.id,
         themeId: this.theme.themeId,
+        url: this.place.place_url,
         userId: this.$session.get('uid'),
-      }).then(({ data }) => {
-        console.log(data);
+      }).then((res) => {
+        console.log(res);
       });
       this.dialog = false;
     },
