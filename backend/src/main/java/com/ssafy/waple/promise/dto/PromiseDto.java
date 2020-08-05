@@ -10,6 +10,9 @@ public class PromiseDto {
 	@ApiModelProperty(value = "그룹 Id", example = "1")
 	private int groupId;
 
+	@ApiModelProperty(value = "그룹 이름", example = "나")
+	private String name;
+
 	@ApiModelProperty(value = "약속 Id", example = "1")
 	private int promiseId;
 
@@ -26,6 +29,14 @@ public class PromiseDto {
 
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public int getPromiseId() {
@@ -56,6 +67,7 @@ public class PromiseDto {
 	public String toString() {
 		return "PromiseDto{" +
 			"groupId=" + groupId +
+			", name='" + name + '\'' +
 			", promiseId=" + promiseId +
 			", title='" + title + '\'' +
 			", promiseDate=" + promiseDate +
