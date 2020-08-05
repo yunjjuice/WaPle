@@ -54,7 +54,7 @@ public class PromiseController {
 			value = "생성할 약속 정보",
 			required = true,
 			name = "promise",
-			dataTypeClass = PromiseRequest.class)
+			dataTypeClass = PromiseCreateRequest.class)
 	})
 	private ResponseEntity<Integer> create(@RequestBody PromiseDto promise) {
 		logger.debug("create 호출");
@@ -86,6 +86,13 @@ public class PromiseController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "약속 수정 실패")
 	})
+	@ApiImplicitParams({
+		@ApiImplicitParam(
+			value = "수정할 약속 정보",
+			required = true,
+			name = "promise",
+			dataTypeClass = PromiseUpdateRequest.class)
+	})
 	private ResponseEntity<PromiseDto> update(
 		@ApiParam(value = "수정할 약속 정보", required = true) @RequestBody PromiseDto promise) {
 		logger.debug("update 호출");
@@ -110,7 +117,7 @@ public class PromiseController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	public class PromiseRequest {
+	public class PromiseCreateRequest {
 		@ApiModelProperty(value = "그룹 Id", example = "1")
 		private int groupId;
 
@@ -126,6 +133,52 @@ public class PromiseController {
 
 		public void setGroupId(int groupId) {
 			this.groupId = groupId;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public void setTitle(String title) {
+			this.title = title;
+		}
+
+		public Date getPromiseDate() {
+			return promiseDate;
+		}
+
+		public void setPromiseDate(Date promiseDate) {
+			this.promiseDate = promiseDate;
+		}
+	}
+
+	public class PromiseUpdateRequest {
+		@ApiModelProperty(value = "그룹 Id", example = "1")
+		private int groupId;
+
+		@ApiModelProperty(value = "약속 Id", example = "1")
+		private int promiseId;
+
+		@ApiModelProperty(value = "약속 이름", example = "정기 방탈출 모임")
+		private String title;
+
+		@ApiModelProperty(value = "약속 날짜", example = "2020-07-31T18:00")
+		private Date promiseDate;
+
+		public int getGroupId() {
+			return groupId;
+		}
+
+		public void setGroupId(int groupId) {
+			this.groupId = groupId;
+		}
+
+		public int getPromiseId() {
+			return promiseId;
+		}
+
+		public void setPromiseId(int promiseId) {
+			this.promiseId = promiseId;
 		}
 
 		public String getTitle() {

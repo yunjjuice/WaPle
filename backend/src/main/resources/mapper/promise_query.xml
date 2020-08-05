@@ -13,9 +13,10 @@
     </insert>
 
     <select id="readAll" resultType="com.ssafy.waple.promise.dto.PromiseDto">
-        select *
+        select G.GROUP_ID, NAME, PROMISE_ID, TITLE, PROMISE_DATE
         from PROMISES
-        where GROUP_ID in (select GROUP_MEMBERS.GROUP_ID from GROUP_MEMBERS where GROUP_MEMBERS.USER_ID = #{userId})
+                 inner join `GROUPS` G on PROMISES.GROUP_ID = G.GROUP_ID
+        where G.GROUP_ID in (select GROUP_MEMBERS.GROUP_ID from GROUP_MEMBERS where GROUP_MEMBERS.USER_ID = #{userId})
           and PROMISE_DATE > current_time();
     </select>
 
