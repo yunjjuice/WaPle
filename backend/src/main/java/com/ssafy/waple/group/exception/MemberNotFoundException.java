@@ -4,6 +4,6 @@ import com.ssafy.waple.error.exception.EntityNotFoundException;
 
 public class MemberNotFoundException extends EntityNotFoundException {
 	public MemberNotFoundException(int groupId, long userId) {
-		super("(groupId: " + groupId + ", userId: " + userId + ") is not found");
+		super("Member " + groupId + "-" + userId + " is not found");
 	}
 }
