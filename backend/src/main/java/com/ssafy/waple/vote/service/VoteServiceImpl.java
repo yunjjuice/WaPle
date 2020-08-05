@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.ssafy.waple.bookmark.error.PlaceNotFoundException;
+import com.ssafy.waple.bookmark.exception.PlaceNotFoundException;
 import com.ssafy.waple.promise.exception.PromiseNotFoundException;
 import com.ssafy.waple.user.exception.UserNotFoundException;
 import com.ssafy.waple.vote.dao.VoteDao;
