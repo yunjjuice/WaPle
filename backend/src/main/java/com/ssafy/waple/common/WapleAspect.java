@@ -25,7 +25,9 @@ import com.ssafy.waple.user.service.UserService;
 public class WapleAspect {
 
 	private static final Logger logger = LoggerFactory.getLogger(WapleAspect.class);
-	private static final PermissionCheck check = new PermissionCheck();
+
+	@Autowired
+	PermissionCheck permissionCheck;
 
 	@Autowired
 	GroupService groupService;
@@ -48,7 +50,7 @@ public class WapleAspect {
 		logger.debug("해당 장소가 디비에 있는지 체크 시작");
 		Object[] parameterValues = point.getArgs();
 
-		BookmarkDto dto = (BookmarkDto) parameterValues[0];
+		BookmarkDto dto = (BookmarkDto) parameterValues[1];
 		PlaceDto placeDto = new PlaceDto(dto.getPlaceId(), dto.getName(), dto.getAddress(), dto.getLng(), dto.getLat(),
 			dto.getUrl());
 		placeService.create(placeDto);
