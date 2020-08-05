@@ -7,9 +7,8 @@
     color="yellow"
     dark
     >
-      <v-tab to="/">ALL</v-tab>
-      <v-tab to="/went">REVIEW</v-tab>
-      <v-tab to="/wish">BOOKMARK</v-tab>
+      <v-tab to="/">BOOKMARK</v-tab>
+      <v-tab to="/review">REVIEW</v-tab>
       <v-tab to="/voting">VOTE</v-tab>
     </v-tabs>
     </v-main>
@@ -18,12 +17,8 @@
 </template>
 
 <script>
-import TabAll from '@/components/tab/TabAll.vue';
-
 export default {
-  templates: {
-    TabAll,
-  },
+
 };
 </script>
 

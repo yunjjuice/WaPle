@@ -31,19 +31,14 @@ const routes = [
             component: () => import('@/components/SectionTab.vue'),
             children: [
               {
-                name: 'TabAll',
+                name: 'TabBookmark',
                 path: '',
-                component: () => import('@/components/tab/TabAll.vue'),
+                component: () => import('@/components/tab/TabBookmark.vue'),
               },
               {
-                name: 'TabWent',
-                path: '/went',
-                component: () => import('@/components/tab/TabWent.vue'),
-              },
-              {
-                name: 'TabWish',
-                path: '/wish',
-                component: () => import('@/components/tab/TabWish.vue'),
+                name: 'TabReview',
+                path: '/review',
+                component: () => import('@/components/tab/TabReview.vue'),
               },
               {
                 name: 'TabVoting',
