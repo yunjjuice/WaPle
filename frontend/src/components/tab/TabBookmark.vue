@@ -40,28 +40,30 @@
 
 <script>
 import store from '@/store/index';
+import api from '@/utils/api';
 
 export default {
   data() {
     return {
-      items: [
-        {
-          name: 'e-편한세상', address: '역삼동 755-4', lat: '37.498718', lng: '127.0499436',
-        },
-        {
-          name: '역삼동우정에쉐르1', address: '역삼동 826-29', lat: '37.4962612', lng: '127.0301445',
-        },
-        {
-          name: '테헤란아이파크', address: '역삼동 709-5', lat: '37.50243630000001', lng: '127.0466551',
-        },
-      ],
+      limit: 10,
+      offset: 1,
+      items: [],
     };
   },
   components: {
     AppointmentModal: () => import('@/components/items/AppointmentModal.vue'),
   },
   mounted() {
-    this.$store.dispatch('doUpdate', this.items);
+    api.get(`/bookmarks/all/${this.$session.get('uid')}/${this.limit}/${this.offset}`, {
+      headers: {
+        token: this.$session.get('token'),
+      },
+    }).then(({ data }) => {
+      this.items = data;
+      this.$store.dispatch('doUpdate', this.items);
+    }).catch((error) => {
+      console.log(error.response);
+    });
   },
   computed: {
     appointmentDialog: () => store.getters.appointmentDialog,
