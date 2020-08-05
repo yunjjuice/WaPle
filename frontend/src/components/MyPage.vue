@@ -1,6 +1,6 @@
 <template>
 <v-app>
-  <v-content>
+  <v-main>
     <v-container fluid pa-0 fill-height>
       <v-layout row wrap>
         <!-- 왼쪽 Section (Card 영역) -->
@@ -67,7 +67,7 @@
         </v-flex>
       </v-layout>
     </v-container>
-  </v-content>
+  </v-main>
 </v-app>
 </template>
 
