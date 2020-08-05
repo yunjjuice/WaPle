@@ -4,16 +4,13 @@
     <!-- 회원목록 -->
     <div>
       <h3 style="color: white; background-color: gray;" class="d-inline"> 회원목록 </h3>
-      <AddGroupUserButton
-        class="d-inline"
-        :is-admin="isAdmin"
-        :group-groupId="groupId"
-      />
 
       <!-- 인호 추가하기 버튼 테스트 -->
-      <v-btn v-if="isAdmin" @click="addGroupUser(groupId)">
-        인호추가하기 test
-      </v-btn>
+      <v-icon
+        @click="addGroupUser()"
+        >
+        mdi-plus-circle-outline
+      </v-icon>
       <!--  -->
       <hr class="border border-primary">
     </div>
@@ -70,8 +67,6 @@
 
 <script>
 import api from '@/utils/api';
-
-import AddGroupUserButton from '@/components/mypage/AddGroupUserButton.vue';
 import DelGroupUserButton from '@/components/mypage/DelGroupUserButton.vue';
 import ThemePlusButton from '@/components/mypage/ThemePlusButton.vue';
 import ThemeMinusButton from '@/components/mypage/ThemeMinusButton.vue';
@@ -80,9 +75,9 @@ export default {
   name: 'GroupDetail',
   props: {
     groupId: null,
+    groupName: null,
   },
   components: {
-    AddGroupUserButton, // 그룹에 회원 추가하기 버튼 컴포넌트
     DelGroupUserButton,
     ThemePlusButton,
     ThemeMinusButton,
@@ -112,18 +107,15 @@ export default {
         })
         .catch((err) => console.log(err));
     },
-    addGroupUser(groupId) {
-      console.log('addGroupUser() 실행');
-      // modal 창 띄워서 추가할 사람 이름 넣고 해야겠음 (아래 userId 는 인호)
-      api.post('groups/member/', {
-        groupId, // object-shorthand
-        userId: 1412733569,
-      })
-        .then((res) => {
-          console.log(res, '유저 추가했습니다.');
-          this.getGroupInfo(groupId);
-        })
-        .catch((err) => console.log(err));
+    addGroupUser() {
+      window.Kakao.Link.sendCustom({
+        templateId: 33849,
+        templateArgs: {
+          key: this.groupId,
+          group: this.groupName,
+          user: this.$session.get('uname'),
+        },
+      });
     },
     delGroupUser(groupId, userId) {
       api.delete(`groups/${groupId}/${userId}`)
