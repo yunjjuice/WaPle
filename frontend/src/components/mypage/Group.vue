@@ -17,7 +17,7 @@
           그룹이름 : {{ group.name }}
         </v-expansion-panel-header>
         <!-- 그룹 눌렀을때 안쪽 내용 -->
-        <group-detail :groupId="group.groupId" :groupName="group.groupName" />
+        <group-detail :groupId="group.groupId" :groupName="group.groupName" :token="group.token"/>
       </v-expansion-panel>
     </v-expansion-panels>
 

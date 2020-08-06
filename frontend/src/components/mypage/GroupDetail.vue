@@ -74,6 +74,7 @@ import ThemeMinusButton from '@/components/mypage/ThemeMinusButton.vue';
 export default {
   name: 'GroupDetail',
   props: {
+    token: null,
     groupId: null,
     groupName: null,
   },
@@ -111,7 +112,7 @@ export default {
       window.Kakao.Link.sendCustom({
         templateId: 33849,
         templateArgs: {
-          key: this.groupId,
+          key: this.token,
           group: this.groupName,
           user: this.$session.get('uname'),
         },

@@ -10,7 +10,7 @@ const requireAuth = () => (to, from, next) => {
   if (Vue.prototype.$session.exists('uid')) {
     return next();
   }
-  return next('/login');
+  return next(`/login?redirect=${to.path}`);
 };
 
 const routes = [
@@ -97,6 +97,13 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+    props: (route) => ({ redirect: route.query.redirect }),
+  },
+  {
+    path: '/invite/:code',
+    component: () => import('@/components/Invite.vue'),
+    props: true,
+    beforeEnter: requireAuth(),
   },
 ];
 

@@ -6,7 +6,7 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 
-Vue.use(VueSession);
+Vue.use(VueSession, { persist: true });
 Vue.use(DatetimePicker);
 
 Vue.config.productionTip = false;
