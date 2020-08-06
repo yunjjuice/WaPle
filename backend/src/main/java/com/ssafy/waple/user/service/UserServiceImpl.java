@@ -38,11 +38,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto read(String token, long userId) {
-		UserDto user = dao.read(userId);
-		if(user == null) {
-			throw new UserNotFoundException(userId);
-		}
-		return user;
+		return dao.read(userId);
 	}
 
 	@Override

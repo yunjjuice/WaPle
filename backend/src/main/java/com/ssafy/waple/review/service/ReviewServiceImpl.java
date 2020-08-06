@@ -56,24 +56,12 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public List<ReviewDto> read(String token, SearchType type, String placeId) {
-
-		int limit = type.getLimit();
-		int offset = type.getOffset();
-
-		List<ReviewDto> result = new ArrayList<>();
-
+	public List<ReviewDto> readAll(String token, long userId, String placeId, int limit, int offset) {
 		if(offset < 1) {
 			throw new PageNotFoundException();
 		}
 		// User Not in This Group Exception, Group Not Found Exception, UserNotFound Exception, Theme Not Found Exception
-		List<SearchType.Group> list = type.getGroupList();
-		for(SearchType.Group group : list) {
-			if(result.size() > limit*offset) {
-				break;
-			}
-			result.addAll(dao.readAll(group.getGroupId(),placeId));
-		}
+		List<ReviewDto> result = dao.readAll(userId,placeId);
 
 		if(result.size() - (offset-1)*limit < limit) {
 			return result.subList((offset-1)*limit, result.size());

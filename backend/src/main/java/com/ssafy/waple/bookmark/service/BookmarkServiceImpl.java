@@ -86,7 +86,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 			if (result.size() > offset * limit) {
 				break;
 			}
-			if(group.getThemeIds() == null) {
+			if(group.getThemeId() == 0) {
 				throw new ThemeIsNullException();
 			}
 			try {
@@ -108,5 +108,18 @@ public class BookmarkServiceImpl implements BookmarkService {
 		if(dao.delete(themeId, groupId, placeId) < 1) {
 			throw new BookmarkNotFonudException(groupId, themeId, placeId);
 		}
+	}
+
+	@Override
+	public List<BookmarkDto> readAll(String token, long userId, int limit, int offset) {
+		List<BookmarkDto> result = new ArrayList<>();
+		try {
+			result = dao.readAll(userId, limit, offset-1);
+		} catch (DataAccessException e) {
+			if(e.getMessage().contains(USER_FOREIGN_KEY_CONSTRAINT_MSG)) {
+				throw new UserNotFoundException(userId);
+			}
+		}
+		return result;
 	}
 }

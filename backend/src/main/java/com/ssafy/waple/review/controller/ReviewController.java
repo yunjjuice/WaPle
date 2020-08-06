@@ -93,18 +93,18 @@ public class ReviewController {
 	})
 	private ResponseEntity<?> create(@RequestBody ReviewDto review, @RequestHeader(value = "token")String token) {
 		logger.debug("리뷰 생성 호출");
-
 		service.create(token, review);
-
 		return new ResponseEntity<>(review, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value = "/places/{placeId}", produces = "application/json")
-	@ApiOperation(value = "리뷰 조회", notes = "그룹 아이디 및 테마 아이디로 리뷰 조회", response = ReviewDto.class)
+	@RequestMapping(method = RequestMethod.GET, value = "/places/{userId}/{placeId}/{limit}/{offset}", produces = "application/json")
+	@ApiOperation(value = "리뷰 리스트 조회", notes = "회원이 속한 모든 그룹내 장소 리뷰 조회", response = ReviewDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
-		@ApiImplicitParam(name = "searchType", value = "검색 데이터 내용", dataTypeClass = SearchType.class),
-		@ApiImplicitParam(name = "placeId", value = "장소 아이디")
+		@ApiImplicitParam(name = "placeId", value = "장소 아이디", example = "495658881"),
+		@ApiImplicitParam(name = "userId", value = "유저 아이디", example = "1412733569"),
+		@ApiImplicitParam(name = "limit", value = "한 페이지에 출력할 수 있는 최대 값", example = "10"),
+		@ApiImplicitParam(name = "offset", value = "요청 페이지", example = "1")
 	})
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "리뷰 조회 성공"),
@@ -113,22 +113,11 @@ public class ReviewController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "리뷰 조회 실패")
 	})
-	private ResponseEntity<?> read(@PathVariable("placeId")String placeId ,String searchType,
-		@RequestHeader(value = "token")String token) {
-		logger.debug("리뷰 조회 호출");
-		SearchType type = new SearchType();
-
-		try {
-			logger.debug("쿼리스트링 파싱 시작");
-			Gson gson = new Gson();
-			String temp = URLDecoder.decode(searchType,"UTF-8");
-			type = gson.fromJson(temp, SearchType.class);
-		} catch (UnsupportedEncodingException e) {
-			throw new IncorrectFormatException("URL 쿼리 인코딩을 확인해 주세요");
-		}
-
-		List<ReviewDto> result = service.read(token, type, placeId);
-
+	private ResponseEntity<?> readAll(@PathVariable("placeId")String placeId ,@PathVariable("userId") long userId,
+		@RequestHeader(value = "token") String token, @PathVariable("limit") int limit,
+		@PathVariable("offset") int offset) {
+		logger.debug("리뷰 리스트 조회 호출");
+		List<ReviewDto> result = service.readAll(token, userId, placeId, limit, offset);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 

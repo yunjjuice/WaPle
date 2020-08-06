@@ -10,8 +10,8 @@ public interface ReviewService {
 	// 리뷰 생성
 	void create(String token, ReviewDto dto);
 
-	// 리뷰 조회
-	List<ReviewDto> read(String token, SearchType type, String placeId);
+	// 리뷰 리스트 조회
+	List<ReviewDto> readAll(String token, long userId, String placeId, int limit, int offset);
 
 	// 리뷰 상세 조회
 	ReviewDto read(String token, int reviewId);

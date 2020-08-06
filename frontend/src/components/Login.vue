@@ -27,6 +27,7 @@
 import KakaoLogin from 'vue-kakao-login';
 import api from '@/utils/api';
 import JWT from 'jwt-decode';
+import store from '@/store/index';
 
 export default {
   components: {
@@ -49,6 +50,7 @@ export default {
           this.$session.set('admin', true);
         }
         this.$session.set('refresh_token', result.refresh_token);
+        store.dispatch('getGroupsThemes');
         this.$router.push('/');
       });
     },
