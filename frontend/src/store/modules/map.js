@@ -1,12 +1,16 @@
 export default {
   state: {
     items: [], // 장소 정보를 저장
+    item: {}, // 선택된 장소 정보를 저장
     result: [], // 검색 정보를 저장
     keyword: '', // 검색 키워드
   },
   getters: {
     items(state) {
       return state.items;
+    },
+    item(state) {
+      return state.item;
     },
     result(state) {
       return state.result;
@@ -19,6 +23,9 @@ export default {
     setItems(state, payload) {
       state.items = payload.items;
     },
+    setItem(state, payload) {
+      state.item = payload.item;
+    },
     setResult(state, payload) {
       state.result = payload.result;
     },
@@ -29,6 +36,9 @@ export default {
   actions: {
     doUpdate({ commit }, items) {
       commit('setItems', { items });
+    },
+    updateItem({ commit }, item) {
+      commit('setItem', { item });
     },
     updateKeyword({ commit }, keyword) {
       commit('setKeyword', { keyword });

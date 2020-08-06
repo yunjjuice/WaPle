@@ -20,10 +20,10 @@
                 <v-btn icon @click.stop="showDialog">
                   <v-icon>mdi-calendar-plus</v-icon>
                 </v-btn>
-                <v-btn icon @click.stop="readReview(i);">
+                <v-btn icon @click.stop="readReview(item);">
                   <v-icon>mdi-text-box-multiple-outline</v-icon>
                 </v-btn>
-                <v-btn icon @click.stop="writeReview(i);">
+                <v-btn icon @click.stop="writeReview(item);">
                   <v-icon>mdi-pencil-plus-outline</v-icon>
                 </v-btn>
               </v-card-actions>
@@ -98,11 +98,13 @@ export default {
       store.dispatch('getGroups');
       store.dispatch('getAppointments');
     },
-    readReview(i) {
-      alert(`read review ${i}`);
+    readReview(item) {
+      this.$store.dispatch('updateItem', item);
+      this.$router.push('./reviewlist');
     },
-    writeReview(i) {
-      alert(`write review ${i}`);
+    writeReview(item) {
+      this.$store.dispatch('updateItem', item);
+      this.$store.dispatch('showWriteDialog');
     },
     callAll(limit, offset) {
       api.get(`/bookmarks/all/${this.$session.get('uid')}/${limit}/${offset}`, {

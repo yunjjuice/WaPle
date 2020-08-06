@@ -57,6 +57,11 @@ const routes = [
             path: '/search',
             component: () => import('@/components/SectionSearch.vue'),
           },
+          {
+            name: 'section-review',
+            path: '/reviewlist',
+            component: () => import('@/components/SectionReview.vue'),
+          },
         ],
       },
       {
