@@ -9,7 +9,6 @@
       <template v-slot:activator="{ on, attrs }">
         <v-icon
           v-if="isAdmin"
-          @click="addGroupUser(groupGroupId)"
           v-bind="attrs"
           v-on="on"
         >
@@ -20,15 +19,16 @@
       <!-- Modal 안쪽 내용 -->
       <v-card>
         <v-card-title>
-          <span class="headline">회원 추가하기</span>
+          <span class="headline">테마 추가하기</span>
         </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
               <v-col cols="12">
                 <v-text-field
-                  label="회원명*"
-                  hint="회원이름을 입력하세요."
+                  label="테마명*"
+                  hint="테마이름을 입력하세요."
+                  v-model="themeName"
                   persistent-hint required
                 />
               </v-col>
@@ -39,7 +39,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" text @click="dialog = false">Save</v-btn>
+          <v-btn color="blue darken-1" text @click="addTheme(groupId)">Add</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -52,28 +52,39 @@ import api from '@/utils/api';
 export default {
   name: 'AddGroupUserButton',
   props: {
-    isAdmin: Boolean,
-    groupGroupId: null,
+    groupId: Number,
   },
   data() {
     return {
       dialog: false,
+      isAdmin: false,
+      themeName: '',
     };
   },
   methods: {
-    addGroupUser(groupId) {
-      console.log('addGroupUser() 실행');
-      // modal 창 띄워서 추가할 사람 이름 넣고 해야겠음 (아래 userId 는 인호)
-      api.post('groups/member/', {
-        groupId, // object-shorthand
-        userId: 1412733569,
+    addTheme(groupId) {
+      console.log('addTheme() 실행');
+      this.dialog = false;
+      api.post('themes/', {
+        groupId,
+        icon: 'pizza.io',
+        name: this.themeName,
+      },
+      {
+        headers: {
+          token: this.$session.get('token'),
+        },
       })
         .then((res) => {
-          console.log(res, '유저 추가했습니다.');
-          this.getGroupInfo(groupId);
+          console.log(res, '테마생성 성공');
+          this.$emit('addTheme');
+          this.themeName = '';
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.log(err), '테마생성 실패');
     },
+  },
+  created() {
+    this.isAdmin = this.$session.get('admin');
   },
 };
 </script>
