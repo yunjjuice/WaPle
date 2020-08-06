@@ -7,7 +7,7 @@
             SELECT ifnull((select THEME_ID + 1 FROM THEMES WHERE GROUP_ID = #{groupId} ORDER BY THEME_ID DESC LIMIT 1), 1)
         </selectKey>
         insert into THEMES (GROUP_ID, THEME_ID, NAME, ICON)
-        values (#{groupId}, #{groupId}, #{name}, #{icon})
+        values (#{groupId}, #{themeId}, #{name}, #{icon})
     </insert>
 
     <select id="read" parameterType="int" resultType="com.ssafy.waple.theme.dto.ThemeDto">
@@ -31,7 +31,9 @@
     </delete>
     
     <select id="readAll" parameterType="long" resultType="com.ssafy.waple.theme.dto.ThemeGroupAll">
-        select G.GROUP_ID, GROUP_CONCAT(T.THEME_ID SEPARATOR ',') as "themes"
+        select G.GROUP_ID,
+            GROUP_CONCAT(T.THEME_ID SEPARATOR ',') as "themes",
+            GROUP_CONCAT(T.NAME SEPARATOR ',' ) as "themeName"
         from (
             select GROUP_ID
             FROM GROUP_MEMBERS

@@ -9,12 +9,22 @@
 
     <select id="readAll" parameterType="map"
             resultType="com.ssafy.waple.review.dto.ReviewDto">
-        select * from REVIEWS where PLACE_ID = #{placeId} AND GROUP_ID = #{groupId}
-        ORDER BY REVIEW_ID DESC
+        select R.REVIEW_ID, R.GROUP_ID, R.PLACE_ID, R.VISIT_DATE, R.MEDIA, R.TITLE, R.USER_ID, U.NAME,
+        (SELECT GG.NAME FROM `GROUPS` GG where R.GROUP_ID = GG.GROUP_ID) as "groupName"
+        from REVIEWS R
+        inner join USERS U on R.USER_ID = U.USER_ID
+        where PLACE_ID = #{placeId}
+        AND GROUP_ID IN ( SELECT G.GROUP_ID
+        from GROUP_MEMBERS G
+        where G.USER_ID = #{userId})
+        ORDER BY REVIEW_ID DESC;
     </select>
 
     <select id="read" parameterType="int" resultType="com.ssafy.waple.review.dto.ReviewDto">
-        select * from REVIEWS where REVIEW_ID = #{reviewId}
+        select R.*, U.NAME, (SELECT GG.NAME FROM `GROUPS` GG where R.GROUP_ID = GG.GROUP_ID) as "groupName"
+        from REVIEWS R
+        inner join USERS U on R.USER_ID = U.USER_ID
+        where REVIEW_ID = #{reviewId}
     </select>
 
     <update id="update" parameterType="map">

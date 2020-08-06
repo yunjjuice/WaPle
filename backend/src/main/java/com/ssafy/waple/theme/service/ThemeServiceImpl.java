@@ -94,6 +94,7 @@ public class ThemeServiceImpl implements ThemeService {
 			ThemeGroupAll dto = list.get(i);
 			dto.setThemeIds(Arrays.stream(dto.getThemes().split(",")).map(Integer::parseInt)
 				.collect(Collectors.toList()));
+			dto.setThemeNames(Arrays.stream(dto.getThemeName().split(",")).collect(Collectors.toList()));
 		}
 		return list;
 	}

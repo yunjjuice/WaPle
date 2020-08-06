@@ -83,10 +83,14 @@ public class BookmarkController {
 		let searchData = {
 			userId: 123,
 			groups: [
-				{ groupId: 123, themeIds: [123, 456, 789]},
-				{ groupId: 456, themeIds: [123, 456, 789]},
+				{ groupId: 123, themeId: 123 },
+				{ groupId: 123, themeId: 456 },
+				{ groupId: 123, themeId: 789 },
+				{ groupId: 456, themeId: 123 },
+				{ groupId: 456, themeId: 456 },
+				{ groupId: 456, themeId: 789 },
         	],
-        	limit: 10, offset: 1
+        	limit: 10, offset: 0
       	}
       */
 
@@ -102,7 +106,6 @@ public class BookmarkController {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
 		List<BookmarkDto> result = service.read(token, type);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}

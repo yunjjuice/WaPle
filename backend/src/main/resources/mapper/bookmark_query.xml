@@ -12,11 +12,8 @@
         FROM BOOKMARKS B
         inner join PLACES P on B.PLACE_ID = P.PLACE_ID
         WHERE B.GROUP_ID = #{groupId}
-        and B.THEME_ID IN
-        <foreach collection="themeIds" item="item" open="(" close=")" separator=",">
-            #{item}
-        </foreach>
-        ORDER BY B.THEME_ID
+        and B.THEME_ID = #{themeId}
+        ORDER BY B.GROUP_ID, B.THEME_ID
     </select>
 
     <delete id="delete" parameterType="map">
