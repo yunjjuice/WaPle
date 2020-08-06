@@ -135,7 +135,6 @@ export default {
           token: Vue.prototype.$session.get('token'),
         },
       }).then(({ data }) => {
-        console.log(data);
         commit('setGroupsThemes', { data });
       });
     },

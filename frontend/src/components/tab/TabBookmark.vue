@@ -41,6 +41,7 @@
 <script>
 import store from '@/store/index';
 import api from '@/utils/api';
+import EventBus from '@/utils/EventBus';
 
 export default {
   data() {
@@ -54,19 +55,39 @@ export default {
     AppointmentModal: () => import('@/components/items/AppointmentModal.vue'),
   },
   mounted() {
-    api.get(`/bookmarks/all/${this.$session.get('uid')}/${this.limit}/${this.offset}`, {
-      headers: {
-        token: this.$session.get('token'),
-      },
-    }).then(({ data }) => {
-      this.items = data;
-      this.$store.dispatch('doUpdate', this.items);
-    }).catch((error) => {
-      console.log(error.response);
-    });
+    this.callAll(this.limit, this.offset);
   },
   computed: {
     appointmentDialog: () => store.getters.appointmentDialog,
+  },
+  created() {
+    EventBus.$on('userSelect', (data) => {
+      if (data.length === 0) {
+        this.callAll(this.limit, this.offset);
+      } else {
+        const groups = [];
+        for (let index = 0; index < data.length; index += 1) {
+          groups.push({ groupId: data[index].groupId, themeId: data[index].themeId });
+        }
+        const searchData = {
+          userId: this.$session.get('uid'),
+          limit: 10,
+          offset: 1,
+          groups,
+        };
+        api.get('/bookmarks', {
+          params: {
+            searchType: encodeURI(JSON.stringify(searchData)),
+          },
+          headers: {
+            token: this.$session.get('token'),
+          },
+        }).then((res) => {
+          this.items = res.data;
+          this.$store.dispatch('doUpdate', this.items);
+        });
+      }
+    });
   },
   methods: {
     click() {
@@ -82,6 +103,18 @@ export default {
     },
     writeReview(i) {
       alert(`write review ${i}`);
+    },
+    callAll(limit, offset) {
+      api.get(`/bookmarks/all/${this.$session.get('uid')}/${limit}/${offset}`, {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then(({ data }) => {
+        this.items = data;
+        this.$store.dispatch('doUpdate', this.items);
+      }).catch((error) => {
+        console.log(error.response);
+      });
     },
   },
 };
