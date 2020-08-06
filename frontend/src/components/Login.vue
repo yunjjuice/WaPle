@@ -24,10 +24,10 @@
 </template>
 
 <script>
-import KakaoLogin from 'vue-kakao-login';
-import api from '@/utils/api';
-import JWT from 'jwt-decode';
 import store from '@/store/index';
+import api from '@/utils/api';
+import KakaoLogin from 'vue-kakao-login';
+import JWT from 'jwt-decode';
 
 export default {
   components: {
@@ -36,14 +36,14 @@ export default {
   props: ['redirect'],
   methods: {
     onSuccess(result) {
-      console.log(result);
-      console.log('success');
+      // console.log(result);
+      // console.log('success');
       api.post('/users', {
         access_token: result.access_token,
       }).then(({ data }) => {
-        console.log(data);
+        // console.log(data);
         const decodeData = JWT(data);
-        console.log(decodeData);
+        // console.log(decodeData);
         this.$session.set('token', data);
         this.$session.set('uid', decodeData.User_ID);
         this.$session.set('uname', decodeData.name);
@@ -51,13 +51,14 @@ export default {
           this.$session.set('admin', true);
         }
         this.$session.set('refresh_token', result.refresh_token);
-        store.dispatch('getGroupsThemes');
         this.$router.push(this.redirect);
       });
     },
     onFailure(result) {
       console.log(result);
       console.log('failure');
+      const payload = { color: 'error', msg: '로그인 실패' };
+      store.dispatch('showSnackbar', payload);
     },
   },
 };

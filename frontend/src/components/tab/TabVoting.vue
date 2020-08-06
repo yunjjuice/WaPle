@@ -41,6 +41,7 @@ export default {
   },
   created() {
     store.dispatch('getAppointments');
+    store.dispatch('invisibleBookmark');
   },
   methods: {
     // 약속에 저장된 장소 목록을 띄워준다
@@ -55,6 +56,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.v-main {
+  padding-top: 0px !important;
+}
 </style>

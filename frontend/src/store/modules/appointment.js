@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import api from '@/utils/api';
+// import snackbar from './snackbar';
 
 export default {
   state: {
@@ -104,29 +105,40 @@ export default {
     updateAppointment({ commit }, appointment) {
       commit('setAppointment', { appointment });
     },
-    makeAppointment({ getters }) {
+    makeAppointment({ getters, dispatch }) { // 새 약속 추가
       api.post('/promises', {
         groupId: getters.group.group.groupId,
         promiseDate: getters.appointmentDate,
         title: getters.appointmentName,
       }).then(({ data }) => {
-        console.log(data);
         api.post('/votes', {
           groupId: getters.group.group.groupId,
           placeId: getters.place.place.placeId,
           promiseId: data,
           userId: Vue.prototype.$session.get('uid'),
+        }).then(() => {
+          const payload = { color: 'success', msg: '약속 추가 완료' };
+          dispatch('showSnackbar', payload);
         });
       });
     },
-    addAppointment({ getters }) {
+    addAppointment({ getters, dispatch }) { // 기존 약속 추가
       api.post('/votes', {
         groupId: getters.appointment.groupId,
         placeId: getters.place.place.placeId,
         promiseId: getters.appointment.promiseId,
         userId: Vue.prototype.$session.get('uid'),
-      }).then((res) => {
-        console.log(res.state);
+      }, {
+        headers: {
+          token: Vue.prototype.$session.get('token'),
+        },
+      }).then(() => {
+        const payload = { color: 'success', msg: '약속 추가 완료' };
+        dispatch('showSnackbar', payload, { root: true });
+      }).catch((data) => {
+        console.log(data);
+        const payload = { color: 'error', msg: '약속 추가 실패' };
+        dispatch('showSnackbar', payload, { root: true });
       });
     },
     getGroupsThemes({ commit }) {

@@ -25,21 +25,24 @@
           <v-container>
             <v-row>
               <v-col cols="12">
-                <v-text-field
-                  label="테마명*"
-                  hint="테마이름을 입력하세요."
-                  v-model="themeName"
-                  persistent-hint required
-                />
+                <v-form ref="themeForm" v-model="valid">
+                  <v-text-field
+                    label="테마 이름"
+                    v-model="themeName"
+                    required
+                    :rules="[rules.required, rules.counter]"
+                    counter
+                    maxlength="50"
+                  />
+                </v-form>
               </v-col>
             </v-row>
           </v-container>
-          <small>*필수 입력항목</small>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" text @click="addTheme(groupId)">Add</v-btn>
+          <v-btn color="blue darken-1" text @click="closeModal">Close</v-btn>
+          <v-btn color="blue darken-1" text @click="isValid">Add</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -47,6 +50,7 @@
 </template>
 
 <script>
+import store from '@/store/index';
 import api from '@/utils/api';
 
 export default {
@@ -59,14 +63,23 @@ export default {
       dialog: false,
       isAdmin: false,
       themeName: '',
+      rules: {
+        required: (value) => !!value || 'theme can not be empty',
+        counter: (value) => (value && value.length <= 50) || 'Max 50 chracters',
+      },
+      valid: true,
     };
   },
   methods: {
-    addTheme(groupId) {
-      console.log('addTheme() 실행');
-      this.dialog = false;
+    isValid() {
+      this.$refs.themeForm.validate();
+      if (this.valid) {
+        this.addTheme();
+      }
+    },
+    addTheme() {
       api.post('themes/', {
-        groupId,
+        groupId: this.groupId,
         icon: 'pizza.io',
         name: this.themeName,
       },
@@ -75,12 +88,23 @@ export default {
           token: this.$session.get('token'),
         },
       })
-        .then((res) => {
-          console.log(res, '테마생성 성공');
-          this.$emit('addTheme');
+        .then(() => {
+          const payload = { color: 'success', msg: '테마 생성 성공' };
+          store.dispatch('showSnackbar', payload);
           this.themeName = '';
+          this.$emit('addTheme');
         })
-        .catch((err) => console.log(err), '테마생성 실패');
+        .catch(() => {
+          const payload = { color: 'error', msg: '테마 생성 실패' };
+          store.dispatch('showSnackbar', payload);
+        });
+      this.closeModal();
+    },
+    closeModal() {
+      if (!this.valid) {
+        this.$refs.themeForm.reset();
+      }
+      this.dialog = false;
     },
   },
   created() {

@@ -47,7 +47,6 @@ export default {
       const places = new window.kakao.maps.services.Places();
       const callback = function (result, status) {
         if (status === window.kakao.maps.services.Status.OK) {
-          console.log(result);
           commit('setResult', { result });
         } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
           alert('검색 결과가 존재하지 않습니다.');

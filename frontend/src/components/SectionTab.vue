@@ -1,31 +1,37 @@
 <template>
-  <v-app>
-    <v-main>
-    <v-tabs
+<v-main>
+  <v-tabs
     fixed-tabs
-    background-color="gray"
-    color="yellow"
-    dark
-    >
-      <v-tab to="/" @click="bookmark=true">BOOKMARK</v-tab>
-      <v-tab to="/review" @click="bookmark=false">REVIEW</v-tab>
-      <v-tab to="/voting" @click="bookmark=false">VOTE</v-tab>
-    </v-tabs>
-    <option-filter v-if="bookmark"></option-filter>
-    </v-main>
-    <router-view></router-view>
-  </v-app>
+    background-color="#f5f5f5"
+    color="000080"
+    light
+  >
+    <v-tab to="/">북마크</v-tab>
+    <v-tab to="/review">리뷰</v-tab>
+    <v-tab to="/voting">약속</v-tab>
+  </v-tabs>
+  <option-filter v-if="bookmark"></option-filter>
+  <router-view></router-view>
+</v-main>
 </template>
 
 <script>
+import store from '@/store/index';
+
 export default {
   components: {
     OptionFilter: () => import('@/components/items/OptionFilter.vue'),
   },
+  computed: {
+    bookmark: () => store.getters.bookmark,
+  },
   data() {
     return {
-      bookmark: true,
+      // bookmark: true,
     };
+  },
+  created() {
+    store.dispatch('getGroupsThemes');
   },
 };
 </script>

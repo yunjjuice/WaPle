@@ -1,49 +1,51 @@
 <template>
   <v-main>
-    <v-toolbar color="#e6b800" dense flat>
+    <v-toolbar color="#f5f5f5" dense flat>
       <v-btn icon class="hidden-xs-only" @click="moveBack">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title>{{ appointment.title }}</v-toolbar-title>
     </v-toolbar>
-    <v-row align='center' justify='center'>
-      <v-col
-        v-for="(item, i) in items"
-          :key="i"
-          cols="12"
-      >
-        <v-card
+    <v-container>
+      <v-row align='center' justify='center'>
+        <v-col
+          v-for="(item, i) in items"
+            :key="i"
+            cols="12"
         >
-          <div class="d-flex flex-no-wrap justify-space-between">
-            <div>
-              <v-card-title
-                class="headline"
-                v-text="item.name"
-              />
-              <v-card-text>
-                {{ item.address }} <br>
-                {{ item.pickedUserName }}<br>
-                <!--
-                  TODO : 투표하기
-                  투표 후에 items를 다시 싹 업데이트 해야 voted가 잘 넘어올 텐데 ..?
-                -->
-                <template v-if="!item.voted">
-                  <v-btn icon @click="voteTo(item)">
-                    <v-icon>mdi-thumb-up-outline</v-icon>
-                  </v-btn>
-                </template>
-                <template v-else>
-                  <v-btn icon @click="voteCancel(item)">
-                    <v-icon>mdi-thumb-up</v-icon>
-                  </v-btn>
-                </template>
-                {{ item.voteNum }}
-              </v-card-text>
+          <v-card
+          >
+            <div class="d-flex flex-no-wrap justify-space-between">
+              <div>
+                <v-card-title
+                  class="headline"
+                  v-text="item.name"
+                />
+                <v-card-text>
+                  {{ item.address }} <br>
+                  {{ item.pickedUserName }}<br>
+                  <!--
+                    TODO : 투표하기
+                    투표 후에 items를 다시 싹 업데이트 해야 voted가 잘 넘어올 텐데 ..?
+                  -->
+                  <template v-if="!item.voted">
+                    <v-btn icon @click="voteTo(item)">
+                      <v-icon>mdi-thumb-up-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <template v-else>
+                    <v-btn icon @click="voteCancel(item)">
+                      <v-icon>mdi-thumb-up</v-icon>
+                    </v-btn>
+                  </template>
+                  {{ item.voteNum }}
+                </v-card-text>
+              </div>
             </div>
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </v-main>
 </template>
 

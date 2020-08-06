@@ -3,7 +3,7 @@
     <v-card align="center">
       <v-card-title></v-card-title>
       <v-tabs>
-        <v-tab>
+        <v-tab @click="clearModalNew">
           새로운 약속
         </v-tab>
         <v-tab-item>
@@ -49,7 +49,7 @@
             <v-btn @click="cancelModal" color="error">취소하기</v-btn>
           </v-card>
         </v-tab-item>
-        <v-tab>
+        <v-tab @click="clearModalExisting">
           기존 약속에 추가
         </v-tab>
         <v-tab-item>
@@ -105,13 +105,17 @@ export default {
     appointments: () => store.getters.appointments,
   },
   methods: {
-    clearModel() {
+    clearModalNew() {
       this.appointmentName = '';
       this.group = null;
       this.appointmentDate = null;
-      this.appointment = null;
       requestAnimationFrame(() => {
         this.$refs.observerNew.reset();
+      });
+    },
+    clearModalExisting() {
+      this.appointment = null;
+      requestAnimationFrame(() => {
         this.$refs.observerExisting.reset();
       });
     },
@@ -121,17 +125,14 @@ export default {
       store.dispatch('updateAppointmentDate', this.appointmentDate);
       store.dispatch('makeAppointment');
       store.dispatch('closeAppointmentDialog');
-      this.clearModel();
     },
     addAppointment() { // 기존 약속에 추가하기
       store.dispatch('updateAppointment', this.appointment);
       store.dispatch('addAppointment');
       store.dispatch('closeAppointmentDialog');
-      this.clearModel();
     },
     cancelModal() {
       store.dispatch('closeAppointmentDialog');
-      this.clearModel();
     },
     isValidByNew() { // 내용이 다 작성되었는지 확인
       this.$refs.observerNew.validate()

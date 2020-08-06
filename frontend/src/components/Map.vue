@@ -59,8 +59,6 @@ export default {
       }
     },
     searchMap(items) {
-      console.log('call searchMap');
-      console.log(items);
       const container = document.getElementById('map');
       const options = {
         center: new window.kakao.maps.LatLng(items[0].y, items[0].x),

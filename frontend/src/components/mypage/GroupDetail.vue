@@ -3,16 +3,15 @@
   <v-expansion-panel-content>
     <!-- 회원목록 -->
     <div>
-      <h3 style="color: white; background-color: gray;" class="d-inline"> 회원목록 </h3>
+      <br>
+      <h3 class="d-inline"> 회원목록 </h3>
 
       <!-- 인호 추가하기 버튼 테스트 -->
-      <v-icon
-        @click="addGroupUser()"
-        >
-        mdi-plus-circle-outline
-      </v-icon>
-      <!--  -->
-      <hr class="border border-primary">
+      <v-btn icon @click="addGroupUser()">
+        <v-icon>
+          mdi-plus-circle-outline
+        </v-icon>
+      </v-btn>
     </div>
     <v-container>
       <v-row class="my-4">
@@ -21,19 +20,21 @@
           <v-col class="d-inline">
             {{ groupUser.name }}
             <!-- 그룹의 유저 탈퇴버튼 -->
-            <DelGroupUserButton
+            <!-- <DelGroupUserButton
               class="d-inline pl-2"
               :groupId="groupId"
               :userId="groupUser.userId"
               @delGroupUser="getGroupInfo(groupId)"
-            />
+            /> -->
           </v-col>
         </div>
       </v-row>
     </v-container>
     <!-- 테마목록 -->
+    <v-divider></v-divider>
+    <br>
     <div>
-      <h3 style="color: white; background-color: gray;" class="d-inline"> 테마 </h3>
+      <h3 class="d-inline"> 테마 </h3>
       <!-- <v-icon v-if="isAdmin" @click="addTheme(groupId)">mdi-plus-circle-outline</v-icon> -->
       <!-- 테마 추가 버튼 -->
       <ThemePlusButton
@@ -41,7 +42,6 @@
         :groupId="groupId"
         @addTheme="getGroupInfo(groupId)"
       />
-      <hr class="border border-primary">
     </div>
     <v-container>
       <v-row class="my-4">
@@ -67,7 +67,7 @@
 
 <script>
 import api from '@/utils/api';
-import DelGroupUserButton from '@/components/mypage/DelGroupUserButton.vue';
+// import DelGroupUserButton from '@/components/mypage/DelGroupUserButton.vue';
 import ThemePlusButton from '@/components/mypage/ThemePlusButton.vue';
 import ThemeMinusButton from '@/components/mypage/ThemeMinusButton.vue';
 
@@ -79,7 +79,7 @@ export default {
     groupName: null,
   },
   components: {
-    DelGroupUserButton,
+    // DelGroupUserButton,
     ThemePlusButton,
     ThemeMinusButton,
   },
@@ -95,7 +95,7 @@ export default {
       // 그룹에 속한 유저목록 가져오기
       api.get(`groups/${groupId}`)
         .then((res) => {
-          console.log(res, '유저목록 가져왔어요!');
+          // console.log(res, '유저목록 가져왔어요!');
           this.groupUsers = res.data;
         })
         .catch((err) => console.log(err));
@@ -103,7 +103,7 @@ export default {
       // 그룹에 속한 테마목록 가져오기
       api.get(`themes/${groupId}`, { headers: { token: this.$session.get('token') } })
         .then((res) => {
-          console.log(res, '테마목록 가져왔어요!');
+          // console.log(res, '테마목록 가져왔어요!');
           this.groupThemes = res.data;
         })
         .catch((err) => console.log(err));
@@ -120,15 +120,15 @@ export default {
     },
     delGroupUser(groupId, userId) {
       api.delete(`groups/${groupId}/${userId}`)
-        .then((res) => {
-          console.log(res, '유저 삭제했습니다.');
+        .then(() => {
+          // console.log(res, '유저 삭제했습니다.');
           alert('유저 삭제 완료');
           this.getGroupInfo(groupId);
         })
         .catch((err) => console.log(err));
     },
     addTheme(groupId) {
-      console.log('addTheme() 실행');
+      // console.log('addTheme() 실행');
       api.post('themes/', {
         groupId,
         icon: 'food.io',
@@ -139,14 +139,14 @@ export default {
           token: this.$session.get('token'),
         },
       })
-        .then((res) => {
-          console.log(res, '테마생성 성공');
+        .then(() => {
+          // console.log(res, '테마생성 성공');
           this.getGroupInfo(groupId);
         })
         .catch((res) => console.log(res), '테마생성 실패');
     },
     delTheme(groupId, themeId) {
-      console.log('delTheme() 실행');
+      // console.log('delTheme() 실행');
       api.delete(`/themes/${groupId}/${themeId}/`, {
         headers: {
           token: this.$session.get('token'),

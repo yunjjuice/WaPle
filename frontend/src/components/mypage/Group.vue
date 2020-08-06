@@ -1,23 +1,19 @@
 <template>
   <!-- 오른쪽 내용부분 -->
   <v-flex md10>
-    <div style="background-color: rgb(255, 204, 0);;">
-      <h1 class="mt-5">내 그룹 정보</h1>
-    </div>
-    <hr class="mb-5">
-
+    <br><br>
     <!-- 내가 가입한 그룹들 리스트 -->
-    <v-expansion-panels>
+    <v-expansion-panels focusable>
       <v-expansion-panel
         v-for="group in groups"
         :key="group.groupId"
-        class="mt-4 border border-primary"
+        class="mt-4 border"
       >
-        <v-expansion-panel-header >
-          그룹이름 : {{ group.name }}
+        <v-expansion-panel-header style="font-size:20px; font-weight:570;">
+          {{ group.name }}
         </v-expansion-panel-header>
         <!-- 그룹 눌렀을때 안쪽 내용 -->
-        <group-detail :groupId="group.groupId" :groupName="group.groupName" :token="group.token"/>
+        <group-detail :groupId="group.groupId" :groupName="group.name" :token="group.token"/>
       </v-expansion-panel>
     </v-expansion-panels>
 
@@ -54,7 +50,7 @@ export default {
       api.get(`groups/of/${userId}`)
         .then((res) => {
           this.groups = res.data;
-          console.log(this.groups, '그룹리스트를 가져왔어요!');
+          // console.log(this.groups, '그룹리스트를 가져왔어요!');
         })
         .catch((err) => console.log(err));
     },
@@ -105,7 +101,7 @@ export default {
 
   },
   updated() {
-    console.log('data update!');
+    // console.log('data update!');
   },
   watch: {
 
