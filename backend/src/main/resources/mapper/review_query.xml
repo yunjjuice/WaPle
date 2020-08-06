@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.waple.review.dao.ReviewDao">
+
+    <insert id="create" parameterType="com.ssafy.waple.review.dto.ReviewDto">
+        insert into REVIEWS (GROUP_ID, PLACE_ID, USER_ID, VISIT_DATE, TITLE, CONTENT, MEDIA) VALUES
+            (#{groupId}, #{placeId}, #{userId}, #{visitDate}, #{title}, #{content}, #{media})
+    </insert>
+
+    <select id="readAll" parameterType="map"
+            resultType="com.ssafy.waple.review.dto.ReviewDto">
+        select * from REVIEWS where PLACE_ID = #{placeId} AND GROUP_ID = #{groupId}
+        ORDER BY REVIEW_ID DESC
+    </select>
+
+    <select id="read" parameterType="int" resultType="com.ssafy.waple.review.dto.ReviewDto">
+        select * from REVIEWS where REVIEW_ID = #{reviewId}
+    </select>
+
+    <update id="update" parameterType="map">
+        update REVIEWS set CONTENT = #{content},
+                           TITLE = #{title},
+                           MEDIA = #{media}
+                    where REVIEW_ID = #{reviewId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from REVIEWS where REVIEW_ID = #{reviewId}
+    </delete>
+</mapper>

@@ -10,8 +10,8 @@ public interface PlaceDao {
 	PlaceDto read(String placeId);
 
 	// 장소 추가
-	int create(PlaceDto placeData) throws Exception;
+	int create(PlaceDto placeData);
 
 	// 장소 수정
-	int update(PlaceDto placeData) throws Exception;
+	int update(PlaceDto placeData);
 }

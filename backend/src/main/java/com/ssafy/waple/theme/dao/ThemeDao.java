@@ -9,14 +9,12 @@ import com.ssafy.waple.theme.dto.ThemeDto;
 
 @Mapper
 public interface ThemeDao {
-	// 해당 그룹 테마 갯수 조회
-	int readLastId(int groupId);
 
 	// 테마 생성
 	int create(ThemeDto theme);
 
 	// 테마 조회
-	List<ThemeDto> read(int groupId);
+	List<ThemeDto> readAll(int groupId);
 
 	// 테마 수정
 	int update(ThemeDto theme);

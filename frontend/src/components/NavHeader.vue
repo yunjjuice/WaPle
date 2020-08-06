@@ -64,6 +64,7 @@ export default {
       store.dispatch('updateKeyword', this.keyword);
       store.dispatch('search', this.keyword);
       this.$router.push('/search');
+      this.keyword = '';
     },
     logout() {
       api.post('/users/logout', {

@@ -1,18 +1,18 @@
-package com.ssafy.waple.bookmark.dto;
+package com.ssafy.waple.vote.dto;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class BookMarkDto {
-	@ApiModelProperty(value = "그룹 아이디", example = "1")
+public class PromisePlaceDto {
+	@ApiModelProperty(value = "그룹 Id", example = "1")
 	private int groupId;
 
-	@ApiModelProperty(value = "테마 아이디", example = "1")
-	private int themeId;
+	@ApiModelProperty(value = "약속 Id", example = "1")
+	private int promiseId;
 
-	@ApiModelProperty(value = "장소 아이디", example = "19781214")
+	@ApiModelProperty(value = "투표 장소 Id", example = "19781214")
 	private String placeId;
 
-	@ApiModelProperty(value = "회원 아이디", example = "1412733569")
+	@ApiModelProperty(value = "장소 추가한 유저 Id", example = "1412733569")
 	private long userId;
 
 	public int getGroupId() {
@@ -23,12 +23,12 @@ public class BookMarkDto {
 		this.groupId = groupId;
 	}
 
-	public int getThemeId() {
-		return themeId;
+	public int getPromiseId() {
+		return promiseId;
 	}
 
-	public void setThemeId(int themeId) {
-		this.themeId = themeId;
+	public void setPromiseId(int promiseId) {
+		this.promiseId = promiseId;
 	}
 
 	public String getPlaceId() {
@@ -49,9 +49,9 @@ public class BookMarkDto {
 
 	@Override
 	public String toString() {
-		return "BookMarkDto{" +
+		return "PromisePlaceDto{" +
 			"groupId=" + groupId +
-			", themeId=" + themeId +
+			", promiseId=" + promiseId +
 			", placeId='" + placeId + '\'' +
 			", userId=" + userId +
 			'}';

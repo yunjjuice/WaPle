@@ -27,10 +27,9 @@ import com.ssafy.waple.theme.service.ThemeService;
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RestController
 @RequestMapping("/themes")
-@Api(value = "그룹관리", tags = "Theme")
+@Api(value = "테마 관리", tags = "Theme")
 public class ThemeController {
 	private static final Logger logger = LoggerFactory.getLogger(ThemeController.class);
-	private static final PermissionCheck permissionCheck = new PermissionCheck();
 
 	@Autowired
 	ThemeService service;
@@ -51,16 +50,8 @@ public class ThemeController {
 	})
 	private ResponseEntity<?> create(@RequestBody ThemeDto theme, @RequestHeader("token") String token) {
 		logger.debug("테마 생성 호출");
-
-		long userId = permissionCheck.check(token).getUserId();
-
-		boolean success = service.create(userId, theme);
-
-		if (success) {
-			return new ResponseEntity<>(theme, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		service.create(token, theme.getGroupId(), theme);
+		return new ResponseEntity<>(theme, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{groupId}", produces = "application/json")
@@ -76,12 +67,9 @@ public class ThemeController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "테마 조회 실패")
 	})
-	private ResponseEntity<?> read(@PathVariable("groupId") int groupId, @RequestHeader(value = "token") String token) {
+	private ResponseEntity<?> readAll(@PathVariable("groupId") int groupId, @RequestHeader(value = "token") String token) {
 		logger.debug("테마 조회 호출");
-
-		long userId = permissionCheck.check(token).getUserId();
-
-		return new ResponseEntity<>(service.read(userId, groupId), HttpStatus.OK);
+		return new ResponseEntity<>(service.readAll(token, groupId), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{groupId}/{themeId}", produces = "application/json")
@@ -102,11 +90,7 @@ public class ThemeController {
 	private ResponseEntity<?> update(@RequestBody ThemeDto theme, @PathVariable("groupId") int groupId,
 		@PathVariable("themeId") int themeId, @RequestHeader(value = "token") String token) {
 		logger.debug("테마 수정 호출");
-
-		long userId = permissionCheck.check(token).getUserId();
-
-		service.update(userId, groupId, themeId, theme);
-
+		service.update(token, groupId, themeId, theme);
 		return new ResponseEntity<>(theme, HttpStatus.CREATED);
 	}
 
@@ -128,11 +112,7 @@ public class ThemeController {
 	private ResponseEntity<?> delete(@PathVariable("groupId") int groupId, @PathVariable("themeId") int themeId,
 		@RequestHeader(value = "token") String token) {
 		logger.debug("테마 삭제 호출");
-
-		long userId = permissionCheck.check(token).getUserId();
-
-		service.delete(userId, groupId, themeId);
-
+		service.delete(token, groupId, themeId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
