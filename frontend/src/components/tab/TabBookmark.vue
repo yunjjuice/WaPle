@@ -1,41 +1,41 @@
 <template>
-<v-container>
-  <v-row align='center' justify='center'>
-    <v-col
-      v-for="(item, i) in items"
-        :key="i"
-        cols="12"
-    >
-      <v-card
-        @click="click"
+<v-main>
+  <v-container>
+    <v-row align='center' justify='center'>
+      <v-col
+        v-for="(item, i) in items"
+          :key="i"
+          cols="12"
       >
-        <div class="d-flex flex-no-wrap justify-space-between">
-          <div>
-            <v-card-title
-              class="headline"
-              v-text="item.name"
-            >
-              </v-card-title>
-              <v-card-actions>
-                <v-btn icon @click.stop="showDialog">
-                  <v-icon>mdi-calendar-plus</v-icon>
-                </v-btn>
-                <v-btn icon @click.stop="readReview(item);">
-                  <v-icon>mdi-text-box-multiple-outline</v-icon>
-                </v-btn>
-                <v-btn icon @click.stop="writeReview(item);">
-                  <v-icon>mdi-pencil-plus-outline</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </div>
-        </div>
-      </v-card>
-    </v-col>
-  </v-row>
-
-  <appointment-modal :dialog="appointmentDialog" />
-
-</v-container>
+        <v-card
+          @click="click"
+        >
+          <div class="d-flex flex-no-wrap justify-space-between">
+            <div>
+              <v-card-title
+                class="headline"
+                v-text="item.name"
+              >
+                </v-card-title>
+                <v-card-actions>
+                  <v-btn icon @click.stop="showDialog(item)">
+                    <v-icon>mdi-calendar-plus</v-icon>
+                  </v-btn>
+                  <v-btn icon @click.stop="readReview(item);">
+                    <v-icon>mdi-text-box-multiple-outline</v-icon>
+                  </v-btn>
+                  <v-btn icon @click.stop="writeReview(item);">
+                    <v-icon>mdi-pencil-plus-outline</v-icon>
+                  </v-btn>
+                </v-card-actions>
+              </div>
+          </div>
+        </v-card>
+      </v-col>
+    </v-row>
+    <appointment-modal :dialog="appointmentDialog" />
+  </v-container>
+</v-main>
 </template>
 
 <script>
@@ -61,6 +61,7 @@ export default {
     appointmentDialog: () => store.getters.appointmentDialog,
   },
   created() {
+    store.dispatch('visibleBookmark');
     EventBus.$on('userSelect', (data) => {
       if (data.length === 0) {
         this.callAll(this.limit, this.offset);
@@ -93,7 +94,8 @@ export default {
     click() {
       alert('click');
     },
-    showDialog() {
+    showDialog(item) {
+      store.dispatch('selectPlace', item);
       store.dispatch('openAppointmentDialog');
       store.dispatch('getGroups');
       store.dispatch('getAppointments');
@@ -122,6 +124,8 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.v-main {
+  padding-top: 0px !important;
+}
 </style>

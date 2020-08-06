@@ -2,6 +2,7 @@ export default {
   state: {
     readDialog: false, // review 읽기 창
     writeDialog: false, // review 쓰기 창
+    review: {}, // 선택된 리뷰
   },
   getters: {
     readDialog(state) {
@@ -9,6 +10,9 @@ export default {
     },
     writeDialog(state) {
       return state.writeDialog;
+    },
+    review(state) {
+      return state.review;
     },
   },
   mutations: {
@@ -24,6 +28,9 @@ export default {
     falseWriteDialog(state) {
       state.writeDialog = false;
     },
+    setReview(state, payload) {
+      state.review = payload;
+    },
   },
   actions: {
     showReadDialog({ commit }) {
@@ -37,6 +44,9 @@ export default {
     },
     closeWriteDialog({ commit }) {
       commit('falseWriteDialog');
+    },
+    selectReview({ commit }, review) {
+      commit('setReview', review);
     },
   },
 };

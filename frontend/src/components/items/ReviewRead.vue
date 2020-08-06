@@ -1,5 +1,4 @@
 <template>
-<!-- TODO : 리뷰읽기 창 크기 조절하기..... -->
 <v-main>
   <v-container fluid>
   <v-bottom-sheet v-model="dialog" persistent inset attach scrollable>
@@ -23,7 +22,11 @@
         justify="center"
       >
       </v-row>
-
+      제목 : {{ review.title }} <br>
+      날짜 : {{ review.visitDate }} <br>
+      그룹 : {{ review.groupName }} <br>
+      작성자 : {{ review.userName }} <br>
+      내용 : {{ review.content }} <br>
     </v-container>
     </v-sheet>
   </v-bottom-sheet>
@@ -35,12 +38,9 @@
 import store from '@/store/index';
 
 export default {
-  data() {
-    return {
-    };
-  },
   computed: {
     dialog: () => store.getters.readDialog,
+    review: () => store.getters.review,
   },
   methods: {
     close() {

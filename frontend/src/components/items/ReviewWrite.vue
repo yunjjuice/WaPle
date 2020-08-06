@@ -1,5 +1,4 @@
 <template>
-<!-- TODO : 리뷰읽기 창 크기 조절하기..... -->
 <v-main>
   <v-container fluid>
   <v-bottom-sheet v-model="dialog" persistent inset attach scrollable>
@@ -23,7 +22,6 @@
         justify="center"
       >
       </v-row>
-      <!-- title, content, media, visitDate -->
       <v-form>
         <v-text-field
           v-model="title"
