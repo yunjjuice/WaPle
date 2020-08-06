@@ -49,7 +49,7 @@ const routes = [
           },
           {
             name: 'section-appointment',
-            path: '/appointment/:id',
+            path: '/appointment',
             component: () => import('@/components/SectionAppointment.vue'),
           },
           {

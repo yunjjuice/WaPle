@@ -144,7 +144,10 @@ export default {
         url: this.place.place_url,
         userId: this.$session.get('uid'),
       }).then((res) => {
-        console.log(res);
+        if (res.status === 201) {
+          const payload = { color: 'success', msg: '북마크가 등록되었습니다' };
+          store.dispatch('showSnackbar', payload);
+        }
       });
       this.dialog = false;
     },

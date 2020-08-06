@@ -11,6 +11,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "jwt-decode": "^2.2.0",
+    "moment": "^2.27.0",
     "vee-validate": "^3.3.8",
     "vue": "^2.6.11",
     "vue-kakao-login": "^1.0.5",
