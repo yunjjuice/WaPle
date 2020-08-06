@@ -6,15 +6,18 @@
         </v-navigation-drawer>
         <map-comp></map-comp>
     </v-layout>
+    <snack-bar></snack-bar>
 </v-app>
 </template>
 
 <script>
-import MapComp from './Map.vue';
+import MapComp from '@/components/Map.vue';
+import SnackBar from '@/components/items/Snackbars.vue';
 
 export default {
   components: {
     MapComp,
+    SnackBar,
   },
 };
 </script>

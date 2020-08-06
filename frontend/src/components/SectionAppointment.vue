@@ -89,7 +89,8 @@ export default {
         },
       }).then((res) => {
         if (res.status === 201) {
-          this.snackbar = true;
+          const payload = { color: 'success', msg: '투표 완료' };
+          store.dispatch('showSnackbar', payload);
           this.getVotePlaceList();
         }
       });
@@ -105,6 +106,8 @@ export default {
         },
       }).then((res) => {
         if (res.status === 204) {
+          const payload = { color: 'success', msg: '투표 취소 완료' };
+          store.dispatch('showSnackbar', payload);
           this.getVotePlaceList();
         }
       });
