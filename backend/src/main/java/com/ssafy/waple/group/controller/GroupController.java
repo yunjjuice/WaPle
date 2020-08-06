@@ -84,7 +84,7 @@ public class GroupController {
 			value = "생성할 그룹 정보",
 			required = true,
 			name = "group",
-			dataTypeClass = GroupDtoExample.class)
+			dataTypeClass = GroupCreateRequest.class)
 	})
 	private ResponseEntity<?> create(@RequestBody GroupDto group) {
 		logger.debug("create 호출");
@@ -106,7 +106,7 @@ public class GroupController {
 			value = "추가할 멤버 정보",
 			required = true,
 			name = "member",
-			dataTypeClass = GroupMemberDtoExample.class)
+			dataTypeClass = MemberCreateRequest.class)
 	})
 	private ResponseEntity<?> createMember(@RequestBody GroupDto member) {
 		logger.debug("createMember 호출");
@@ -122,6 +122,13 @@ public class GroupController {
 		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "그룹 수정 실패")
+	})
+	@ApiImplicitParams({
+		@ApiImplicitParam(
+			value = "수정할 그룹 정보",
+			required = true,
+			name = "group",
+			dataTypeClass = GroupUpdateRequest.class)
 	})
 	private ResponseEntity<GroupDto> update(
 		@ApiParam(value = "수정할 그룹 정보", required = true) @RequestBody GroupDto group) {
@@ -147,7 +154,7 @@ public class GroupController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	public class GroupDtoExample {
+	public class GroupCreateRequest {
 		@ApiModelProperty(value = "그룹장 Id", example = "1412733569")
 		private long userId;
 
@@ -171,12 +178,39 @@ public class GroupController {
 		}
 	}
 
-	public class GroupMemberDtoExample {
-		@ApiModelProperty(value = "그룹 Id", example = "1")
-		private int groupId;
+	public class MemberCreateRequest {
+		@ApiModelProperty(value = "그룹 토큰", example = "JWT 토큰")
+		private String token;
 
 		@ApiModelProperty(value = "멤버 Id", example = "1412733569")
 		private long userId;
+
+		public String getToken() {
+			return token;
+		}
+
+		public void setToken(String token) {
+			this.token = token;
+		}
+
+		public long getUserId() {
+			return userId;
+		}
+
+		public void setUserId(long userId) {
+			this.userId = userId;
+		}
+	}
+
+	public class GroupUpdateRequest {
+		@ApiModelProperty(value = "그룹 Id", example = "1")
+		private int groupId;
+
+		@ApiModelProperty(value = "그룹장 Id", example = "1412733569")
+		private long userId;
+
+		@ApiModelProperty(value = "그룹 이름", example = "나")
+		private String name;
 
 		public int getGroupId() {
 			return groupId;
@@ -192,6 +226,14 @@ public class GroupController {
 
 		public void setUserId(long userId) {
 			this.userId = userId;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
 		}
 	}
 }
