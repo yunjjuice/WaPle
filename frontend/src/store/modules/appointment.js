@@ -10,6 +10,7 @@ export default {
     appointmentDate: '', // 약속 시간
     appointments: [], // 기존에 만들어진 약속 리스트
     appointment: {}, // 선택된 그룹
+    groupsThemes: [], // 유저가 속한 모든 그룹과 그 그룹에 속한 테마
   },
   getters: {
     appointmentDialog(state) {
@@ -36,6 +37,9 @@ export default {
     place(state, getters, rootState) {
       return rootState.place;
     },
+    groupsThemes(state) {
+      return state.groupsThemes;
+    },
   },
   mutations: {
     trueAppointmentDialog(state) {
@@ -61,6 +65,9 @@ export default {
     },
     setAppointment(state, payload) {
       state.appointment = payload.appointment;
+    },
+    setGroupsThemes(state, payload) {
+      state.groupsThemes = payload.data;
     },
   },
   actions: {
@@ -120,6 +127,15 @@ export default {
         userId: Vue.prototype.$session.get('uid'),
       }).then((res) => {
         console.log(res.state);
+      });
+    },
+    getGroupsThemes({ commit }) {
+      api.get(`/themes/all/${Vue.prototype.$session.get('uid')}`, {
+        headers: {
+          token: Vue.prototype.$session.get('token'),
+        },
+      }).then(({ data }) => {
+        commit('setGroupsThemes', { data });
       });
     },
   },

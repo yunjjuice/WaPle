@@ -14,4 +14,7 @@ public interface BookmarkService {
 
 	// 북마크 삭제
 	void delete(String token, int themeId, int groupId, String placeId);
+
+	// 북마크 전체 조회
+	List<BookmarkDto> readAll(String token, long userId, int limit, int offset);
 }

@@ -35,6 +35,12 @@ public class ReviewDto {
 	@ApiModelProperty(value = "미디어 파일", example = "2020.07.31.JPG")
 	private String media;
 
+	@ApiModelProperty(value = "작성자", example = "바나나먹는몽키")
+	private String userName;
+
+	@ApiModelProperty(value = "그룹 이름", example = "먹방")
+	private String groupName;
+
 	public int getReviewId() {
 		return reviewId;
 	}
@@ -107,6 +113,22 @@ public class ReviewDto {
 		this.media = media;
 	}
 
+	public String getUserName() {
+		return userName;
+	}
+
+	public void setUserName(String userName) {
+		this.userName = userName;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
 	@Override
 	public String toString() {
 		return "ReviewDto{" +
@@ -119,6 +141,8 @@ public class ReviewDto {
 			", title='" + title + '\'' +
 			", content='" + content + '\'' +
 			", media='" + media + '\'' +
+			", userName='" + userName + '\'' +
+			", groupName='" + groupName + '\'' +
 			'}';
 	}
 }

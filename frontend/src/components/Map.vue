@@ -1,6 +1,8 @@
 <template>
-<v-container id='map'>
-</v-container>
+<v-main>
+  <v-container id='map' style="height: 100%">
+  </v-container>
+</v-main>
 </template>
 
 <script>
@@ -23,7 +25,8 @@ export default {
     initMap(items) {
       const container = document.getElementById('map');
       const options = {
-        center: new window.kakao.maps.LatLng(items[0].lat, items[0].lng),
+        center: new window.kakao.maps.LatLng(items.length === 0 ? '37.501245' : items[0].lat,
+          items.length === 0 ? '127.039592' : items[0].lng),
         level: 3,
       };
       const map = new window.kakao.maps.Map(container, options);
@@ -45,7 +48,9 @@ export default {
         const infowindow = new window.kakao.maps.InfoWindow({});
         infowindow.close(map, marker);
       }
-      map.setBounds(bounds);
+      if (items.length !== 0) {
+        map.setBounds(bounds);
+      }
     },
     searchMap(items) {
       console.log('call searchMap');

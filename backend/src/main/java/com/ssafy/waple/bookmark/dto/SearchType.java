@@ -72,8 +72,8 @@ public class SearchType {
 		private int groupId;
 
 		@ApiModelProperty(value = "테마 아이디들", example = "1")
-		@SerializedName("themeIds")
-		private List<Integer> themeIds;
+		@SerializedName("themeId")
+		private int themeId;
 
 		public int getGroupId() {
 			return groupId;
@@ -83,25 +83,20 @@ public class SearchType {
 			this.groupId = groupId;
 		}
 
-		public List<Integer> getThemeIds() {
-			return themeIds;
+		public int getThemeId() {
+			return themeId;
 		}
 
-		public void setThemeIds(List<Integer> themeIds) {
-			this.themeIds = themeIds;
+		public void setThemeId(int themeId) {
+			this.themeId = themeId;
 		}
 
 		@Override
 		public String toString() {
-			StringBuilder sb = new StringBuilder();
-			sb.append("SearchType.Group{Group_ID=").append(this.groupId).append(", Theme_IDs=");
-			for (int i = 0; i < this.themeIds.size(); i++) {
-				sb.append(this.themeIds.get(i));
-				if (!(i == this.themeIds.size() - 1))
-					sb.append(", ");
-			}
-			sb.append("}");
-			return sb.toString();
+			return "Group{" +
+				"groupId=" + groupId +
+				", themeId=" + themeId +
+				'}';
 		}
 	}
 }

@@ -1,6 +1,12 @@
 package com.ssafy.waple.theme.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -10,8 +16,10 @@ import com.ssafy.waple.error.exception.InvalidValueException;
 import com.ssafy.waple.group.dto.GroupDto;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
 import com.ssafy.waple.group.service.GroupService;
+import com.ssafy.waple.theme.controller.ThemeController;
 import com.ssafy.waple.theme.dao.ThemeDao;
 import com.ssafy.waple.theme.dto.ThemeDto;
+import com.ssafy.waple.theme.dto.ThemeGroupAll;
 import com.ssafy.waple.theme.exception.DuplicatedThemeException;
 import com.ssafy.waple.theme.exception.ThemeNotFoundException;
 import com.ssafy.waple.theme.exception.UserNotInGroupException;
@@ -51,9 +59,9 @@ public class ThemeServiceImpl implements ThemeService {
 	}
 
 	@Override
-	public List<ThemeDto> readAll(String token, int groupId) {
+	public List<ThemeDto> read(String token, int groupId) {
 
-		return dao.readAll(groupId);
+		return dao.read(groupId);
 	}
 
 	@Override
@@ -75,5 +83,19 @@ public class ThemeServiceImpl implements ThemeService {
 		if (result < 1) {
 			throw new ThemeNotFoundException(groupId, themeId);
 		}
+	}
+
+	// 테마 및 그룹 조회
+	@Override
+	public List<ThemeGroupAll> readAll(String token, long userId) {
+		List<ThemeGroupAll> list = dao.readAll(userId);
+		int size = list.size();
+		for(int i=0; i<size; i++) {
+			ThemeGroupAll dto = list.get(i);
+			dto.setThemeIds(Arrays.stream(dto.getThemes().split(",")).map(Integer::parseInt)
+				.collect(Collectors.toList()));
+			dto.setThemeNames(Arrays.stream(dto.getThemeName().split(",")).collect(Collectors.toList()));
+		}
+		return list;
 	}
 }
