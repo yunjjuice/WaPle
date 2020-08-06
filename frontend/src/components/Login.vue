@@ -33,6 +33,7 @@ export default {
   components: {
     KakaoLogin,
   },
+  props: ['redirect'],
   methods: {
     onSuccess(result) {
       console.log(result);
@@ -51,7 +52,7 @@ export default {
         }
         this.$session.set('refresh_token', result.refresh_token);
         store.dispatch('getGroupsThemes');
-        this.$router.push('/');
+        this.$router.push(this.redirect);
       });
     },
     onFailure(result) {

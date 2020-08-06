@@ -5,6 +5,7 @@
       <h1 class="mt-5">내 그룹 정보</h1>
     </div>
     <hr class="mb-5">
+
     <!-- 내가 가입한 그룹들 리스트 -->
     <v-expansion-panels>
       <v-expansion-panel
@@ -16,7 +17,7 @@
           그룹이름 : {{ group.name }}
         </v-expansion-panel-header>
         <!-- 그룹 눌렀을때 안쪽 내용 -->
-        <group-detail :groupId="group.groupId" />
+        <group-detail :groupId="group.groupId" :groupName="group.groupName" :token="group.token"/>
       </v-expansion-panel>
     </v-expansion-panels>
 

@@ -17,6 +17,8 @@ public interface GroupDao {
 
 	int create(GroupDto group);
 
+	int updateToken(int groupId, String token);
+
 	int createMember(GroupDto group);
 
 	int update(GroupDto group);
