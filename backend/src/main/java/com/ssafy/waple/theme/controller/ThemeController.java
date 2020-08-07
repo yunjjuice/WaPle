@@ -1,5 +1,8 @@
 package com.ssafy.waple.theme.controller;
 
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,21 +19,22 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import com.ssafy.waple.common.PermissionCheck;
 import com.ssafy.waple.theme.dto.ThemeDto;
+import com.ssafy.waple.theme.dto.ThemeGroupAll;
 import com.ssafy.waple.theme.service.ThemeService;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RestController
 @RequestMapping("/themes")
-@Api(value = "그룹관리", tags = "Theme")
+@Api(value = "테마 관리", tags = "Theme")
 public class ThemeController {
 	private static final Logger logger = LoggerFactory.getLogger(ThemeController.class);
-	private static final PermissionCheck permissionCheck = new PermissionCheck();
 
 	@Autowired
 	ThemeService service;
@@ -51,16 +55,8 @@ public class ThemeController {
 	})
 	private ResponseEntity<?> create(@RequestBody ThemeDto theme, @RequestHeader("token") String token) {
 		logger.debug("테마 생성 호출");
-
-		long userId = permissionCheck.check(token).getUserId();
-
-		boolean success = service.create(userId, theme);
-
-		if (success) {
-			return new ResponseEntity<>(theme, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		service.create(token, theme.getGroupId(), theme);
+		return new ResponseEntity<>(theme, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/{groupId}", produces = "application/json")
@@ -76,12 +72,10 @@ public class ThemeController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "테마 조회 실패")
 	})
-	private ResponseEntity<?> read(@PathVariable("groupId") int groupId, @RequestHeader(value = "token") String token) {
+	private ResponseEntity<?> read(@PathVariable("groupId") int groupId,
+		@RequestHeader(value = "token") String token) {
 		logger.debug("테마 조회 호출");
-
-		long userId = permissionCheck.check(token).getUserId();
-
-		return new ResponseEntity<>(service.read(userId, groupId), HttpStatus.OK);
+		return new ResponseEntity<>(service.read(token, groupId), HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.PUT, value = "/{groupId}/{themeId}", produces = "application/json")
@@ -102,11 +96,7 @@ public class ThemeController {
 	private ResponseEntity<?> update(@RequestBody ThemeDto theme, @PathVariable("groupId") int groupId,
 		@PathVariable("themeId") int themeId, @RequestHeader(value = "token") String token) {
 		logger.debug("테마 수정 호출");
-
-		long userId = permissionCheck.check(token).getUserId();
-
-		service.update(userId, groupId, themeId, theme);
-
+		service.update(token, groupId, themeId, theme);
 		return new ResponseEntity<>(theme, HttpStatus.CREATED);
 	}
 
@@ -128,12 +118,29 @@ public class ThemeController {
 	private ResponseEntity<?> delete(@PathVariable("groupId") int groupId, @PathVariable("themeId") int themeId,
 		@RequestHeader(value = "token") String token) {
 		logger.debug("테마 삭제 호출");
-
-		long userId = permissionCheck.check(token).getUserId();
-
-		service.delete(userId, groupId, themeId);
-
+		service.delete(token, groupId, themeId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/all/{userId}", produces = "application/json")
+	@ApiOperation(value = "테마 및 그룹 전체 조회", notes = "해당 유저의 그룹 및 모든 테마를 조회",
+		response = ThemeGroupAll.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "userId", value = "유저 아이디", example = "1412733569"),
+		@ApiImplicitParam(name = "token", value = "회원 토큰")
+	})
+	@ApiResponses({
+		@ApiResponse(code = 204, message = "테마 및 그룹 조회 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "테마 및 그룹 조회 실패")
+	})
+	private ResponseEntity<?> readAll(@PathVariable("userId") long userId,
+		@RequestHeader(value = "token") String token) {
+		logger.debug("테마 및 그룹 전체 조회 호출");
+		List<ThemeGroupAll> result = service.readAll(token, userId);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 }

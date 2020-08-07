@@ -1,26 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ssafy.waple.bookmark.dao.BookMarkDao">
-    <insert id="create" parameterType="com.ssafy.waple.bookmark.dto.BookMarkDto">
+<mapper namespace="com.ssafy.waple.bookmark.dao.BookmarkDao">
+    <insert id="create" parameterType="com.ssafy.waple.bookmark.dto.BookmarkDto">
         insert into BOOKMARKS (GROUP_ID, THEME_ID, PLACE_ID, USER_ID)
         values (#{groupId}, #{themeId}, #{placeId}, #{userId})
     </insert>
 
     <select id="read" parameterType="com.ssafy.waple.bookmark.dto.SearchType$Group"
-            resultType="com.ssafy.waple.bookmark.dto.BookMarkDto">
-        select * from BOOKMARKS WHERE GROUP_ID = #{groupId} and THEME_ID IN
-        <foreach collection="themeIds" item="item" open="(" close=")" separator=",">
-            #{item}
-        </foreach>
-        ORDER BY THEME_ID
+            resultType="com.ssafy.waple.bookmark.dto.BookmarkDto">
+        select B.USER_ID, B.GROUP_ID, B.THEME_ID, P.*
+        FROM BOOKMARKS B
+        inner join PLACES P on B.PLACE_ID = P.PLACE_ID
+        WHERE B.GROUP_ID = #{groupId}
+        and B.THEME_ID = #{themeId}
+        ORDER BY B.GROUP_ID, B.THEME_ID
     </select>
 
     <delete id="delete" parameterType="map">
         delete
         from BOOKMARKS
         where GROUP_ID = #{groupId}
-          and USER_ID = #{userId}
           and PLACE_ID = #{placeId}
           and THEME_ID = #{themeId}
     </delete>
+
+    <select id="readAll" parameterType="map" resultType="com.ssafy.waple.bookmark.dto.BookmarkDto">
+        select DISTINCT B.USER_ID, B.GROUP_ID, B.THEME_ID, P.*
+        FROM BOOKMARKS B
+        inner join PLACES P on B.PLACE_ID = P.PLACE_ID
+            inner join THEMES T on B.GROUP_ID IN
+                (select GROUP_ID
+                FROM GROUP_MEMBERS
+                WHERE USER_ID = #{userId})
+            and B.THEME_ID = T.THEME_ID
+        ORDER BY B.GROUP_ID, THEME_ID
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
 </mapper>

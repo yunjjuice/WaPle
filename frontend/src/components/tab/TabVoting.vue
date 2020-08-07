@@ -2,23 +2,23 @@
 <v-container>
   <v-row align='center' justify='center'>
     <v-col
-      v-for="(item, i) in items"
+      v-for="(appointment, i) in appointments"
         :key="i"
         cols="12"
     >
       <v-card
-        dark
-        @click="click(item.title)"
+        @click="appointmentToPlace(appointment)"
       >
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
             <v-card-title
               class="headline"
-              v-text="item.title"
+              v-text="appointment.title"
             />
-            <v-card-subtitle
-              v-text="item.name"
-            />
+            <v-card-text>
+              {{ appointment.name }}<br>
+              {{ getFormatDate(appointment.promiseDate) }}
+            </v-card-text>
           </div>
         </div>
       </v-card>
@@ -28,29 +28,36 @@
 </template>
 
 <script>
+import store from '@/store/index';
+import moment from 'moment';
+
 export default {
   data() {
     return {
-      items: [
-        {
-          title: '약속1', name: '그룹1',
-        },
-        {
-          title: '약속2', name: '그룹2',
-        },
-      ],
     };
   },
-  mounted() {
+  computed: {
+    appointments: () => store.getters.appointments,
+  },
+  created() {
+    store.dispatch('getAppointments');
+    store.dispatch('invisibleBookmark');
   },
   methods: {
-    click(id) {
-      this.$router.push(`./appointment/${id}`);
+    // 약속에 저장된 장소 목록을 띄워준다
+    appointmentToPlace(appointment) {
+      store.dispatch('updateAppointment', appointment);
+      this.$router.push('./appointment');
+    },
+    getFormatDate(datetime) {
+      return moment(datetime).format('YYYY.MM.DD h:mm a');
     },
   },
 };
 </script>
 
-<style>
-
+<style scoped>
+.v-main {
+  padding-top: 0px !important;
+}
 </style>

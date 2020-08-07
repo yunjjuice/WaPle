@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ssafy.waple.group.dao.GroupDao">
     <select id="readAll" resultType="com.ssafy.waple.group.dto.GroupDto">
-        select GROUP_ID, USER_ID, NAME
+        select GROUP_ID, USER_ID, NAME, TOKEN
         from `GROUPS`
         where GROUP_ID in (select GROUP_ID
                            from GROUP_MEMBERS
@@ -16,9 +16,10 @@
           and USER_ID = #{userId}
     </select>
 
-    <select id="readGroupMembers" resultType="com.ssafy.waple.group.dto.GroupDto">
-        select GROUP_ID, USER_ID
+    <select id="readGroupMembers" resultType="com.ssafy.waple.group.dto.GroupMemberDto">
+        select U.USER_ID, U.NAME
         from GROUP_MEMBERS
+                 inner join USERS U on GROUP_MEMBERS.USER_ID = U.USER_ID
         where GROUP_ID = #{groupId}
     </select>
 
@@ -30,8 +31,21 @@
 
     <insert id="createMember" parameterType="com.ssafy.waple.group.dto.GroupDto">
         insert into GROUP_MEMBERS (GROUP_ID, USER_ID)
-        values (#{groupId}, #{userId})
+        values (
+        <choose>
+            <when test="groupId == 0">
+                (select GROUP_ID from `GROUPS` where TOKEN = #{token})
+            </when>
+            <otherwise>#{groupId}</otherwise>
+        </choose>
+        , #{userId})
     </insert>
+
+    <update id="updateToken">
+        update `GROUPS`
+        set TOKEN = #{token}
+        where GROUP_ID = #{groupId}
+    </update>
 
     <update id="update" parameterType="com.ssafy.waple.group.dto.GroupDto">
         update `GROUPS`

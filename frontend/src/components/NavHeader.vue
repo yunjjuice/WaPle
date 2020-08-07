@@ -1,7 +1,7 @@
 <template>
-  <v-app-bar color="#ffcc00" app flat>
+  <v-app-bar color="#ffd54f" app flat>
     <v-toolbar-title>
-      <router-link to="/" style="color: black; text-decoration: none">WaPle</router-link>
+      <router-link to="/" style="color: black; text-decoration: none"><b>WAPLE</b></router-link>
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-text-field
@@ -15,14 +15,17 @@
         @keyup.enter="searchByWord"
       ></v-text-field>
     <v-spacer></v-spacer>
-    <div style="right:10rem; position:fixed"><v-badge color="#F44336">알림</v-badge></div>
+    <div style="right:10rem; position:fixed">
+      <v-btn icon>
+        <v-icon>mdi-bell</v-icon>
+      </v-btn>
+    </div>
     <div class="text-center">
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn
             color="#ffd633"
             class="black--text"
-            depressed
             v-bind="attrs"
             v-on="on"
           >
@@ -64,6 +67,7 @@ export default {
       store.dispatch('updateKeyword', this.keyword);
       store.dispatch('search', this.keyword);
       this.$router.push('/search');
+      this.keyword = '';
     },
     logout() {
       api.post('/users/logout', {
@@ -75,7 +79,6 @@ export default {
         },
       }).then(({ data }) => {
         const decodeData = JWT(data);
-        console.log(decodeData);
         if (decodeData.User_ID === this.$session.get('uid')) {
           this.$session.destroy();
           this.$router.push('/');
@@ -83,8 +86,7 @@ export default {
         } else {
           alert('로그아웃 실패');
         }
-      }).catch(({ data }) => {
-        console.log(data);
+      }).catch(() => {
       });
     },
   },

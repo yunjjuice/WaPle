@@ -1,12 +1,20 @@
 <template>
-<v-container id='map'>
-</v-container>
+<v-main>
+  <v-container id='map' style="height: 100%">
+  </v-container>
+  <review-write></review-write>
+  <review-read></review-read>
+</v-main>
 </template>
 
 <script>
 import store from '@/store/index';
 
 export default {
+  components: {
+    ReviewWrite: () => import('@/components/items/ReviewWrite.vue'),
+    ReviewRead: () => import('@/components/items/ReviewRead.vue'),
+  },
   computed: {
     currentLocation: () => store.getters.items, // 서버에서 정보 받아올 때
     searchLocation: () => store.getters.result, // 카카오 검색에서 정보 받아올 때
@@ -23,7 +31,8 @@ export default {
     initMap(items) {
       const container = document.getElementById('map');
       const options = {
-        center: new window.kakao.maps.LatLng(items[0].lat, items[0].lng),
+        center: new window.kakao.maps.LatLng(items.length === 0 ? '37.501245' : items[0].lat,
+          items.length === 0 ? '127.039592' : items[0].lng),
         level: 3,
       };
       const map = new window.kakao.maps.Map(container, options);
@@ -45,11 +54,11 @@ export default {
         const infowindow = new window.kakao.maps.InfoWindow({});
         infowindow.close(map, marker);
       }
-      map.setBounds(bounds);
+      if (items.length !== 0) {
+        map.setBounds(bounds);
+      }
     },
     searchMap(items) {
-      console.log('call searchMap');
-      console.log(items);
       const container = document.getElementById('map');
       const options = {
         center: new window.kakao.maps.LatLng(items[0].y, items[0].x),

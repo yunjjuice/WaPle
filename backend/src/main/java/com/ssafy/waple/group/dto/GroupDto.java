@@ -12,6 +12,9 @@ public class GroupDto {
 	@ApiModelProperty(value = "그룹 이름", example = "나")
 	private String name;
 
+	@ApiModelProperty(value = "그룹 초대 토큰")
+	private String token;
+
 	public int getGroupId() {
 		return groupId;
 	}
@@ -36,12 +39,21 @@ public class GroupDto {
 		this.name = name;
 	}
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	@Override
 	public String toString() {
 		return "GroupDto{" +
-			"groupID=" + groupId +
-			", userID=" + userId +
-			", name=" + name +
+			"groupId=" + groupId +
+			", userId=" + userId +
+			", name='" + name + '\'' +
+			", token='" + token + '\'' +
 			'}';
 	}
 }

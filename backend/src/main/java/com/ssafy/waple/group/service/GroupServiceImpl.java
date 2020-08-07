@@ -6,11 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+
 import com.ssafy.waple.group.dao.GroupDao;
 import com.ssafy.waple.group.dto.GroupDto;
-import com.ssafy.waple.group.exception.DuplicatedMemberException;
+import com.ssafy.waple.group.dto.GroupMemberDto;
+import com.ssafy.waple.group.exception.DuplicateMemberException;
 import com.ssafy.waple.group.exception.GroupIsNotEmptyException;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
+import com.ssafy.waple.group.exception.InvalidGroupTokenException;
 import com.ssafy.waple.group.exception.MemberNotFoundException;
 import com.ssafy.waple.user.exception.UserNotFoundException;
 
@@ -19,6 +24,8 @@ public class GroupServiceImpl implements GroupService {
 	private static final String GROUP_FOREIGN_KEY_CONSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`GROUP_MEMBERS`, CONSTRAINT `FK_GROUPS_GROUP_MEMBERS` FOREIGN KEY (`GROUP_ID`) REFERENCES `GROUPS` (`GROUP_ID`)";
 	private static final String USER_FOREIGN_KEY_CONSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`GROUP_MEMBERS`, CONSTRAINT `FK_USERS_GROUP_MEMBERS` FOREIGN KEY (`USER_ID`) REFERENCES `USERS` (`USER_ID`)";
 	private static final String PRIMARY_KEY_CONSTRAINT_MSG = "for key 'PRIMARY'";
+	private static final String INVALID_TOKEN_MSG = "Column 'GROUP_ID' cannot be null";
+
 	@Autowired
 	GroupDao dao;
 
@@ -28,12 +35,12 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	public List<GroupDto> readGroupMembers(int groupId) {
-		List<GroupDto> groups = dao.readGroupMembers(groupId);
-		if (groups == null || groups.size() < 1) { //그룹에 멤버는 최소 1명 (그룹장)
+	public List<GroupMemberDto> readGroupMembers(int groupId) {
+		List<GroupMemberDto> members = dao.readGroupMembers(groupId);
+		if (members == null || members.size() < 1) { //그룹에 멤버는 최소 1명 (그룹장)
 			throw new GroupNotFoundException(groupId);
 		}
-		return groups;
+		return members;
 	}
 
 	@Override
@@ -44,7 +51,19 @@ public class GroupServiceImpl implements GroupService {
 	@Override
 	public void create(GroupDto group) {
 		dao.create(group);
+		generateToken(group);
 		createMember(group);
+	}
+
+	//JWT로 Token 생성하고 db에 삽입
+	private void generateToken(GroupDto group) {
+		String token = JWT.create()
+			.withIssuer("Toppings")
+			.withSubject("Invite group")
+			.withClaim("groupId", group.getGroupId())
+			.withClaim("name", group.getName())
+			.sign(Algorithm.HMAC256("waple_project"));
+		dao.updateToken(group.getGroupId(), token);
 	}
 
 	@Override
@@ -59,7 +78,10 @@ public class GroupServiceImpl implements GroupService {
 				throw new UserNotFoundException(group.getUserId());
 			}
 			if (e.getMessage().contains(PRIMARY_KEY_CONSTRAINT_MSG)) {
-				throw new DuplicatedMemberException(group.getGroupId(), group.getUserId());
+				throw new DuplicateMemberException(group.getGroupId(), group.getUserId());
+			}
+			if (e.getMessage().contains(INVALID_TOKEN_MSG)) {
+				throw new InvalidGroupTokenException();
 			}
 			throw e;
 		}
@@ -76,7 +98,7 @@ public class GroupServiceImpl implements GroupService {
 	public void delete(int groupId, long userId) {
 		boolean isOwner = isOwner(groupId, userId);
 		if (isOwner) {
-			List<GroupDto> members = readGroupMembers(groupId);
+			List<GroupMemberDto> members = readGroupMembers(groupId);
 			if (members.size() > 1 || members.get(0).getUserId() != userId) {
 				throw new GroupIsNotEmptyException(groupId);
 			}

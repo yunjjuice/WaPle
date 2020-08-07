@@ -1,6 +1,6 @@
 <template>
 <v-app>
-  <v-content>
+  <v-main>
     <v-container fluid pa-0 fill-height>
       <v-layout row wrap>
         <!-- 왼쪽 Section (Card 영역) -->
@@ -8,17 +8,16 @@
           <v-card
             height="100%"
             width="256"
-            dark
           >
             <v-navigation-drawer permanent>
               <v-list-item class="ml-2">
                 <v-list-item-content>
                   <v-list-item-title class="title">
-                    <router-link to="/mypage">마이페이지</router-link>
+                    <router-link to="/mypage"><b>마이페이지</b></router-link>
                   </v-list-item-title>
                   <v-list-item-subtitle class="mt-2 ml-4">
                     <span class="mdi mdi-account-box"></span>
-                    your_NickName
+                    {{ uname }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </v-list-item>
@@ -43,6 +42,20 @@
                       <v-list-item-title>{{ item.title }}</v-list-item-title>
                   </v-list-item-content>
                 </v-list-item>
+
+                <!-- 관리자일때만 보임 - 회원 목록 조회 -->
+                <v-list-item
+                  link
+                  to="/mypage/admin"
+                  v-if="isAdmin"
+                >
+                  <v-list-item-icon>
+                    <v-icon>mdi-calendar-check</v-icon>
+                  </v-list-item-icon>
+                  <v-list-item-content>
+                      <v-list-item-title>회원 목록 조회</v-list-item-title>
+                  </v-list-item-content>
+                </v-list-item>
               </v-list>
             </v-navigation-drawer>
           </v-card>
@@ -53,7 +66,8 @@
         </v-flex>
       </v-layout>
     </v-container>
-  </v-content>
+    <snack-bar></snack-bar>
+  </v-main>
 </v-app>
 </template>
 
@@ -72,13 +86,17 @@ export default {
           icon: 'mdi-calendar-check',
           address: '/mypage/myschedule',
         },
-        {
-          title: '회원 목록 조회',
-          icon: 'mdi-calendar-check',
-          address: '/mypage/admin',
-        },
       ],
+      uname: '',
+      isAdmin: false,
     };
+  },
+  components: {
+    SnackBar: () => import('@/components/items/Snackbars.vue'),
+  },
+  created() {
+    this.uname = this.$session.get('uname');
+    this.isAdmin = this.$session.get('admin');
   },
 };
 </script>
@@ -86,6 +104,6 @@ export default {
 <style scoped>
 a {
   text-decoration:none;
-  color: white
+  color: black;
 }
 </style>

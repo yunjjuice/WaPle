@@ -3,34 +3,71 @@
     <v-card align="center">
       <v-card-title></v-card-title>
       <v-tabs>
-        <v-tab>
+        <v-tab @click="clearModalNew">
           새로운 약속
         </v-tab>
         <v-tab-item>
           <v-card flat width="400" height="250" justify="center">
-            <v-text-field label="약속명" v-model="appointmentName" />
-            <v-select label="그룹 선택" :items="groups" />
-            <!-- date picker -->
-            <V-menu ref="menu" v-model="menu" :close-on-content-click="false"
-              transition="scale-transition" offset-y min-width="290px">
-              <template v-slot:activator="{ on, attrs }">
-                <v-text-field v-model="date" label="약속날짜" v-bind="attrs" v-on="on" readonly>
-                </v-text-field>
-              </template>
-              <v-date-picker v-model="date" @input="menu=false">
-              </v-date-picker>
-            </V-menu>
-            <v-btn @click="makeAppointment" color="primary">만들기</v-btn>
+            <validation-observer ref="observerNew">
+              <validation-provider v-slot="{ errors }" name="name" rules="required">
+                <v-text-field
+                  label="약속명"
+                  v-model="appointmentName"
+                  :error-messages="errors"
+                />
+              </validation-provider>
+              <validation-provider v-slot="{ errors }" name="group" rules="required">
+                <v-select
+                  label="그룹 선택"
+                  :items="groups"
+                  v-model="group"
+                  item-text="name"
+                  return-object
+                  required
+                  :error-messages="errors"
+                />
+              </validation-provider>
+              <validation-provider v-slot="{ errors }" name="datetime" rules="required">
+                <v-datetime-picker
+                  label="약속날짜"
+                  v-model="appointmentDate"
+                  :text-field-props="{
+                    errorMessages: errors,
+                    class:'custom-label-color',
+                  }"
+                >
+                  <template slot="dateIcon">
+                    <v-icon>mdi-calendar</v-icon>
+                  </template>
+                  <template slot="timeIcon">
+                    <v-icon>mdi-clock-time-four-outline</v-icon>
+                  </template>
+                </v-datetime-picker>
+              </validation-provider>
+            </validation-observer>
+            <v-btn @click="isValidByNew" color="primary">만들기</v-btn>
             <v-btn @click="cancelModal" color="error">취소하기</v-btn>
           </v-card>
         </v-tab-item>
-        <v-tab>
+        <v-tab @click="clearModalExisting">
           기존 약속에 추가
         </v-tab>
         <v-tab-item>
           <v-card flat width="400" height="250" align="center" justify="center">
-            <v-select label="약속 선택" :items="appointments" />
-            <v-btn @click="addAppointment" color="primary">추가하기</v-btn>
+            <validation-observer ref="observerExisting">
+              <validation-provider v-slot="{ errors }" name="appointment" rules="required">
+                <v-select
+                  label="약속 선택"
+                  :items="appointments"
+                  v-model="appointment"
+                  item-text="title"
+                  return-object
+                  required
+                  :error-messages="errors"
+              />
+              </validation-provider>
+            </validation-observer>
+            <v-btn @click="isValidByExisting" color="primary">추가하기</v-btn>
             <v-btn @click="cancelModal" color="error">취소하기</v-btn>
           </v-card>
         </v-tab-item>
@@ -40,26 +77,78 @@
 </template>
 
 <script>
+import store from '@/store/index';
+import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
+
+extend('required', {
+  ...required,
+  message: '{_field_} can not be empty',
+});
+
 export default {
   data() {
     return {
-      appointmentName: '', // 약속명
-      groups: ['그룹1', '그룹2', '그룹3'], // 그룹명
-      appointments: ['약속1', '약속2', '약속3'], // 기존에 만들어진 약속 리스트
-      date: new Date().toISOString().substr(0, 10),
-      menu: false,
+      appointmentName: '',
+      group: null,
+      appointmentDate: null,
+      appointment: null,
     };
   },
   props: ['dialog'],
+  components: {
+    ValidationObserver,
+    ValidationProvider,
+  },
+  computed: {
+    groups: () => store.getters.groups,
+    appointments: () => store.getters.appointments,
+  },
   methods: {
-    makeAppointment() {
-      this.$emit('childs-event');
+    clearModalNew() {
+      this.appointmentName = '';
+      this.group = null;
+      this.appointmentDate = null;
+      requestAnimationFrame(() => {
+        this.$refs.observerNew.reset();
+      });
     },
-    addAppointment() {
-      this.$emit('childs-event');
+    clearModalExisting() {
+      this.appointment = null;
+      requestAnimationFrame(() => {
+        this.$refs.observerExisting.reset();
+      });
+    },
+    makeAppointment() { // 새 약속 만들기
+      store.dispatch('updateAppointmentName', this.appointmentName);
+      store.dispatch('updateGroup', this.group);
+      store.dispatch('updateAppointmentDate', this.appointmentDate);
+      store.dispatch('makeAppointment');
+      store.dispatch('closeAppointmentDialog');
+    },
+    addAppointment() { // 기존 약속에 추가하기
+      store.dispatch('updateAppointment', this.appointment);
+      store.dispatch('addAppointment');
+      store.dispatch('closeAppointmentDialog');
     },
     cancelModal() {
-      this.$emit('childs-event');
+      store.dispatch('closeAppointmentDialog');
+    },
+    isValidByNew() { // 내용이 다 작성되었는지 확인
+      this.$refs.observerNew.validate()
+        .then((result) => {
+          if (result) { // 입력이 다 되었다면 요청 보내기
+            this.makeAppointment();
+          }
+        });
+    },
+    isValidByExisting() {
+      this.$refs.observerExisting.validate()
+        .then((result) => {
+          if (result) {
+            this.addAppointment();
+          }
+        });
     },
   },
 };

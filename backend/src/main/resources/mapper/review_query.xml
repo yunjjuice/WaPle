@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.waple.review.dao.ReviewDao">
+
+    <insert id="create" parameterType="com.ssafy.waple.review.dto.ReviewDto">
+        <selectKey keyProperty="reviewId" resultType="int" order="AFTER">
+            select REVIEW_ID FROM REVIEWS ORDER BY REVIEW_ID DESC LIMIT 1
+        </selectKey>
+        insert into REVIEWS (GROUP_ID, PLACE_ID, USER_ID, VISIT_DATE, TITLE, CONTENT, MEDIA) VALUES
+            (#{groupId}, #{placeId}, #{userId}, #{visitDate}, #{title}, #{content}, #{media})
+    </insert>
+
+    <select id="readAll" parameterType="map"
+            resultType="com.ssafy.waple.review.dto.ReviewDto">
+        select R.REVIEW_ID, R.GROUP_ID, R.PLACE_ID, R.VISIT_DATE, R.MEDIA, R.TITLE, R.USER_ID, U.NAME as "userName",
+        (SELECT GG.NAME FROM `GROUPS` GG where R.GROUP_ID = GG.GROUP_ID) as "groupName"
+        from REVIEWS R
+        inner join USERS U on R.USER_ID = U.USER_ID
+        where PLACE_ID = #{placeId}
+        AND GROUP_ID IN ( SELECT G.GROUP_ID
+        from GROUP_MEMBERS G
+        where G.USER_ID = #{userId})
+        ORDER BY REVIEW_ID DESC;
+    </select>
+
+    <select id="readAllByUserId" parameterType="long" resultType="com.ssafy.waple.review.dto.ReviewPlaceDto">
+        select P.*, R.GROUP_ID
+        from REVIEWS R
+        inner join USERS U on R.USER_ID = U.USER_ID
+        inner join PLACES P on R.PLACE_ID = P.PLACE_ID
+        where GROUP_ID IN ( SELECT G.GROUP_ID
+        from GROUP_MEMBERS G
+        where G.USER_ID = #{userId})
+        ORDER BY R.PLACE_ID DESC;
+    </select>
+
+    <select id="read" parameterType="int" resultType="com.ssafy.waple.review.dto.ReviewDto">
+        select R.*, U.NAME as "userName", (SELECT GG.NAME FROM `GROUPS` GG where R.GROUP_ID = GG.GROUP_ID) as "groupName"
+        from REVIEWS R
+        inner join USERS U on R.USER_ID = U.USER_ID
+        where REVIEW_ID = #{reviewId}
+    </select>
+
+    <update id="update" parameterType="map">
+        update REVIEWS set CONTENT = #{content},
+                           TITLE = #{title},
+                           MEDIA = #{media}
+                    where REVIEW_ID = #{reviewId}
+    </update>
+
+    <delete id="delete" parameterType="int">
+        delete from REVIEWS where REVIEW_ID = #{reviewId}
+    </delete>
+</mapper>

@@ -21,6 +21,17 @@ public class PlaceDto {
 	@ApiModelProperty(value = "장소 상세페이지 URL", example = "http://place.map.kakao.com/19781214")
 	private String url;
 
+	public PlaceDto() {}
+
+	public PlaceDto(String placeId, String name, String address, String lng, String lat, String url) {
+		this.placeId = placeId;
+		this.address = address;
+		this.lat = lat;
+		this.lng = lng;
+		this.url = url;
+		this.name = name;
+	}
+
 	public String getPlaceId() {
 		return placeId;
 	}

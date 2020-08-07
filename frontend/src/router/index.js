@@ -10,7 +10,7 @@ const requireAuth = () => (to, from, next) => {
   if (Vue.prototype.$session.exists('uid')) {
     return next();
   }
-  return next('/login');
+  return next(`/login?redirect=${to.path}`);
 };
 
 const routes = [
@@ -31,19 +31,14 @@ const routes = [
             component: () => import('@/components/SectionTab.vue'),
             children: [
               {
-                name: 'TabAll',
+                name: 'TabBookmark',
                 path: '',
-                component: () => import('@/components/tab/TabAll.vue'),
+                component: () => import('@/components/tab/TabBookmark.vue'),
               },
               {
-                name: 'TabWent',
-                path: '/went',
-                component: () => import('@/components/tab/TabWent.vue'),
-              },
-              {
-                name: 'TabWish',
-                path: '/wish',
-                component: () => import('@/components/tab/TabWish.vue'),
+                name: 'TabReview',
+                path: '/review',
+                component: () => import('@/components/tab/TabReview.vue'),
               },
               {
                 name: 'TabVoting',
@@ -54,13 +49,18 @@ const routes = [
           },
           {
             name: 'section-appointment',
-            path: '/appointment/:id',
+            path: '/appointment',
             component: () => import('@/components/SectionAppointment.vue'),
           },
           {
             name: 'section-search',
             path: '/search',
             component: () => import('@/components/SectionSearch.vue'),
+          },
+          {
+            name: 'section-review',
+            path: '/reviewlist',
+            component: () => import('@/components/SectionReview.vue'),
           },
         ],
       },
@@ -102,6 +102,13 @@ const routes = [
     path: '/login',
     name: 'Login',
     component: Login,
+    props: (route) => ({ redirect: route.query.redirect }),
+  },
+  {
+    path: '/invite/:code',
+    component: () => import('@/components/Invite.vue'),
+    props: true,
+    beforeEnter: requireAuth(),
   },
 ];
 

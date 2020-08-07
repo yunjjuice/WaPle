@@ -27,6 +27,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
 import com.ssafy.waple.group.dto.GroupDto;
+import com.ssafy.waple.group.dto.GroupMemberDto;
 import com.ssafy.waple.group.service.GroupService;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
@@ -39,7 +40,7 @@ public class GroupController {
 	@Autowired
 	GroupService service;
 
-	@GetMapping(value = "/{userId}")
+	@GetMapping(value = "/of/{userId}")
 	@ApiOperation(value = "특정 유저의 그룹 목록 조회", notes = "유저가 가입한 그룹의 목록을 반환한다.")
 	@ApiResponses({
 		@ApiResponse(code = 200, message = "그룹 목록 조회 성공"),
@@ -52,6 +53,21 @@ public class GroupController {
 		@ApiParam(value = "유저 id", required = true, example = "1412733569") @PathVariable long userId) {
 		logger.debug("readAll 호출");
 		return new ResponseEntity<>(service.readAll(userId), HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/{groupId}")
+	@ApiOperation(value = "그룹의 멤버 목록 조회", notes = "해당 그룹의 멤버 목록을 반환한다.")
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "멤버 목록 조회 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "멤버 목록 조회 실패")
+	})
+	private ResponseEntity<List<GroupMemberDto>> readGroupMembers(
+		@ApiParam(value = "그룹 id", required = true, example = "1") @PathVariable int groupId) {
+		logger.debug("readGroupMembers 호출");
+		return new ResponseEntity<>(service.readGroupMembers(groupId), HttpStatus.OK);
 	}
 
 	@PostMapping
@@ -68,7 +84,7 @@ public class GroupController {
 			value = "생성할 그룹 정보",
 			required = true,
 			name = "group",
-			dataTypeClass = GroupDtoExample.class)
+			dataTypeClass = GroupCreateRequest.class)
 	})
 	private ResponseEntity<?> create(@RequestBody GroupDto group) {
 		logger.debug("create 호출");
@@ -90,7 +106,7 @@ public class GroupController {
 			value = "추가할 멤버 정보",
 			required = true,
 			name = "member",
-			dataTypeClass = GroupMemberDtoExample.class)
+			dataTypeClass = MemberCreateRequest.class)
 	})
 	private ResponseEntity<?> createMember(@RequestBody GroupDto member) {
 		logger.debug("createMember 호출");
@@ -106,6 +122,13 @@ public class GroupController {
 		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "그룹 수정 실패")
+	})
+	@ApiImplicitParams({
+		@ApiImplicitParam(
+			value = "수정할 그룹 정보",
+			required = true,
+			name = "group",
+			dataTypeClass = GroupUpdateRequest.class)
 	})
 	private ResponseEntity<GroupDto> update(
 		@ApiParam(value = "수정할 그룹 정보", required = true) @RequestBody GroupDto group) {
@@ -131,7 +154,7 @@ public class GroupController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
-	public class GroupDtoExample {
+	public class GroupCreateRequest {
 		@ApiModelProperty(value = "그룹장 Id", example = "1412733569")
 		private long userId;
 
@@ -155,12 +178,39 @@ public class GroupController {
 		}
 	}
 
-	public class GroupMemberDtoExample {
-		@ApiModelProperty(value = "그룹 Id", example = "1")
-		private int groupId;
+	public class MemberCreateRequest {
+		@ApiModelProperty(value = "그룹 토큰", example = "JWT 토큰")
+		private String token;
 
 		@ApiModelProperty(value = "멤버 Id", example = "1412733569")
 		private long userId;
+
+		public String getToken() {
+			return token;
+		}
+
+		public void setToken(String token) {
+			this.token = token;
+		}
+
+		public long getUserId() {
+			return userId;
+		}
+
+		public void setUserId(long userId) {
+			this.userId = userId;
+		}
+	}
+
+	public class GroupUpdateRequest {
+		@ApiModelProperty(value = "그룹 Id", example = "1")
+		private int groupId;
+
+		@ApiModelProperty(value = "그룹장 Id", example = "1412733569")
+		private long userId;
+
+		@ApiModelProperty(value = "그룹 이름", example = "나")
+		private String name;
 
 		public int getGroupId() {
 			return groupId;
@@ -176,6 +226,14 @@ public class GroupController {
 
 		public void setUserId(long userId) {
 			this.userId = userId;
+		}
+
+		public String getName() {
+			return name;
+		}
+
+		public void setName(String name) {
+			this.name = name;
 		}
 	}
 }

@@ -5,6 +5,6 @@ import com.ssafy.waple.error.exception.ErrorCode;
 
 public class GroupIsNotEmptyException extends BusinessException {
 	public GroupIsNotEmptyException(int groupId) {
-		super(groupId + " is not empty", ErrorCode.GROUP_IS_NOT_EMPTY);
+		super("Group " + groupId + " is not empty", ErrorCode.GROUP_IS_NOT_EMPTY);
 	}
 }

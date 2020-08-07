@@ -2,9 +2,7 @@ package com.ssafy.waple.bookmark.controller;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,67 +26,71 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
-import com.ssafy.waple.bookmark.dto.BookMarkDto;
+import com.ssafy.waple.bookmark.dto.BookmarkDto;
 import com.ssafy.waple.bookmark.dto.PlaceDto;
 import com.ssafy.waple.bookmark.dto.SearchType;
-import com.ssafy.waple.bookmark.service.BookMarkService;
+import com.ssafy.waple.bookmark.service.BookmarkService;
 import com.ssafy.waple.bookmark.service.PlaceService;
 import com.ssafy.waple.common.PermissionCheck;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
 @RestController
 @RequestMapping("/bookmarks")
-@Api(value = "BookMark Controller", tags = "BookMark")
-public class BookMarkController {
-	private static final Logger logger = LoggerFactory.getLogger(BookMarkController.class);
-	private static final PermissionCheck permissionCheck = new PermissionCheck();
+@Api(value = "북마크 관리", tags = "Bookmark")
+public class BookmarkController {
+	private static final Logger logger = LoggerFactory.getLogger(BookmarkController.class);
 
 	@Autowired
-	BookMarkService service;
+	BookmarkService service;
 
 	@Autowired
 	PlaceService placeService;
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
 	@ApiOperation(value = "북마크 생성", notes = "북마크 생성하는 API")
-	@ApiImplicitParam(name = "bookMark", value = "북마크 생성", required = true, dataTypeClass = BookMarkDto.class)
+	@ApiImplicitParam(name = "bookmark", value = "북마크 생성", required = true, dataTypeClass = BookmarkDto.class)
 	@ApiResponses({
 		@ApiResponse(code = 201, message = "북마크 생성 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
 		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "북마크 생성 실패")
 	})
 
-	private ResponseEntity<?> create(@RequestBody BookMarkDto bookMark) {
+	private ResponseEntity<?> create(@RequestHeader(value = "token")String token, @RequestBody BookmarkDto bookmark) {
 		logger.debug("북마크 생성 호출");
-		boolean success = service.create(bookMark);
-		if (success) {
-			return new ResponseEntity<>(HttpStatus.CREATED);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		service.create(token, bookmark);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.GET, produces = "application/json")
-	@ApiOperation(value = "북마크 조회", notes = "회원이 속한 모든 그룹, 모든 테마 북마크 조회", response = PlaceDto.class)
-	@ApiImplicitParam(name = "searchType", value = "북마크 조회", required = true, dataTypeClass = SearchType.class)
+	@ApiOperation(value = "북마크 조회", notes = "회원이 속한 모든 그룹, 모든 테마 북마크 조회", response = BookmarkDto.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "searchType", value = "북마크 조회", required = true, dataTypeClass = SearchType.class),
+		@ApiImplicitParam(name = "token", value = "회원 토큰")
+	})
 	@ApiResponses({
 		@ApiResponse(code = 201, message = "북마크 조회 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
 		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "북마크 조회 실패")
 	})
-	private ResponseEntity<?> read(String searchType) {
+	private ResponseEntity<?> read(@RequestHeader(value = "token")String token, String searchType) {
 		logger.debug("북마크 조회 시작");
 		// front search data 양식
 		/*
 		let searchData = {
 			userId: 123,
 			groups: [
-				{ groupId: 123, themeIds: [123, 456, 789]},
-				{ groupId: 456, themeIds: [123, 456, 789]},
+				{ groupId: 123, themeId: 123 },
+				{ groupId: 123, themeId: 456 },
+				{ groupId: 123, themeId: 789 },
+				{ groupId: 456, themeId: 123 },
+				{ groupId: 456, themeId: 456 },
+				{ groupId: 456, themeId: 789 },
         	],
-        	limit: 10, offset: 1
+        	limit: 10, offset: 0
       	}
       */
 
@@ -104,29 +106,8 @@ public class BookMarkController {
 		} catch (UnsupportedEncodingException e) {
 			e.printStackTrace();
 		}
-
-		boolean success = false;
-
-		List<BookMarkDto> list = service.read(type);
-
-		// 장소 저장
-		Map<BookMarkDto, PlaceDto> result = new HashMap<>();
-
-		if (list != null) {
-			logger.debug("검색 결과가 있습니다.");
-			success = true;
-			for (BookMarkDto bookmark : list) {
-				PlaceDto place = placeService.read(bookmark.getPlaceId());
-				if (place != null) {
-					result.put(bookmark, place);
-				}
-			}
-		}
-		if (success) {
-			return new ResponseEntity<>(result, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		List<BookmarkDto> result = service.read(token, type);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{groupId}/{placeId}/{themeId}",
@@ -140,19 +121,35 @@ public class BookMarkController {
 	})
 	@ApiResponses({
 		@ApiResponse(code = 204, message = "북마크 삭제 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
 		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "북마크 삭제 실패")
 	})
 	private ResponseEntity<?> delete(@PathVariable("groupId") int groupId, @PathVariable("placeId") String placeId,
 		@PathVariable("themeId") int themeId, @RequestHeader(value = "token") String token) {
-		System.out.println(token);
-		long userId = permissionCheck.check(token).getUserId();
-		boolean success = service.delete(userId, themeId, groupId, placeId);
-		if (success) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
+		service.delete(token, themeId, groupId, placeId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/all/{userId}/{limit}/{offset}", produces = "application/json")
+	@ApiOperation(value = "북마크 조회", notes = "회원이 속한 모든 그룹, 모든 테마 북마크 조회", response = BookmarkDto.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "token", value = "회원 토큰"),
+		@ApiImplicitParam(name = "userId", value = "Kakao에서 제공하는 회원 아이디" , example = "1412733569"),
+		@ApiImplicitParam(name = "limit", value = "페이지내 표시 할 북마크 리스트 수", example = "10"),
+		@ApiImplicitParam(name = "offset", value = "페이지 위치", example = "1")
+	})
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "북마크 전체 조회 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "북마크 전체 조회 실패")
+	})
+	private ResponseEntity<?> readAll(@RequestHeader(value = "token")String token, @PathVariable("userId")long userId,
+		@PathVariable("limit")int limit, @PathVariable("offset")int offset) {
+		List<BookmarkDto> result = service.readAll(token, userId, limit, offset);
+		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }
