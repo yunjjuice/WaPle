@@ -14,6 +14,7 @@ import com.ssafy.waple.error.exception.PageNotFoundException;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
 import com.ssafy.waple.review.dao.ReviewDao;
 import com.ssafy.waple.review.dto.ReviewDto;
+import com.ssafy.waple.review.dto.ReviewPlaceDto;
 import com.ssafy.waple.review.error.NameNotEmptyException;
 import com.ssafy.waple.review.error.ReviewNotFoundException;
 import com.ssafy.waple.user.exception.UserNotFoundException;
@@ -63,6 +64,20 @@ public class ReviewServiceImpl implements ReviewService {
 		// User Not in This Group Exception, Group Not Found Exception, UserNotFound Exception, Theme Not Found Exception
 		List<ReviewDto> result = dao.readAll(userId,placeId);
 
+		if(result.size() - (offset-1)*limit < limit) {
+			return result.subList((offset-1)*limit, result.size());
+		} else {
+			return result.subList((offset-1)*limit, offset*limit);
+		}
+	}
+
+	@Override
+	public List<ReviewPlaceDto> readAllByUserId(String token, long userId, int limit, int offset) {
+		if(offset < 1) {
+			throw new PageNotFoundException();
+		}
+		// UserNotFound Exception
+		List<ReviewPlaceDto> result = dao.readAllByUserId(userId);
 		if(result.size() - (offset-1)*limit < limit) {
 			return result.subList((offset-1)*limit, result.size());
 		} else {

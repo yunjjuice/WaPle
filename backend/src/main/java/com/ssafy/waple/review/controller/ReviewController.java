@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.ssafy.waple.bookmark.dto.SearchType;
 import com.ssafy.waple.error.exception.IncorrectFormatException;
 import com.ssafy.waple.review.dto.ReviewDto;
+import com.ssafy.waple.review.dto.ReviewPlaceDto;
 import com.ssafy.waple.review.service.ReviewService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -98,7 +99,8 @@ public class ReviewController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/places/{userId}/{placeId}/{limit}/{offset}", produces = "application/json")
-	@ApiOperation(value = "리뷰 리스트 조회", notes = "회원이 속한 모든 그룹내 장소 리뷰 조회", response = ReviewDto.class)
+	@ApiOperation(value = "리뷰 리스트 조회", notes = "회원이 속한 모든 그룹내 장소의 리뷰 리스트 조회",
+		response = ReviewDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
 		@ApiImplicitParam(name = "placeId", value = "장소 아이디", example = "495658881"),
@@ -107,17 +109,40 @@ public class ReviewController {
 		@ApiImplicitParam(name = "offset", value = "요청 페이지", example = "1")
 	})
 	@ApiResponses({
-		@ApiResponse(code = 200, message = "리뷰 조회 성공"),
+		@ApiResponse(code = 200, message = "장소 리뷰 리스트 조회 성공"),
 		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
 		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
-		@ApiResponse(code = 404, message = "리뷰 조회 실패")
+		@ApiResponse(code = 404, message = "장소 리뷰 리스트 조회 실패")
 	})
 	private ResponseEntity<?> readAll(@PathVariable("placeId")String placeId ,@PathVariable("userId") long userId,
 		@RequestHeader(value = "token") String token, @PathVariable("limit") int limit,
 		@PathVariable("offset") int offset) {
-		logger.debug("리뷰 리스트 조회 호출");
+		logger.debug("장소 리뷰 리스트 조회 호출");
 		List<ReviewDto> result = service.readAll(token, userId, placeId, limit, offset);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/all/{userId}/{limit}/{offset}", produces = "application/json")
+	@ApiOperation(value = "리뷰 장소 리스트 조회", notes = "회원이 속한 모든 그룹내 리뷰의 장소 리스트 조회",
+		response = ReviewPlaceDto.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "token", value = "회원 토큰"),
+		@ApiImplicitParam(name = "userId", value = "유저 아이디", example = "1412733569"),
+		@ApiImplicitParam(name = "limit", value = "한 페이지에 출력할 수 있는 최대 값", example = "10"),
+		@ApiImplicitParam(name = "offset", value = "요청 페이지", example = "1")
+	})
+	@ApiResponses({
+		@ApiResponse(code = 200, message = "리뷰 장소 리스트 조회 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "리뷰 장소 리스트 조회 실패")
+	})
+	private ResponseEntity<?> readAll(@PathVariable("userId") long userId, @RequestHeader(value = "token") String token,
+		@PathVariable("limit") int limit, @PathVariable("offset") int offset) {
+		logger.debug("리뷰 장소 리스트 조회 호출");
+		List<ReviewPlaceDto> result = service.readAllByUserId(token, userId, limit, offset);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
