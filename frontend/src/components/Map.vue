@@ -2,6 +2,8 @@
 <v-main>
   <v-container id='map' style="height: 100%">
   </v-container>
+  <review-write></review-write>
+  <review-read></review-read>
 </v-main>
 </template>
 
@@ -9,6 +11,10 @@
 import store from '@/store/index';
 
 export default {
+  components: {
+    ReviewWrite: () => import('@/components/items/ReviewWrite.vue'),
+    ReviewRead: () => import('@/components/items/ReviewRead.vue'),
+  },
   computed: {
     currentLocation: () => store.getters.items, // 서버에서 정보 받아올 때
     searchLocation: () => store.getters.result, // 카카오 검색에서 정보 받아올 때
@@ -53,8 +59,6 @@ export default {
       }
     },
     searchMap(items) {
-      console.log('call searchMap');
-      console.log(items);
       const container = document.getElementById('map');
       const options = {
         center: new window.kakao.maps.LatLng(items[0].y, items[0].x),

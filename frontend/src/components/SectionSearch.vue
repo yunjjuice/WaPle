@@ -1,38 +1,38 @@
 <template>
   <v-main>
-    <v-toolbar dark dense flat>
+    <v-toolbar color="#f5f5f5" dense flat>
       <v-btn icon class="hidden-xs-only" @click="moveBack">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title>{{ keyword }}</v-toolbar-title>
     </v-toolbar>
-
-    <v-row align='center' justify='center'>
-      <v-col
-      v-for="(item, i) in searchResult"
-        :key="i"
-        cols="12"
-      >
-      <v-card>
-        <div class="d-flex flex-no-wrap justify-space-between">
-          <div>
-            <v-card-title
-              class="headline"
-              v-text="item.place_name"
-            ></v-card-title>
-            <v-card-text>
-              {{ item.road_address_name }}
-            </v-card-text>
-            <v-card-actions>
-              <v-btn icon @click.stop="showDialog(item)">
-                <v-icon>mdi-bookmark-plus-outline</v-icon>
-              </v-btn>
-            </v-card-actions>
+    <v-container>
+      <v-row align='center' justify='center'>
+        <v-col
+          v-for="(item, i) in searchResult"
+          :key="i"
+          cols="12"
+        >
+        <v-card>
+          <div class="d-flex flex-no-wrap justify-space-between">
+            <div>
+              <v-card-title
+                class="headline"
+                v-text="item.place_name"
+              ></v-card-title>
+              <v-card-text>
+                {{ item.road_address_name }}
+              </v-card-text>
+              <v-card-actions>
+                <v-btn icon @click.stop="showDialog(item)">
+                  <v-icon>mdi-bookmark-plus-outline</v-icon>
+                </v-btn>
+              </v-card-actions>
+            </div>
           </div>
-        </div>
-      </v-card>
-    </v-col>
-  </v-row>
+        </v-card>
+      </v-col>
+    </v-row>
   <v-dialog
     v-model="dialog"
     width="400"
@@ -78,6 +78,7 @@
       </validation-observer>
     </v-card>
   </v-dialog>
+  </v-container>
   </v-main>
 </template>
 

@@ -3,6 +3,9 @@
 <mapper namespace="com.ssafy.waple.review.dao.ReviewDao">
 
     <insert id="create" parameterType="com.ssafy.waple.review.dto.ReviewDto">
+        <selectKey keyProperty="reviewId" resultType="int" order="AFTER">
+            select REVIEW_ID FROM REVIEWS ORDER BY REVIEW_ID DESC LIMIT 1
+        </selectKey>
         insert into REVIEWS (GROUP_ID, PLACE_ID, USER_ID, VISIT_DATE, TITLE, CONTENT, MEDIA) VALUES
             (#{groupId}, #{placeId}, #{userId}, #{visitDate}, #{title}, #{content}, #{media})
     </insert>

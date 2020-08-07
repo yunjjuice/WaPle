@@ -8,13 +8,12 @@
           <v-card
             height="100%"
             width="256"
-            dark
           >
             <v-navigation-drawer permanent>
               <v-list-item class="ml-2">
                 <v-list-item-content>
                   <v-list-item-title class="title">
-                    <router-link to="/mypage">마이페이지</router-link>
+                    <router-link to="/mypage"><b>마이페이지</b></router-link>
                   </v-list-item-title>
                   <v-list-item-subtitle class="mt-2 ml-4">
                     <span class="mdi mdi-account-box"></span>
@@ -67,6 +66,7 @@
         </v-flex>
       </v-layout>
     </v-container>
+    <snack-bar></snack-bar>
   </v-main>
 </v-app>
 </template>
@@ -91,6 +91,9 @@ export default {
       isAdmin: false,
     };
   },
+  components: {
+    SnackBar: () => import('@/components/items/Snackbars.vue'),
+  },
   created() {
     this.uname = this.$session.get('uname');
     this.isAdmin = this.$session.get('admin');
@@ -101,6 +104,6 @@ export default {
 <style scoped>
 a {
   text-decoration:none;
-  color: white
+  color: black;
 }
 </style>
