@@ -12,7 +12,7 @@
 
     <select id="readAll" parameterType="map"
             resultType="com.ssafy.waple.review.dto.ReviewDto">
-        select R.REVIEW_ID, R.GROUP_ID, R.PLACE_ID, R.VISIT_DATE, R.MEDIA, R.TITLE, R.USER_ID, U.NAME,
+        select R.REVIEW_ID, R.GROUP_ID, R.PLACE_ID, R.VISIT_DATE, R.MEDIA, R.TITLE, R.USER_ID, U.NAME as "userName",
         (SELECT GG.NAME FROM `GROUPS` GG where R.GROUP_ID = GG.GROUP_ID) as "groupName"
         from REVIEWS R
         inner join USERS U on R.USER_ID = U.USER_ID
@@ -23,8 +23,19 @@
         ORDER BY REVIEW_ID DESC;
     </select>
 
+    <select id="readAllByUserId" parameterType="long" resultType="com.ssafy.waple.review.dto.ReviewPlaceDto">
+        select P.*, R.GROUP_ID
+        from REVIEWS R
+        inner join USERS U on R.USER_ID = U.USER_ID
+        inner join PLACES P on R.PLACE_ID = P.PLACE_ID
+        where GROUP_ID IN ( SELECT G.GROUP_ID
+        from GROUP_MEMBERS G
+        where G.USER_ID = #{userId})
+        ORDER BY R.PLACE_ID DESC;
+    </select>
+
     <select id="read" parameterType="int" resultType="com.ssafy.waple.review.dto.ReviewDto">
-        select R.*, U.NAME, (SELECT GG.NAME FROM `GROUPS` GG where R.GROUP_ID = GG.GROUP_ID) as "groupName"
+        select R.*, U.NAME as "userName", (SELECT GG.NAME FROM `GROUPS` GG where R.GROUP_ID = GG.GROUP_ID) as "groupName"
         from REVIEWS R
         inner join USERS U on R.USER_ID = U.USER_ID
         where REVIEW_ID = #{reviewId}

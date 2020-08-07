@@ -41,21 +41,12 @@
 
 <script>
 import store from '@/store/index';
+import api from '@/utils/api';
 
 export default {
   data() {
     return {
-      items: [
-        {
-          name: '동대문', address: '창신동 328-17', lat: '37.5722279', lng: '127.0151863',
-        },
-        {
-          name: 'MID그린(3동))', address: '창신동 601-2', lat: '37.5779087', lng: '127.0099886',
-        },
-        {
-          name: '성용', address: '창신동 640-252', lat: '37.57500479999999', lng: '127.0094655',
-        },
-      ],
+      items: [],
     };
   },
   components: {
@@ -65,7 +56,14 @@ export default {
     store.dispatch('invisibleBookmark');
   },
   mounted() {
-    this.$store.dispatch('doUpdate', this.items);
+    api.get(`/reviews/all/${this.$session.get('uid')}/10/1`, {
+      headers: {
+        token: this.$session.get('token'),
+      },
+    }).then(({ data }) => {
+      this.items = data;
+      this.$store.dispatch('doUpdate', this.items);
+    });
   },
   computed: {
     appointmentDialog: () => store.getters.appointmentDialog,
