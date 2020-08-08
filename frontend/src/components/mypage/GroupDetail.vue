@@ -164,6 +164,14 @@ export default {
     this.isAdmin = this.$session.get('admin');
     this.getGroupInfo(this.groupId);
   },
+  mounted() {
+    if (!window.Kakao) {
+      const script = document.createElement('script');
+      script.onload = () => window.Kakao.init('0e8b85c161beec7b11ccccb161ab81ab');
+      script.src = '/js/kakao.min.js';
+      document.head.appendChild(script);
+    }
+  },
 };
 </script>
 
