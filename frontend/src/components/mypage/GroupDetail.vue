@@ -2,11 +2,21 @@
   <v-expansion-panel-content>
     <br>
     <h3 class="d-inline">회원목록
-      <v-btn icon @click="addGroupUser()">
-        <v-icon>
-          mdi-plus-circle-outline
-        </v-icon>
-      </v-btn>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+            @click="addGroupUser()"
+          >
+            <v-icon>
+              mdi-plus-circle-outline
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>멤버 추가</span>
+      </v-tooltip>
     </h3>
     <v-container>
       <v-row class="my-4">

@@ -10,11 +10,21 @@
         <v-expansion-panel-header style="font-size:20px; font-weight:570;">
           <div class="d-inline">
           {{ group.name }}
-          <v-btn icon @click="showLeaveGroupModal(group.groupId)">
-            <v-icon>
-              mdi-minus-circle-outline
-            </v-icon>
-          </v-btn>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click="showLeaveGroupModal(group.groupId)"
+              >
+                <v-icon>
+                  mdi-minus-circle-outline
+                </v-icon>
+              </v-btn>
+            </template>
+            <sapn>그룹 탈퇴</sapn>
+          </v-tooltip>
           </div>
         </v-expansion-panel-header>
         <group-detail :groupId="group.groupId" :groupName="group.name" :token="group.token"/>

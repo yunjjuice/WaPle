@@ -29,14 +29,34 @@
                     투표 후에 items를 다시 싹 업데이트 해야 voted가 잘 넘어올 텐데 ..?
                   -->
                   <template v-if="!item.voted">
-                    <v-btn icon @click="voteTo(item)">
-                      <v-icon>mdi-thumb-up-outline</v-icon>
-                    </v-btn>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="voteTo(item)"
+                        >
+                          <v-icon>mdi-thumb-up-outline</v-icon>
+                        </v-btn>
+                      </template>
+                      <span>투표</span>
+                    </v-tooltip>
                   </template>
                   <template v-else>
-                    <v-btn icon @click="voteCancel(item)">
-                      <v-icon>mdi-thumb-up</v-icon>
-                    </v-btn>
+                    <v-tooltip bottom>
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-btn
+                          icon
+                          v-bind="attrs"
+                          v-on="on"
+                          @click="voteCancel(item)"
+                        >
+                          <v-icon>mdi-thumb-up</v-icon>
+                        </v-btn>
+                      </template>
+                      <sapn>투표 취소</sapn>
+                    </v-tooltip>
                   </template>
                   {{ item.voteNum }}
                 </v-card-text>

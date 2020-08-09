@@ -1,14 +1,21 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="290">
+    <v-tooltip bottom>
       <template v-slot:activator="{ on, attrs }">
-        <v-icon
+        <v-btn
+          icon
           v-bind="attrs"
           v-on="on"
+          @click.stop="dialog = true"
         >
-          mdi-minus-circle-outline
-        </v-icon>
+          <v-icon>
+            mdi-minus-circle-outline
+          </v-icon>
+        </v-btn>
       </template>
+      <span>테마 삭제</span>
+    </v-tooltip>
+    <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
         <v-card-title>정말 삭제하시겠습니까?</v-card-title>
         <v-card-actions>

@@ -1,17 +1,24 @@
 <template>
   <div class="text-center">
+    <v-tooltip bottom>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn
+          icon
+          v-bind="attrs"
+          v-on="on"
+          @click.stop="dialog = true"
+        >
+          <v-icon>
+            mdi-plus-circle-outline
+          </v-icon>
+        </v-btn>
+      </template>
+      <span>테마 추가</span>
+    </v-tooltip>
     <v-dialog
       v-model="dialog"
       max-width="600px"
     >
-      <template v-slot:activator="{ on, attrs }">
-        <v-icon
-          v-bind="attrs"
-          v-on="on"
-        >
-          mdi-plus-circle-outline
-        </v-icon>
-      </template>
 
       <v-card>
         <v-card-title>
