@@ -18,15 +18,45 @@
               >
                 </v-card-title>
                 <v-card-actions>
-                  <v-btn icon @click.stop="showDialog(item)">
-                    <v-icon>mdi-calendar-plus</v-icon>
-                  </v-btn>
-                  <v-btn icon @click.stop="readReview(item);">
-                    <v-icon>mdi-text-box-multiple-outline</v-icon>
-                  </v-btn>
-                  <v-btn icon @click.stop="writeReview(item);">
-                    <v-icon>mdi-pencil-plus-outline</v-icon>
-                  </v-btn>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click.stop="showDialog(item)"
+                      >
+                        <v-icon>mdi-calendar-plus</v-icon>
+                      </v-btn>
+                    </template>
+                    <sapn>약속 추가</sapn>
+                  </v-tooltip>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click.stop="readReview(item)"
+                      >
+                        <v-icon>mdi-text-box-multiple-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>리뷰 읽기</span>
+                  </v-tooltip>
+                  <v-tooltip bottom>
+                    <template v-slot:activator="{ on, attrs }">
+                      <v-btn
+                        icon
+                        v-bind="attrs"
+                        v-on="on"
+                        @click.stop="writeReview(item)"
+                      >
+                        <v-icon>mdi-pencil-plus-outline</v-icon>
+                      </v-btn>
+                    </template>
+                    <span>리뷰 쓰기</span>
+                  </v-tooltip>
                 </v-card-actions>
               </div>
           </div>

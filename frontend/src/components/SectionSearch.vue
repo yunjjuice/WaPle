@@ -24,9 +24,19 @@
                 {{ item.road_address_name }}
               </v-card-text>
               <v-card-actions>
-                <v-btn icon @click.stop="showDialog(item)">
-                  <v-icon>mdi-bookmark-plus-outline</v-icon>
-                </v-btn>
+                <v-tooltip bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn
+                      icon
+                      v-bind="attrs"
+                      v-on="on"
+                      @click.stop="showDialog(item)"
+                    >
+                      <v-icon>mdi-bookmark-plus-outline</v-icon>
+                    </v-btn>
+                  </template>
+                  <span>북마크 등록</span>
+                </v-tooltip>
               </v-card-actions>
             </div>
           </div>
