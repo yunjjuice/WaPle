@@ -10,8 +10,21 @@
     <v-tab to="/review">리뷰</v-tab>
     <v-tab to="/voting">약속</v-tab>
   </v-tabs>
-  <option-filter v-if="bookmark"></option-filter>
-  <router-view></router-view>
+  <!-- TODO : 픽셀말고 높이 받아와서 스크롤 만들도록 수정 -->
+  <v-container
+    id="scroll-target"
+    style="max-height: 640px"
+    class="overflow-y-auto"
+  >
+    <v-row
+      v-scroll:#scroll-target="onScroll"
+      justify="center"
+      style="height: 640px"
+    >
+      <option-filter v-if="bookmark"></option-filter>
+      <router-view></router-view>
+    </v-row>
+  </v-container>
 </v-main>
 </template>
 
@@ -32,6 +45,11 @@ export default {
   },
   created() {
     store.dispatch('getGroupsThemes');
+  },
+  methods: {
+    onScroll(e) {
+      this.offsetTop = e.target.scrollTop;
+    },
   },
 };
 </script>

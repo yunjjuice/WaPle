@@ -12,6 +12,12 @@ export default {
   components: {
     NavHeader,
   },
+  mounted() {
+    document.documentElement.style.overflowY = 'hidden';
+  },
+  beforeUpdate() {
+    document.documentElement.style.overflowY = 'hidden';
+  },
 };
 </script>
 
