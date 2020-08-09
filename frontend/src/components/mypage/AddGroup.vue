@@ -4,8 +4,6 @@
       v-model="dialog"
       max-width="600px"
     >
-      <!-- Modal 버튼부분 -->
-      <!-- v-slot:activator 의 의미를 모르겠음.. -->
       <template v-slot:activator="{ on, attrs }">
         <v-expansion-panel class="mt-4 border">
           <v-expansion-panel-header
@@ -19,7 +17,6 @@
         </v-expansion-panel>
       </template>
 
-      <!-- Modal 안쪽 내용 -->
       <v-card>
         <v-card-title>
           <span class="headline">그룹 추가하기</span>
@@ -57,7 +54,6 @@ import store from '@/store/index';
 import api from '@/utils/api';
 
 export default {
-  name: 'GroupAdd2',
   data() {
     return {
       dialog: false,
@@ -70,15 +66,6 @@ export default {
     };
   },
   methods: {
-    getGroups() {
-      const userId = this.$session.get('uid');
-      api.get(`groups/of/${userId}`)
-        .then((res) => {
-          this.groups = res.data;
-          // console.log(this.groups, '그룹리스트를 가져왔어요!');
-        })
-        .catch((err) => console.log(err));
-    },
     isValid() {
       this.$refs.groupForm.validate();
       if (this.valid) {
@@ -87,16 +74,15 @@ export default {
     },
     addGroup() {
       this.dialog = false;
-      // console.log('add Group!!');
       api.post('groups/', {
         name: this.name,
         userId: this.$session.get('uid'),
       })
         .then(() => {
-          // 부모에게 addGroup 이란 event 발생후, getGroups() 를 실행시켜서 화면에 바로 보이게 업데이트
           this.$emit('addGroup');
           const payload = { color: 'success', msg: '그룹 생성 완료' };
           store.dispatch('showSnackbar', payload);
+          store.dispatch('getGroups');
         })
         .catch(() => {
           const payload = { color: 'error', msg: '그룹 생성 실패' };
