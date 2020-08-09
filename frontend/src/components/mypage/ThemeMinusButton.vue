@@ -3,7 +3,6 @@
     <v-dialog v-model="dialog" persistent max-width="290">
       <template v-slot:activator="{ on, attrs }">
         <v-icon
-          v-if="isAdmin"
           v-bind="attrs"
           v-on="on"
         >
@@ -36,7 +35,6 @@ export default {
   data() {
     return {
       dialog: false,
-      isAdmin: false,
     };
   },
   methods: {

@@ -8,7 +8,6 @@
       <!-- v-slot:activator 의 의미를 모르겠음.. -->
       <template v-slot:activator="{ on, attrs }">
         <v-icon
-          v-if="isAdmin"
           v-bind="attrs"
           v-on="on"
         >
@@ -61,7 +60,6 @@ export default {
   data() {
     return {
       dialog: false,
-      isAdmin: false,
       themeName: '',
       rules: {
         required: (value) => !!value || 'theme can not be empty',
