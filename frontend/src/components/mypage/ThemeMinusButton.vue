@@ -38,41 +38,18 @@ export default {
     };
   },
   methods: {
-    getGroupInfo(groupId) {
-      // 그룹에 속한 유저목록 가져오기
-      api.get(`groups/${groupId}`)
-        .then((res) => {
-          console.log(res, '유저목록 가져왔어요!');
-          this.groupUsers = res.data;
-        })
-        .catch((err) => console.log(err));
-
-      // 그룹에 속한 테마목록 가져오기
-      api.get(`themes/${groupId}`, { headers: { token: this.$session.get('token') } })
-        .then((res) => {
-          console.log(res, '테마목록 가져왔어요!');
-          this.groupThemes = res.data;
-        })
-        .catch((err) => console.log(err));
-    },
     delTheme(groupId, themeId) {
-      console.log('delTheme() 실행');
       this.dialog = false;
       api.delete(`/themes/${groupId}/${themeId}/`, {
         headers: {
           token: this.$session.get('token'),
         },
       })
-        .then((res) => {
-          console.log(res, '테마 삭제 성공');
-          // this.getGroupInfo(groupId);
+        .then(() => {
           this.$emit('delTheme');
         })
         .catch((err) => console.log(err));
     },
-  },
-  created() {
-    this.isAdmin = this.$session.get('admin');
   },
 };
 </script>

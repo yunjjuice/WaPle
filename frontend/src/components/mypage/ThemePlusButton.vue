@@ -4,8 +4,6 @@
       v-model="dialog"
       max-width="600px"
     >
-      <!-- Modal 버튼부분 -->
-      <!-- v-slot:activator 의 의미를 모르겠음.. -->
       <template v-slot:activator="{ on, attrs }">
         <v-icon
           v-bind="attrs"
@@ -15,7 +13,6 @@
         </v-icon>
       </template>
 
-      <!-- Modal 안쪽 내용 -->
       <v-card>
         <v-card-title>
           <span class="headline">테마 추가하기</span>
@@ -104,9 +101,6 @@ export default {
       }
       this.dialog = false;
     },
-  },
-  created() {
-    this.isAdmin = this.$session.get('admin');
   },
 };
 </script>
