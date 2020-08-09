@@ -6,6 +6,7 @@ import map from '@/store/modules/map';
 import place from '@/store/modules/place';
 import review from '@/store/modules/review';
 import snackbar from '@/store/modules/snackbar';
+import group from '@/store/modules/group';
 
 Vue.use(Vuex);
 
@@ -17,5 +18,6 @@ export default new Vuex.Store({
     place,
     review,
     snackbar,
+    group,
   },
 });
