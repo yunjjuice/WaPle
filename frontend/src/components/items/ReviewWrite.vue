@@ -2,8 +2,8 @@
 <v-main>
   <v-container fluid>
   <v-bottom-sheet v-model="dialog" persistent inset attach scrollable>
-    <v-sheet class="text-center">
-      <v-toolbar>
+    <v-sheet class="text-center sheet">
+      <v-toolbar dense dark>
       <v-btn
         icon
         @click="close"
@@ -28,6 +28,14 @@
           label="제목"
           outlined
         ></v-text-field>
+        <v-select
+          label="그룹 선택"
+          :items="groups"
+          v-model="group"
+          item-text="name"
+          return-object
+          outlined
+        ></v-select>
         <v-menu
           ref="menu"
           v-model="menu"
@@ -50,7 +58,7 @@
           <v-date-picker v-model="visitDate" no-title scrollable>
             <v-spacer></v-spacer>
             <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+            <v-btn text color="primary" @click="$refs.menu.save(visitDate)">OK</v-btn>
           </v-date-picker>
         </v-menu>
         <v-textarea
@@ -78,13 +86,15 @@ export default {
   data() {
     return {
       title: '',
-      visitDate: new Date().toISOString().substr(0, 10),
+      group: {},
+      visitDate: '',
       content: '',
       menu: false,
     };
   },
   computed: {
     dialog: () => store.getters.writeDialog,
+    groups: () => store.getters.groups,
   },
   methods: {
     close() {
@@ -95,7 +105,10 @@ export default {
       this.offsetTop = e.target.scrollTop;
     },
     initReview() { // 내용 초기화
-
+      this.title = '';
+      this.group = {};
+      this.visitDate = null;
+      this.content = '';
     },
     writeReview() { // 리뷰 작성
       api.post('/reviews', {
@@ -103,7 +116,7 @@ export default {
         visitDate: this.visitDate,
         content: this.content,
         userId: this.$session.get('uid'),
-        groupId: store.getters.item.groupId,
+        groupId: this.group.groupId,
         placeId: store.getters.item.placeId,
         themeId: store.getters.item.themeId,
       }, {
@@ -123,17 +136,7 @@ export default {
 </script>
 
 <style scoped>
-.v-bottom-sheet {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  height: 91.5%;
-  width: 100%;
-}
-.v-bottom-sheet.v-bottom-sheet--inset {
-  max-width: 100%;
-}
-.v-sheet {
+.sheet {
   position: absolute;
   bottom: 0;
   right: 0;

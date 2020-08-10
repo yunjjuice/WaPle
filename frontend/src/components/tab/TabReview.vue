@@ -3,7 +3,7 @@
   <v-container>
     <v-row align='center' justify='center'>
       <v-col
-        v-for="(item, i) in items"
+        v-for="(item, i) in filteredArray"
           :key="i"
           cols="12"
       >
@@ -38,7 +38,12 @@
                         v-on="on"
                         @click.stop="readReview(item)"
                       >
-                        <v-icon>mdi-text-box-multiple-outline</v-icon>
+                        <v-badge
+                          color="blue"
+                          :content="item.count"
+                        >
+                          <v-icon>mdi-text-box-multiple-outline</v-icon>
+                        </v-badge>
                       </v-btn>
                     </template>
                     <span>리뷰 읽기</span>
@@ -92,11 +97,30 @@ export default {
       },
     }).then(({ data }) => {
       this.items = data;
-      this.$store.dispatch('doUpdate', this.items);
+      this.$store.dispatch('doUpdate', this.filteredArray);
     });
   },
   computed: {
     appointmentDialog: () => store.getters.appointmentDialog,
+    uniquePlace() {
+      return this.items.reduce((seed, cur) => Object.assign(seed, { [cur.placeId]: cur }), {});
+    },
+    filteredArray() {
+      const ret = {};
+      for (let i = 0; i < this.items.length; i += 1) {
+        const key = this.items[i].placeId;
+        ret[key] = {
+          placeId: key,
+          name: this.items[i].name,
+          address: this.items[i].address,
+          lat: this.items[i].lat,
+          lng: this.items[i].lng,
+          url: this.items[i].url,
+          count: ret[key] && ret[key].count ? ret[key].count + 1 : 1,
+        };
+      }
+      return Object.values(ret);
+    },
   },
   methods: {
     click() {
@@ -113,8 +137,9 @@ export default {
       this.$router.push('./reviewlist');
     },
     writeReview(item) {
-      this.$store.dispatch('updateItem', item);
-      this.$store.dispatch('showWriteDialog');
+      store.dispatch('updateItem', item);
+      store.dispatch('showWriteDialog');
+      store.dispatch('getGroups');
     },
   },
 };
