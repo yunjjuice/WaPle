@@ -17,7 +17,8 @@
         from PROMISES
                  inner join `GROUPS` G on PROMISES.GROUP_ID = G.GROUP_ID
         where G.GROUP_ID in (select GROUP_MEMBERS.GROUP_ID from GROUP_MEMBERS where GROUP_MEMBERS.USER_ID = #{userId})
-          and PROMISE_DATE > current_time();
+          and PROMISE_DATE > current_time()
+        order by PROMISE_DATE;
     </select>
 
     <update id="update" parameterType="com.ssafy.waple.promise.dto.PromiseDto">
