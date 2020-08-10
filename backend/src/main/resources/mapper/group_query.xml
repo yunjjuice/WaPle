@@ -2,18 +2,11 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.ssafy.waple.group.dao.GroupDao">
     <select id="readAll" resultType="com.ssafy.waple.group.dto.GroupDto">
-        select GROUP_ID, USER_ID, NAME, TOKEN
+        select GROUP_ID, NAME, TOKEN
         from `GROUPS`
         where GROUP_ID in (select GROUP_ID
                            from GROUP_MEMBERS
                            where USER_ID = #{userId})
-    </select>
-
-    <select id="isOwner" resultType="int">
-        select count(*)
-        from `GROUPS`
-        where GROUP_ID = #{groupId}
-          and USER_ID = #{userId}
     </select>
 
     <select id="readGroupMembers" resultType="com.ssafy.waple.group.dto.GroupMemberDto">
@@ -23,13 +16,19 @@
         where GROUP_ID = #{groupId}
     </select>
 
+    <select id="numberOfMembers" resultType="int">
+        select count(*)
+        from GROUP_MEMBERS
+        where GROUP_ID = #{groupId}
+    </select>
+
     <insert id="create" useGeneratedKeys="true" keyProperty="groupId"
-            parameterType="com.ssafy.waple.group.dto.GroupDto">
-        insert into `GROUPS` (USER_ID, NAME)
-        values (#{userId}, #{name})
+            parameterType="com.ssafy.waple.group.dto.GroupCreateDto">
+        insert into `GROUPS` (NAME)
+        values (#{name})
     </insert>
 
-    <insert id="createMember" parameterType="com.ssafy.waple.group.dto.GroupDto">
+    <insert id="createMember" parameterType="com.ssafy.waple.group.dto.GroupCreateDto">
         insert into GROUP_MEMBERS (GROUP_ID, USER_ID)
         values (
         <choose>
@@ -49,8 +48,7 @@
 
     <update id="update" parameterType="com.ssafy.waple.group.dto.GroupDto">
         update `GROUPS`
-        set USER_ID = #{userId},
-            NAME    = #{name}
+        set NAME = #{name}
         where GROUP_ID = #{groupId}
     </update>
 

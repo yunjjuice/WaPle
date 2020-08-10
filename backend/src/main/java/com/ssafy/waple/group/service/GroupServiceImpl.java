@@ -10,10 +10,10 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
 import com.ssafy.waple.group.dao.GroupDao;
+import com.ssafy.waple.group.dto.GroupCreateDto;
 import com.ssafy.waple.group.dto.GroupDto;
 import com.ssafy.waple.group.dto.GroupMemberDto;
 import com.ssafy.waple.group.exception.DuplicateMemberException;
-import com.ssafy.waple.group.exception.GroupIsNotEmptyException;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
 import com.ssafy.waple.group.exception.InvalidGroupTokenException;
 import com.ssafy.waple.group.exception.MemberNotFoundException;
@@ -44,30 +44,27 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	public boolean isOwner(int groupId, long userId) {
-		return dao.isOwner(groupId, userId) == 1;
-	}
-
-	@Override
-	public void create(GroupDto group) {
+	public void create(GroupCreateDto group) {
 		dao.create(group);
 		generateToken(group);
 		createMember(group);
 	}
 
 	//JWT로 Token 생성하고 db에 삽입
-	private void generateToken(GroupDto group) {
+	private void generateToken(GroupCreateDto group) {
 		String token = JWT.create()
 			.withIssuer("Toppings")
 			.withSubject("Invite group")
 			.withClaim("groupId", group.getGroupId())
 			.withClaim("name", group.getName())
 			.sign(Algorithm.HMAC256("waple_project"));
-		dao.updateToken(group.getGroupId(), token);
+		if (dao.updateToken(group.getGroupId(), token) < 1) {
+			throw new GroupNotFoundException(group.getGroupId());
+		}
 	}
 
 	@Override
-	public void createMember(GroupDto group) {
+	public void createMember(GroupCreateDto group) {
 		try {
 			dao.createMember(group);
 		} catch (DataAccessException e) {
@@ -96,16 +93,8 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public void delete(int groupId, long userId) {
-		boolean isOwner = isOwner(groupId, userId);
-		if (isOwner) {
-			List<GroupMemberDto> members = readGroupMembers(groupId);
-			if (members.size() > 1 || members.get(0).getUserId() != userId) {
-				throw new GroupIsNotEmptyException(groupId);
-			}
-		}
-
 		deleteMember(groupId, userId);
-		if (isOwner && dao.delete(groupId) < 1) {
+		if (dao.numberOfMembers(groupId) == 0 && dao.delete(groupId) < 1) {
 			throw new GroupNotFoundException(groupId);
 		}
 	}
