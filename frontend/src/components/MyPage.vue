@@ -97,6 +97,13 @@ export default {
   created() {
     this.uname = this.$session.get('uname');
     this.isAdmin = this.$session.get('admin');
+    // document.documentElement.style.overflowY = 'auto';
+  },
+  mounted() {
+    document.documentElement.style.overflowY = 'auto';
+  },
+  beforeUpdate() {
+    document.documentElement.style.overflowY = 'auto';
   },
 };
 </script>

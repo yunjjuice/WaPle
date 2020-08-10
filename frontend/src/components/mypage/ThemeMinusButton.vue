@@ -1,15 +1,21 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="290">
+    <v-tooltip bottom>
       <template v-slot:activator="{ on, attrs }">
-        <v-icon
-          v-if="isAdmin"
+        <v-btn
+          icon
           v-bind="attrs"
           v-on="on"
+          @click.stop="dialog = true"
         >
-          mdi-minus-circle-outline
-        </v-icon>
+          <v-icon>
+            mdi-minus-circle-outline
+          </v-icon>
+        </v-btn>
       </template>
+      <span>테마 삭제</span>
+    </v-tooltip>
+    <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
         <v-card-title>정말 삭제하시겠습니까?</v-card-title>
         <v-card-actions>
@@ -36,45 +42,21 @@ export default {
   data() {
     return {
       dialog: false,
-      isAdmin: false,
     };
   },
   methods: {
-    getGroupInfo(groupId) {
-      // 그룹에 속한 유저목록 가져오기
-      api.get(`groups/${groupId}`)
-        .then((res) => {
-          console.log(res, '유저목록 가져왔어요!');
-          this.groupUsers = res.data;
-        })
-        .catch((err) => console.log(err));
-
-      // 그룹에 속한 테마목록 가져오기
-      api.get(`themes/${groupId}`, { headers: { token: this.$session.get('token') } })
-        .then((res) => {
-          console.log(res, '테마목록 가져왔어요!');
-          this.groupThemes = res.data;
-        })
-        .catch((err) => console.log(err));
-    },
     delTheme(groupId, themeId) {
-      console.log('delTheme() 실행');
       this.dialog = false;
       api.delete(`/themes/${groupId}/${themeId}/`, {
         headers: {
           token: this.$session.get('token'),
         },
       })
-        .then((res) => {
-          console.log(res, '테마 삭제 성공');
-          // this.getGroupInfo(groupId);
+        .then(() => {
           this.$emit('delTheme');
         })
         .catch((err) => console.log(err));
     },
-  },
-  created() {
-    this.isAdmin = this.$session.get('admin');
   },
 };
 </script>

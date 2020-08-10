@@ -6,79 +6,102 @@
       </v-btn>
       <v-toolbar-title>{{ keyword }}</v-toolbar-title>
     </v-toolbar>
-    <v-container>
-      <v-row align='center' justify='center'>
-        <v-col
-          v-for="(item, i) in searchResult"
-          :key="i"
-          cols="12"
-        >
-        <v-card>
-          <div class="d-flex flex-no-wrap justify-space-between">
-            <div>
-              <v-card-title
-                class="headline"
-                v-text="item.place_name"
-              ></v-card-title>
-              <v-card-text>
-                {{ item.road_address_name }}
-              </v-card-text>
-              <v-card-actions>
-                <v-btn icon @click.stop="showDialog(item)">
-                  <v-icon>mdi-bookmark-plus-outline</v-icon>
-                </v-btn>
-              </v-card-actions>
-            </div>
-          </div>
-        </v-card>
-      </v-col>
-    </v-row>
-  <v-dialog
-    v-model="dialog"
-    width="400"
-    height="300"
-  >
-    <v-card align="center">
-      <v-card-title class="headline yellow lighten-3">북마크등록</v-card-title>
-      <validation-observer ref="observer">
-        <v-row justify="center">
-          <v-col cols="15" sm="6">
-            <validation-provider v-slot="{ errors }" name="group" rules="required">
-              <v-select
-                :items="groups"
-                v-model="group"
-                item-text="name"
-                label="group"
-                return-object
-                required
-                :error-messages="errors"
-                @change="findTheme"
-              ></v-select>
-            </validation-provider>
-          </v-col>
-        </v-row>
-        <v-row justify="center">
-          <v-col class="d-flex" cols="15" sm="6">
-            <validation-provider v-slot="{ errors }" name="theme" rules="required">
-              <v-select
-                :items="themes"
-                v-model="theme"
-                item-text="name"
-                label="theme"
-                return-object
-                required
-                :error-messages="errors"
-              ></v-select>
-            </validation-provider>
-          </v-col>
-        </v-row>
-        <v-row justify="center">
-          <v-btn depressed color="primary" @click="isValid">추가하기</v-btn>
-        </v-row>
-      </validation-observer>
-    </v-card>
-  </v-dialog>
-  </v-container>
+    <!-- TODO : 픽셀말고 높이 받아와서 스크롤 만들도록 수정 -->
+    <v-container
+      id="scroll-target"
+      style="max-height: 640px"
+      class="overflow-y-auto"
+    >
+      <v-row
+        v-scroll:#scroll-target="onScroll"
+        justify="center"
+        style="height: 640px"
+      >
+        <v-container>
+          <v-row align='center' justify='center'>
+            <v-col
+              v-for="(item, i) in searchResult"
+              :key="i"
+              cols="12"
+            >
+              <v-card>
+                <div class="d-flex flex-no-wrap justify-space-between">
+                  <div>
+                    <v-card-title
+                      class="headline"
+                      v-text="item.place_name"
+                    ></v-card-title>
+                    <v-card-text>
+                      {{ item.road_address_name }}
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                            @click.stop="showDialog(item)"
+                          >
+                            <v-icon>mdi-bookmark-plus-outline</v-icon>
+                          </v-btn>
+                        </template>
+                        <span>북마크 등록</span>
+                      </v-tooltip>
+                    </v-card-actions>
+                  </div>
+                </div>
+              </v-card>
+            </v-col>
+          </v-row>
+          <v-dialog
+            v-model="dialog"
+            width="400"
+            height="300"
+          >
+            <v-card align="center">
+              <v-card-title class="headline yellow lighten-3">북마크등록</v-card-title>
+              <validation-observer ref="observer">
+                <v-row justify="center">
+                  <v-col cols="15" sm="6">
+                    <validation-provider v-slot="{ errors }" name="group" rules="required">
+                      <v-select
+                        :items="groups"
+                        v-model="group"
+                        item-text="name"
+                        label="group"
+                        return-object
+                        required
+                        :error-messages="errors"
+                        @change="findTheme"
+                      ></v-select>
+                    </validation-provider>
+                  </v-col>
+                </v-row>
+                <v-row justify="center">
+                  <v-col class="d-flex" cols="15" sm="6">
+                    <validation-provider v-slot="{ errors }" name="theme" rules="required">
+                      <v-select
+                        :items="themes"
+                        v-model="theme"
+                        item-text="name"
+                        label="theme"
+                        return-object
+                        required
+                        :error-messages="errors"
+                      ></v-select>
+                    </validation-provider>
+                  </v-col>
+                </v-row>
+                <v-row justify="center">
+                  <v-btn depressed color="primary" @click="isValid">추가하기</v-btn>
+                </v-row>
+              </validation-observer>
+            </v-card>
+          </v-dialog>
+        </v-container>
+      </v-row>
+    </v-container>
   </v-main>
 </template>
 
