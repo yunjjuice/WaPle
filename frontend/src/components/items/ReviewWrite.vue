@@ -73,9 +73,8 @@
             drag-text='사진 업로드'
             browse-text='파일 고르기'
             drop-text='업로드'
-            primary-text='기본 이미지'
-            mark-is-primary-text='기본 이미지로 설정'
             accept='image/jpeg,image/png,image/jpg'
+            :show-primary=false
             @upload-success="uploadImageSuccess"
             @before-remove="beforeRemove"
             @edit-image="editImage"
@@ -111,6 +110,7 @@ export default {
       menu: false,
       images: [],
       formDatas: [],
+      maxImageSize: 512 * 1024, // 512KB
     };
   },
   computed: {
@@ -172,7 +172,27 @@ export default {
         }
       });
     },
-    uploadImageSuccess(formData) {
+    checkImageExtension(filename) {
+      const extension = filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
+      if (extension !== 'jpeg' && extension !== 'png' && extension !== 'jpg') {
+        store.dispatch('showSnackbar', { color: 'error', msg: 'jpg, jpeg, png 파일만 업로드 가능합니다.' });
+        return false;
+      }
+      return true;
+    },
+    checkImageSize(file) {
+      if (file.size > this.maxImageSize) {
+        store.dispatch('showSnackbar', { color: 'error', msg: '파일이 너무 큽니다.' });
+        return false;
+      }
+      return true;
+    },
+    uploadImageSuccess(formData, index, fileList) {
+      if (!this.checkImageExtension(fileList[index].name)
+          || !this.checkImageSize(formData.get('file'))) {
+        fileList.pop();
+        return;
+      }
       this.formDatas.push(formData);
     },
     beforeRemove(index, done) {
