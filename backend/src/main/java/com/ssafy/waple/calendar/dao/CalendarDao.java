@@ -13,6 +13,5 @@ import com.ssafy.waple.group.dto.GroupDto;
 public interface CalendarDao {
 
 	// 스케줄 조회
-	List<CalendarDto> readAll(@Param("userId")long userId, @Param("startDate")Date startDate,
-		@Param("lastDate") Date lastDate);
+	List<CalendarDto> readAll(long userId);
 }
