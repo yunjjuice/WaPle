@@ -20,6 +20,7 @@ import com.ssafy.waple.theme.controller.ThemeController;
 import com.ssafy.waple.theme.dao.ThemeDao;
 import com.ssafy.waple.theme.dto.ThemeDto;
 import com.ssafy.waple.theme.dto.ThemeGroupAll;
+import com.ssafy.waple.theme.dto.ThemeGroupPlace;
 import com.ssafy.waple.theme.exception.DuplicatedThemeException;
 import com.ssafy.waple.theme.exception.ThemeNotFoundException;
 import com.ssafy.waple.theme.exception.UserNotInGroupException;
@@ -95,7 +96,19 @@ public class ThemeServiceImpl implements ThemeService {
 			dto.setThemeIds(Arrays.stream(dto.getThemes().split(",")).map(Integer::parseInt)
 				.collect(Collectors.toList()));
 			dto.setThemeNames(Arrays.stream(dto.getThemeName().split(",")).collect(Collectors.toList()));
+			dto.setGroupNames(Arrays.stream(dto.getGroupName().split(",")).collect(Collectors.toList()));
 		}
 		return list;
+	}
+
+	@Override
+	public List<ThemeGroupPlace> readAll(String token, long userId, String placeId) {
+		List<ThemeGroupPlace> list = dao.readAllByPlace(userId, placeId);
+		return list;
+	}
+
+	@Override
+	public List<ThemeGroupPlace> readAllById(String token, long userId) {
+		return dao.readAllById(userId);
 	}
 }

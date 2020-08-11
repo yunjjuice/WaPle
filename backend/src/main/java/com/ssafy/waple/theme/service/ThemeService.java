@@ -6,6 +6,7 @@ import java.util.Map;
 import com.ssafy.waple.theme.controller.ThemeController;
 import com.ssafy.waple.theme.dto.ThemeDto;
 import com.ssafy.waple.theme.dto.ThemeGroupAll;
+import com.ssafy.waple.theme.dto.ThemeGroupPlace;
 
 public interface ThemeService {
 
@@ -23,4 +24,9 @@ public interface ThemeService {
 
 	// 테마 및 그룹 조회
 	List<ThemeGroupAll> readAll(String token, long userId);
+
+	// 테마 및 그룹 조회
+	List<ThemeGroupPlace> readAll(String token, long userId, String placeId);
+
+	List<ThemeGroupPlace> readAllById(String token, long userId);
 }

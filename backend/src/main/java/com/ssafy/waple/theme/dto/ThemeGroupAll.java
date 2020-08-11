@@ -8,6 +8,12 @@ public class ThemeGroupAll {
 	@ApiModelProperty(value = "그룹 아이디", example = "1")
 	private int groupId;
 
+	@ApiModelProperty(value = "그룹 이름들(합친것)", example = "먹방,찜질방")
+	private String groupName;
+
+	@ApiModelProperty(value = "그룹 이름들", example = "[먹방, 찜질방]")
+	private List<String> groupNames;
+
 	@ApiModelProperty(value = "테마 아이디들(합친것)", example = "1,2,3")
 	private String themes;
 
@@ -58,5 +64,21 @@ public class ThemeGroupAll {
 
 	public void setThemeIds(List<Integer> themeIds) {
 		this.themeIds = themeIds;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public List<String> getGroupNames() {
+		return groupNames;
+	}
+
+	public void setGroupNames(List<String> groupNames) {
+		this.groupNames = groupNames;
 	}
 }

@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ssafy.waple.calendar.dao.CalendarDao">
-    <select id="readAll" parameterType="map"
-            resultType="com.ssafy.waple.calendar.dto.CalendarDto">
+    <select id="readAll" parameterType="long" resultType="com.ssafy.waple.calendar.dto.CalendarDto">
         select * from PROMISES
-        <![CDATA[
-            where PROMISE_DATE >= #{startDate}
-            AND PROMISE_DATE <= #{lastDate}
-        ]]>
-        AND GROUP_ID IN (select GROUP_MEMBERS.GROUP_ID FROM GROUP_MEMBERS WHERE GROUP_MEMBERS.USER_ID = #{userId})
-        ORDER BY PROMISE_ID
+where exists(select GROUP_ID
+            FROM GROUP_MEMBERS
+            WHERE USER_ID = #{userId})
+ORDER BY PROMISE_ID
     </select>
 </mapper>

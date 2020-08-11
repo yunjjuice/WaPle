@@ -40,8 +40,7 @@ public class CalendarController {
 	@Autowired
 	PermissionCheck permissionCheck;
 
-	// Unit : MONTH, WEEK, DAY (연 조회, 월 조회, 일 조회
-	@RequestMapping(method = RequestMethod.GET, value = "/{userId}/{unit}/{year}/{month}/{day}"
+	@RequestMapping(method = RequestMethod.GET, value = "/{userId}"
 		,produces = "application/json")
 	@ApiOperation(value = "개인 스케줄 리스트", notes = "개인 스케쥴 전체를 보여주는 API", response = CalendarDto.class)
 	@ApiImplicitParams({
@@ -55,12 +54,9 @@ public class CalendarController {
 		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
 		@ApiResponse(code = 404, message = "스케줄 조회 실패")
 	})
-	private ResponseEntity<?> readAll(@PathVariable("userId")Long userId, @PathVariable("unit")String unit,
-		@PathVariable("year")int year, @PathVariable("month")int month, @PathVariable("day")int day,
-		@RequestHeader(value = "token")String token) {
+	private ResponseEntity<?> readAll(@PathVariable("userId")Long userId, @RequestHeader(value = "token")String token) {
 		logger.debug("스케줄 호출");
-		// long userId = permissionCheck.check(token).getUserId();
-		List<CalendarDto> result = service.readAll(userId, unit, year, month, day);
+		List<CalendarDto> result = service.readAll(token, userId);
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 }

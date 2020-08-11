@@ -64,6 +64,8 @@ export default {
         alert('검색어를 입력해주세요');
         return;
       }
+      store.dispatch('updatePage', 1);
+      store.dispatch('initResult', []);
       store.dispatch('updateKeyword', this.keyword);
       store.dispatch('search', this.keyword);
       this.$router.push('/search');
