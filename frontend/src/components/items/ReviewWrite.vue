@@ -60,19 +60,20 @@
           rows="10"
           no-resize
         ></v-textarea>
-        <vue-upload-multiple-image
-          drag-text='사진 업로드'
-          browse-text='파일 고르기'
-          drop-text='업로드'
-          primary-text='기본 이미지'
-          mark-is-primary-text='기본 이미지로 설정'
-          accept='image/jpeg,image/png,image/jpg'
-          @upload-success="uploadImageSuccess"
-          @before-remove="beforeRemove"
-          @edit-image="editImage"
-          @data-change="dataChange"
-          :data-images="images"
-        ></vue-upload-multiple-image>
+        <div style="display: flex; justify-content: center;">
+          <vue-upload-multiple-image
+            drag-text='사진 업로드'
+            browse-text='파일 고르기'
+            drop-text='업로드'
+            primary-text='기본 이미지'
+            mark-is-primary-text='기본 이미지로 설정'
+            accept='image/jpeg,image/png,image/jpg'
+            @upload-success="uploadImageSuccess"
+            @before-remove="beforeRemove"
+            @edit-image="editImage"
+            :data-images="images"
+          ></vue-upload-multiple-image>
+        </div>
         <v-btn color="primary" @click="writeReview">작성하기</v-btn>
         <v-btn color="error" @click="close">취소하기</v-btn>
       </v-form>
@@ -86,6 +87,7 @@
 <script>
 import store from '@/store/index';
 import api from '@/utils/api';
+import axios from 'axios';
 import VueUploadMultipleImage from 'vue-upload-multiple-image';
 
 export default {
@@ -99,6 +101,7 @@ export default {
       content: '',
       menu: false,
       images: [],
+      formDatas: [],
     };
   },
   computed: {
@@ -115,13 +118,26 @@ export default {
     initReview() { // 내용 초기화
 
     },
-    writeReview() { // 리뷰 작성
-      for (let index = 0; index < this.images.length; index += 1) {
-        const element = this.images[index];
-        api.post('/reviews/photo', element)
-          .then((res) => { console.log(res, 'success'); })
-          .catch((err) => { console.log(err, 'fail'); });
+    uploadImage(formData) {
+      return new Promise((resolve, reject) => {
+        axios.post('http://i3a204.p.ssafy.io:8888/reviews/images', formData, {
+          headers: {
+            'Content-type': 'multipart/form-data',
+          },
+        })
+          .then((res) => resolve(res.data))
+          .catch((err) => reject(err));
+      });
+    },
+    async writeReview() { // 리뷰 작성
+      /* eslint-disable no-restricted-syntax */
+      /* eslint-disable no-await-in-loop  */
+      let media = '';
+      for (const data of this.formDatas) {
+        media += await this.uploadImage(data);
+        media += ';';
       }
+
       api.post('/reviews', {
         title: this.title,
         visitDate: this.visitDate,
@@ -130,6 +146,7 @@ export default {
         groupId: store.getters.item.groupId,
         placeId: store.getters.item.placeId,
         themeId: store.getters.item.themeId,
+        media,
       }, {
         headers: {
           token: this.$session.get('token'),
@@ -142,26 +159,15 @@ export default {
         }
       });
     },
-    uploadImageSuccess(formData, index, fileList) {
-      console.log('data', formData, index, fileList);
-      // Upload image api
-      // axios.post('http://your-url-upload', { data: formData }).then(response => {
-      //   console.log(response)
-      // })
+    uploadImageSuccess(formData) {
+      this.formDatas.push(formData);
     },
-    beforeRemove(index, done, fileList) {
-      console.log('index', index, fileList);
-      // const r = this.confirm('remove image');
-      // if (r === true) {
-      //   this.done();
-      // } else {
-      // }
+    beforeRemove(index, done) {
+      this.formDatas.splice(index, 1);
+      done();
     },
-    editImage(formData, index, fileList) {
-      console.log('edit data', formData, index, fileList);
-    },
-    dataChange(data) {
-      console.log(data);
+    editImage(formData, index) {
+      this.formDatas.splice(index, 1, formData);
     },
   },
 };

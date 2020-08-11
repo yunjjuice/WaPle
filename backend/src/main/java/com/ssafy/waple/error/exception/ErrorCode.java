@@ -16,10 +16,8 @@ public enum ErrorCode {
 	// Group
 	GROUP_IS_NOT_EMPTY(409, "G001", "Group is not empty"),
 
-	// User
-	OWNER_NOT_ALLOW(412, "U001", "Group owner can not leave"),
-
-	;
+	//Upload image
+	FILE_SAVE_FAILED(404, "F001", "Failed to save file");
 
 	private final String code;
 	private final String message;
