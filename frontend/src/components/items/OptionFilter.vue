@@ -1,5 +1,5 @@
 <template>
-<v-container fill-width class="white lighten-4 elevation-2">
+<v-container fill-width class="white lighten-4 elevation-2" style="height: 15vh;">
   <v-card-text>
     <v-container>
       <v-layout>
@@ -12,8 +12,11 @@
           item-text="name"
           item-value="type"
           max-height="auto"
+          dense
+          solo
           autocomplete
           multiple
+          deletable-chips
           @change="selecting"
           >
             <template slot="item" slot-scope="data">
@@ -47,9 +50,10 @@ export default {
   },
   mounted() {
     const temp = store.getters.groupsThemes;
+    const init = 0;
     for (let index = 0; index < temp.length; index += 1) {
       let innerData = {};
-      innerData.header = temp[index].groupId;
+      innerData.header = temp[index].groupNames[init];
       this.userThemes.push(innerData);
       for (let index2 = 0; index2 < temp[index].themeIds.length; index2 += 1) {
         innerData = {};
@@ -57,7 +61,6 @@ export default {
         innerData.type = { groupId: temp[index].groupId, themeId: temp[index].themeIds[index2] };
         this.userThemes.push(innerData);
       }
-      this.userThemes.push(innerData);
       innerData = {};
       if (index !== temp.length - 1) {
         innerData.divider = true;

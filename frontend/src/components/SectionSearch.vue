@@ -9,13 +9,19 @@
     <!-- TODO : 픽셀말고 높이 받아와서 스크롤 만들도록 수정 -->
     <v-container
       id="scroll-target"
-      style="max-height: 640px"
+      style="height: 85vh"
       class="overflow-y-auto"
     >
+      <transition name="fade">
+        <div class="loading" v-show="loading">
+          <span class="fa fa-spinner fa-spin"></span> Loading
+        </div>
+      </transition>
+        <!-- @scroll="onScroll" -->
       <v-row
         v-scroll:#scroll-target="onScroll"
         justify="center"
-        style="height: 640px"
+        style="height: 100vh"
       >
         <v-container>
           <v-row align='center' justify='center'>
@@ -24,39 +30,39 @@
               :key="i"
               cols="12"
             >
-              <v-card>
-                <!-- <div class="d-flex flex-no-wrap justify-space-between">
-                  <div> -->
-                <v-row>
-                  <v-col cols="9">
-                    <v-card-title
-                      class="headline"
-                      v-text="item.place_name"
-                    ></v-card-title>
-                    <v-card-text>
-                      {{ item.road_address_name }}
-                    </v-card-text>
-                  </v-col>
-                  <v-col cols="3">
-                    <v-card-actions>
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            icon
-                            v-bind="attrs"
-                            v-on="on"
-                            @click.stop="showDialog(item)"
-                          >
-                            <v-icon>mdi-bookmark-plus-outline</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>북마크 등록</span>
-                      </v-tooltip>
-                    </v-card-actions>
-                  </v-col>
-                  <!-- </div>
-                </div> -->
-                </v-row>
+              <v-card @click="clickCard(i)">
+                <div>
+                  <div class="d-flex flex-no-wrap justify-space-between">
+                    <v-row>
+                      <v-col cols="9">
+                        <v-card-title
+                          class="headline"
+                          v-text="item.place_name"
+                        ></v-card-title>
+                        <v-card-text>
+                          {{ item.road_address_name }}
+                        </v-card-text>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-card-actions>
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                icon
+                                v-bind="attrs"
+                                v-on="on"
+                                @click.stop="showDialog(item)"
+                              >
+                                <v-icon>mdi-bookmark-plus-outline</v-icon>
+                              </v-btn>
+                            </template>
+                            <span>북마크 등록</span>
+                          </v-tooltip>
+                        </v-card-actions>
+                      </v-col>
+                    </v-row>
+                  </div>
+                </div>
               </v-card>
             </v-col>
           </v-row>
@@ -147,6 +153,7 @@
 <script>
 import store from '@/store/index';
 import api from '@/utils/api';
+import EventBus from '@/utils/EventBus';
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
 import { required } from 'vee-validate/dist/rules';
 
@@ -171,7 +178,23 @@ export default {
         counter: (value) => (value && value.length <= 50) || 'Max 50 chracters',
       },
       themeValid: true,
+      bottom: false,
+      loading: false,
+      page: 1,
     };
+  },
+  watch: {
+    bottom() {
+      if (this.bottom) {
+        this.loading = true;
+        setTimeout(() => {
+          store.dispatch('updatePage', this.page += 1);
+          store.dispatch('search', this.keyword);
+          this.loading = false;
+        }, 500);
+        this.bottom = false;
+      }
+    },
   },
   components: {
     ValidationObserver,
@@ -272,8 +295,14 @@ export default {
       this.themeDialog = false;
       this.theme = '';
     },
+    clickCard(index) {
+      EventBus.$emit('moveMap', { lat: this.searchResult[index].y, lng: this.searchResult[index].x, index });
+    },
     onScroll(e) {
-      this.offsetTop = e.target.scrollTop;
+      const { scrollTop, clientHeight, scrollHeight } = e.target;
+      if (scrollTop + clientHeight === scrollHeight) {
+        this.bottom = true;
+      }
     },
   },
   created() {
@@ -286,5 +315,21 @@ export default {
 </script>
 
 <style>
-
+.loading {
+  text-align: center;
+  position: absolute;
+  color: #fff;
+  z-index: 9;
+  background: grey;
+  padding: 8px 18px;
+  border-radius: 5px;
+  left: calc(50% - 45px);
+  top: calc(50% - 18px);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
+}
 </style>

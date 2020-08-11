@@ -4,6 +4,7 @@ export default {
     item: {}, // 선택된 장소 정보를 저장
     result: [], // 검색 정보를 저장
     keyword: '', // 검색 키워드
+    page: 1,
   },
   getters: {
     items(state) {
@@ -18,6 +19,9 @@ export default {
     keyword(state) {
       return state.keyword;
     },
+    page(state) {
+      return state.page;
+    },
   },
   mutations: {
     setItems(state, payload) {
@@ -27,10 +31,16 @@ export default {
       state.item = payload.item;
     },
     setResult(state, payload) {
-      state.result = payload.result;
+      state.result = state.result.concat(payload.result);
     },
     setKeyword(state, payload) {
       state.keyword = payload.keyword;
+    },
+    setPage(state, payload) {
+      state.page = payload.page;
+    },
+    initResult(state, payload) {
+      state.result = payload.result;
     },
   },
   actions: {
@@ -43,6 +53,12 @@ export default {
     updateKeyword({ commit }, keyword) {
       commit('setKeyword', { keyword });
     },
+    updatePage({ commit }, page) {
+      commit('setPage', { page });
+    },
+    initResult({ commit }, result) {
+      commit('initResult', { result });
+    },
     search({ commit, getters }) {
       const places = new window.kakao.maps.services.Places();
       const callback = function (result, status) {
@@ -54,7 +70,10 @@ export default {
           alert('검색 결과 중 오류가 발생했습니다.');
         }
       };
-      places.keywordSearch(getters.keyword, callback);
+      places.keywordSearch(getters.keyword, callback, {
+        size: 10,
+        page: getters.page,
+      });
     },
   },
 };

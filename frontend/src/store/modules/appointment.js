@@ -12,6 +12,8 @@ export default {
     appointments: [], // 기존에 만들어진 약속 리스트
     appointment: {}, // 선택된 그룹
     groupsThemes: [], // 유저가 속한 모든 그룹과 그 그룹에 속한 테마
+    boookmark: {},
+    groupTheme: [],
   },
   getters: {
     appointmentDialog(state) {
@@ -41,6 +43,12 @@ export default {
     groupsThemes(state) {
       return state.groupsThemes;
     },
+    boookmark(state) {
+      return state.boookmark;
+    },
+    groupTheme(state) {
+      return state.groupTheme;
+    },
   },
   mutations: {
     trueAppointmentDialog(state) {
@@ -69,6 +77,12 @@ export default {
     },
     setGroupsThemes(state, payload) {
       state.groupsThemes = payload.data;
+    },
+    setBoookmark(state, payload) {
+      state.boookmark = payload;
+    },
+    setGroupTheme(state, payload) {
+      state.groupTheme = payload.data;
     },
   },
   actions: {
@@ -104,6 +118,9 @@ export default {
     },
     updateAppointment({ commit }, appointment) {
       commit('setAppointment', { appointment });
+    },
+    updateBoookmark({ commit }, boookmark) {
+      commit('setBoookmark', { boookmark });
     },
     makeAppointment({ getters, dispatch }) { // 새 약속 추가
       api.post('/promises', {
@@ -148,6 +165,15 @@ export default {
         },
       }).then(({ data }) => {
         commit('setGroupsThemes', { data });
+      });
+    },
+    getGroupTheme({ commit }) {
+      api.get(`/themes/place/${Vue.prototype.$session.get('uid')}`, {
+        headers: {
+          token: Vue.prototype.$session.get('token'),
+        },
+      }).then(({ data }) => {
+        commit('setGroupTheme', { data });
       });
     },
   },
