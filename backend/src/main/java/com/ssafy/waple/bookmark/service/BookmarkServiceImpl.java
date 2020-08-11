@@ -90,7 +90,8 @@ public class BookmarkServiceImpl implements BookmarkService {
 				throw new ThemeIsNullException();
 			}
 			try {
-				result.addAll(dao.read(group));
+				List<BookmarkDto> tempResult = dao.read(group);
+				result.addAll(tempResult);
 			} catch (DataAccessException e) {
 				throw e;
 			}
@@ -114,7 +115,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	public List<BookmarkDto> readAll(String token, long userId, int limit, int offset) {
 		List<BookmarkDto> result = new ArrayList<>();
 		try {
-			result = dao.readAll(userId, limit, offset-1);
+			result = dao.readAll(userId, limit, (offset-1) * limit);
 		} catch (DataAccessException e) {
 			if(e.getMessage().contains(USER_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new UserNotFoundException(userId);

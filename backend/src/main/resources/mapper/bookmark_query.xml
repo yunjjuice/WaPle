@@ -32,7 +32,7 @@
                 (select GROUP_ID
                 FROM GROUP_MEMBERS
                 WHERE USER_ID = #{userId})
-            and B.THEME_ID = T.THEME_ID
+        GROUP BY B.PLACE_ID
         ORDER BY B.GROUP_ID, THEME_ID
         LIMIT #{limit} OFFSET #{offset}
     </select>

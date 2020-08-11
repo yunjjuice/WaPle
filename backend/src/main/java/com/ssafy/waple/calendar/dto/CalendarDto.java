@@ -51,7 +51,6 @@ public class CalendarDto {
 	public void setPromiseId(int promiseId) {
 		this.promiseId = promiseId;
 	}
-	
 
 	@Override
 	public String toString() {
