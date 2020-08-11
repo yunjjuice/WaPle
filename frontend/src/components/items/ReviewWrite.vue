@@ -60,6 +60,19 @@
           rows="10"
           no-resize
         ></v-textarea>
+        <vue-upload-multiple-image
+          drag-text='사진 업로드'
+          browse-text='파일 고르기'
+          drop-text='업로드'
+          primary-text='기본 이미지'
+          mark-is-primary-text='기본 이미지로 설정'
+          accept='image/jpeg,image/png,image/jpg'
+          @upload-success="uploadImageSuccess"
+          @before-remove="beforeRemove"
+          @edit-image="editImage"
+          @data-change="dataChange"
+          :data-images="images"
+        ></vue-upload-multiple-image>
         <v-btn color="primary" @click="writeReview">작성하기</v-btn>
         <v-btn color="error" @click="close">취소하기</v-btn>
       </v-form>
@@ -73,14 +86,19 @@
 <script>
 import store from '@/store/index';
 import api from '@/utils/api';
+import VueUploadMultipleImage from 'vue-upload-multiple-image';
 
 export default {
+  components: {
+    VueUploadMultipleImage,
+  },
   data() {
     return {
       title: '',
       visitDate: new Date().toISOString().substr(0, 10),
       content: '',
       menu: false,
+      images: [],
     };
   },
   computed: {
@@ -98,6 +116,12 @@ export default {
 
     },
     writeReview() { // 리뷰 작성
+      for (let index = 0; index < this.images.length; index += 1) {
+        const element = this.images[index];
+        api.post('/reviews/photo', element)
+          .then((res) => { console.log(res, 'success'); })
+          .catch((err) => { console.log(err, 'fail'); });
+      }
       api.post('/reviews', {
         title: this.title,
         visitDate: this.visitDate,
@@ -117,6 +141,27 @@ export default {
           this.close();
         }
       });
+    },
+    uploadImageSuccess(formData, index, fileList) {
+      console.log('data', formData, index, fileList);
+      // Upload image api
+      // axios.post('http://your-url-upload', { data: formData }).then(response => {
+      //   console.log(response)
+      // })
+    },
+    beforeRemove(index, done, fileList) {
+      console.log('index', index, fileList);
+      // const r = this.confirm('remove image');
+      // if (r === true) {
+      //   this.done();
+      // } else {
+      // }
+    },
+    editImage(formData, index, fileList) {
+      console.log('edit data', formData, index, fileList);
+    },
+    dataChange(data) {
+      console.log(data);
     },
   },
 };
