@@ -25,8 +25,10 @@
               cols="12"
             >
               <v-card>
-                <div class="d-flex flex-no-wrap justify-space-between">
-                  <div>
+                <!-- <div class="d-flex flex-no-wrap justify-space-between">
+                  <div> -->
+                <v-row>
+                  <v-col cols="9">
                     <v-card-title
                       class="headline"
                       v-text="item.place_name"
@@ -34,6 +36,8 @@
                     <v-card-text>
                       {{ item.road_address_name }}
                     </v-card-text>
+                  </v-col>
+                  <v-col cols="3">
                     <v-card-actions>
                       <v-tooltip bottom>
                         <template v-slot:activator="{ on, attrs }">
@@ -49,11 +53,14 @@
                         <span>북마크 등록</span>
                       </v-tooltip>
                     </v-card-actions>
-                  </div>
-                </div>
+                  </v-col>
+                  <!-- </div>
+                </div> -->
+                </v-row>
               </v-card>
             </v-col>
           </v-row>
+          <!-- 북마크 등록 다이얼로그 -->
           <v-dialog
             v-model="dialog"
             width="400"
@@ -89,6 +96,7 @@
                         return-object
                         required
                         :error-messages="errors"
+                        @change="addTheme(theme)"
                       ></v-select>
                     </validation-provider>
                   </v-col>
@@ -97,6 +105,37 @@
                   <v-btn depressed color="primary" @click="isValid">추가하기</v-btn>
                 </v-row>
               </validation-observer>
+            </v-card>
+          </v-dialog>
+          <!-- 테마 추가 다이얼로그 -->
+          <v-dialog v-model="themeDialog" max-width="600px">
+            <v-card>
+              <v-card-title>
+                <span class="headline">테마 추가하기</span>
+              </v-card-title>
+              <v-card-text>
+                <v-container>
+                  <v-row>
+                    <v-col cols="12">
+                      <v-form ref="themeForm" v-model="themeValid">
+                        <v-text-field
+                          label="테마 이름"
+                          v-model="themeName"
+                          required
+                          :rules="[rules.required, rules.counter]"
+                          counter
+                          maxlength="50"
+                        />
+                      </v-form>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="closeThemeModal">Close</v-btn>
+                <v-btn color="blue darken-1" text @click="isThemeValid">Add</v-btn>
+              </v-card-actions>
             </v-card>
           </v-dialog>
         </v-container>
@@ -120,11 +159,18 @@ export default {
   data() {
     return {
       dialog: false,
+      themeDialog: false,
       place: {}, // 선택된 장소 정보
       groups: [], // 데이터에서 받아온 그룹 목록
       group: {}, // 선택된 그룹
       themes: [], // 데이터에서 받아온 테마 목록
       theme: {}, // 선택된 테마
+      themeName: '',
+      rules: {
+        required: (value) => !!value || 'theme can not be empty',
+        counter: (value) => (value && value.length <= 50) || 'Max 50 chracters',
+      },
+      themeValid: true,
     };
   },
   components: {
@@ -143,6 +189,10 @@ export default {
       api.get(`/themes/${this.group.groupId}`, { headers: { token: this.$session.get('token') } })
         .then(({ data }) => {
           this.themes = data;
+          this.themes.push({
+            name: '테마 추가하기 ...',
+            act: 'add',
+          });
         });
     },
     showDialog(item) {
@@ -186,6 +236,44 @@ export default {
             this.makeBookmark();
           }
         });
+    },
+    addTheme(theme) {
+      if (theme.act === 'add') {
+        this.themeDialog = true;
+      }
+    },
+    makeTheme() {
+      api.post('/themes', {
+        groupId: this.group.groupId,
+        icon: 'gg.ico',
+        name: this.themeName,
+      }, {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then(({ data }) => {
+        const payload = { color: 'success', msg: '테마 생성 성공' };
+        store.dispatch('showSnackbar', payload);
+        this.themes.splice(this.themes.length - 1, 0, data);
+        this.theme = '';
+        this.themeDialog = false;
+      });
+    },
+    isThemeValid() {
+      this.$refs.themeForm.validate();
+      if (this.themeValid) {
+        this.makeTheme();
+      }
+    },
+    closeThemeModal() {
+      if (!this.valid) {
+        this.$refs.themeForm.reset();
+      }
+      this.themeDialog = false;
+      this.theme = '';
+    },
+    onScroll(e) {
+      this.offsetTop = e.target.scrollTop;
     },
   },
   created() {
