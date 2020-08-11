@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import com.ssafy.waple.theme.dto.ThemeGroupPlace;
 import io.swagger.models.auth.In;
 
 import com.ssafy.waple.theme.controller.ThemeController;
@@ -29,4 +30,9 @@ public interface ThemeDao {
 
 	// 테마 및 그룹 조회
 	List<ThemeGroupAll> readAll(long userId);
+
+	// 장소 내 테마 및 그룹 조회
+	List<ThemeGroupPlace> readAllByPlace(@Param("userId") long userId, @Param("placeId") String placeId);
+
+	List<ThemeGroupPlace> readAllById(long userId);
 }
