@@ -11,10 +11,7 @@ public enum ErrorCode {
 	INVALID_TYPE_VALUE(400, "C005", "Invalid Type Value"),
 	HANDLE_ACCESS_DENIED(403, "C006", "Access is Denied"),
 	NOT_FOUND(404, "C004", "Not Found"),
-	METHOD_NOT_ALLOWED(405, "C002", "Invalid Input Value"),
-
-	// Group
-	GROUP_IS_NOT_EMPTY(409, "G001", "Group is not empty"),
+	METHOD_NOT_ALLOWED(405, "C007", "Invalid Input Value"),
 
 	//Upload image
 	FILE_SAVE_FAILED(404, "F001", "Failed to save file");
