@@ -2,8 +2,8 @@
 <v-main>
   <v-container fluid>
   <v-bottom-sheet v-model="dialog" persistent inset attach scrollable>
-    <v-sheet class="text-center">
-      <v-toolbar dense>
+    <v-sheet class="text-center sheet">
+      <v-toolbar dense dark>
       <v-btn
         icon
         @click="close"
@@ -54,17 +54,7 @@ export default {
 </script>
 
 <style scoped>
-.v-bottom-sheet {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  height: 91.5%;
-  width: 100%;
-}
-.v-bottom-sheet.v-bottom-sheet--inset {
-  max-width: 100%;
-}
-.v-sheet {
+.sheet {
   position: absolute;
   bottom: 0;
   right: 0;

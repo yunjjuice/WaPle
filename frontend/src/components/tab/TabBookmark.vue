@@ -29,7 +29,7 @@
                         <v-icon>mdi-calendar-plus</v-icon>
                       </v-btn>
                     </template>
-                    <sapn>약속 추가</sapn>
+                    <span>약속 추가</span>
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -135,8 +135,9 @@ export default {
       this.$router.push('./reviewlist');
     },
     writeReview(item) {
-      this.$store.dispatch('updateItem', item);
-      this.$store.dispatch('showWriteDialog');
+      store.dispatch('updateItem', item);
+      store.dispatch('showWriteDialog');
+      store.dispatch('getGroups');
     },
     callAll(limit, offset) {
       api.get(`/bookmarks/all/${this.$session.get('uid')}/${limit}/${offset}`, {

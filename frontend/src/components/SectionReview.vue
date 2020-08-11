@@ -19,8 +19,10 @@
                 <v-card-title
                   class="headline"
                   v-text="review.title"
-                >
-                </v-card-title>
+                ></v-card-title>
+                <v-card-text>
+                  {{ review.groupName }}
+                </v-card-text>
               </div>
             </div>
           </v-card>
@@ -65,7 +67,6 @@ export default {
         store.dispatch('selectReview', data);
       });
       store.dispatch('showReadDialog');
-      //   console.log(review);
     },
   },
 };
