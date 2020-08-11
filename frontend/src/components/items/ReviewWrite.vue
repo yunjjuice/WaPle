@@ -68,6 +68,20 @@
           rows="10"
           no-resize
         ></v-textarea>
+        <div style="display: flex; justify-content: center;">
+          <vue-upload-multiple-image
+            drag-text='사진 업로드'
+            browse-text='파일 고르기'
+            drop-text='업로드'
+            primary-text='기본 이미지'
+            mark-is-primary-text='기본 이미지로 설정'
+            accept='image/jpeg,image/png,image/jpg'
+            @upload-success="uploadImageSuccess"
+            @before-remove="beforeRemove"
+            @edit-image="editImage"
+            :data-images="images"
+          ></vue-upload-multiple-image>
+        </div>
         <v-btn color="primary" @click="writeReview">작성하기</v-btn>
         <v-btn color="error" @click="close">취소하기</v-btn>
       </v-form>
@@ -81,8 +95,13 @@
 <script>
 import store from '@/store/index';
 import api from '@/utils/api';
+import axios from 'axios';
+import VueUploadMultipleImage from 'vue-upload-multiple-image';
 
 export default {
+  components: {
+    VueUploadMultipleImage,
+  },
   data() {
     return {
       title: '',
@@ -90,6 +109,8 @@ export default {
       visitDate: '',
       content: '',
       menu: false,
+      images: [],
+      formDatas: [],
     };
   },
   computed: {
@@ -110,7 +131,26 @@ export default {
       this.visitDate = null;
       this.content = '';
     },
-    writeReview() { // 리뷰 작성
+    uploadImage(formData) {
+      return new Promise((resolve, reject) => {
+        axios.post('http://i3a204.p.ssafy.io:8888/reviews/images', formData, {
+          headers: {
+            'Content-type': 'multipart/form-data',
+          },
+        })
+          .then((res) => resolve(res.data))
+          .catch((err) => reject(err));
+      });
+    },
+    async writeReview() { // 리뷰 작성
+      /* eslint-disable no-restricted-syntax */
+      /* eslint-disable no-await-in-loop  */
+      let media = '';
+      for (const data of this.formDatas) {
+        media += await this.uploadImage(data);
+        media += ';';
+      }
+
       api.post('/reviews', {
         title: this.title,
         visitDate: this.visitDate,
@@ -119,6 +159,7 @@ export default {
         groupId: this.group.groupId,
         placeId: store.getters.item.placeId,
         themeId: store.getters.item.themeId,
+        media,
       }, {
         headers: {
           token: this.$session.get('token'),
@@ -130,6 +171,16 @@ export default {
           this.close();
         }
       });
+    },
+    uploadImageSuccess(formData) {
+      this.formDatas.push(formData);
+    },
+    beforeRemove(index, done) {
+      this.formDatas.splice(index, 1);
+      done();
+    },
+    editImage(formData, index) {
+      this.formDatas.splice(index, 1, formData);
     },
   },
 };
