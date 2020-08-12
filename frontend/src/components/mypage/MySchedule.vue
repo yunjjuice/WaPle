@@ -38,9 +38,6 @@
               <v-list-item @click="type = 'month'">
                 <v-list-item-title>Month</v-list-item-title>
               </v-list-item>
-              <v-list-item @click="type = '4day'">
-                <v-list-item-title>4 days</v-list-item-title>
-              </v-list-item>
             </v-list>
           </v-menu>
         </v-toolbar>
@@ -63,27 +60,20 @@
           :close-on-content-click="false"
           :activator="selectedElement"
           offset-x
+          max-width="350px"
         >
           <v-card
             color="grey lighten-4"
             min-width="350px"
+            max-width="350px"
             flat
           >
             <v-toolbar
               :color="selectedEvent.color"
               dark
             >
-              <v-btn icon>
-                <v-icon>mdi-pencil</v-icon>
-              </v-btn>
               <v-toolbar-title v-html="selectedEvent.name"></v-toolbar-title>
               <v-spacer></v-spacer>
-              <v-btn icon>
-                <v-icon>mdi-heart</v-icon>
-              </v-btn>
-              <v-btn icon>
-                <v-icon>mdi-dots-vertical</v-icon>
-              </v-btn>
             </v-toolbar>
             <v-card-text>
               <span v-html="selectedEvent.details"></span>
@@ -105,6 +95,9 @@
 </template>
 
 <script>
+import api from '@/utils/api';
+import moment from 'moment';
+
 export default {
   data: () => ({
     focus: '',
@@ -113,14 +106,12 @@ export default {
       month: 'Month',
       week: 'Week',
       day: 'Day',
-      '4day': '4 Days',
     },
     selectedEvent: {},
     selectedElement: null,
     selectedOpen: false,
     events: [],
     colors: ['blue', 'indigo', 'deep-purple', 'cyan', 'green', 'orange', 'grey darken-1'], // color 들어가야되는 부분
-    names: ['birthday'], // 약속 제목? 들어가야함
   }),
 
   mounted() {
@@ -147,6 +138,7 @@ export default {
     showEvent({ nativeEvent, event }) {
       const open = () => {
         this.selectedEvent = event;
+        this.getVotes(this.selectedEvent.groupId, this.selectedEvent.promiseId);
         this.selectedElement = nativeEvent.target;
         setTimeout(() => { this.selectedOpen = true; }, 10);
       };
@@ -160,34 +152,46 @@ export default {
 
       nativeEvent.stopPropagation();
     },
-    updateRange({ start, end }) {
+    updateRange() {
+      const userId = this.$session.get('uid');
       const events = [];
 
-      const min = new Date(`${start.date}T00:00:00`);
-      const max = new Date(`${end.date}T23:59:59`);
-      const days = (max.getTime() - min.getTime()) / 86400000;
-      const eventCount = this.rnd(days, days + 20);
-
-      for (let i = 0; i < eventCount; i += 1) {
-        const allDay = this.rnd(0, 3) === 0;
-        const firstTimestamp = this.rnd(min.getTime(), max.getTime());
-        const first = new Date(firstTimestamp - (firstTimestamp % 900000));
-        const secondTimestamp = this.rnd(2, allDay ? 288 : 8) * 900000;
-        const second = new Date(first.getTime() + secondTimestamp);
-
-        events.push({
-          name: this.names[this.rnd(0, this.names.length - 1)],
-          start: first,
-          end: second,
-          color: this.colors[this.rnd(0, this.colors.length - 1)],
-          timed: !allDay,
-        });
-      }
-
+      api.get(`/calendars/${userId}`, {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then(({ data }) => {
+        for (let i = 0; i < data.length; i += 1) {
+          events.push({
+            name: data[i].title,
+            start: this.getFormatDate(data[i].promiseDate),
+            color: this.colors[this.rnd(0, this.colors.length - 1)],
+            details: '',
+            groupId: data[i].groupId,
+            promiseId: data[i].promiseId,
+          });
+        }
+      });
       this.events = events;
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
+    },
+    getFormatDate(datetime) {
+      return moment(datetime).format('YYYY-MM-DD hh:mm');
+    },
+    getVotes(groupId, promiseId) {
+      let detail = '';
+      api.get(`/votes/${groupId}/${promiseId}`, {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then(({ data }) => {
+        for (let i = 0; i < data.length; i += 1) {
+          detail += `<span>${data[i].name}</sapn><br>`;
+        }
+        this.selectedEvent.details = detail;
+      });
     },
   },
 };
