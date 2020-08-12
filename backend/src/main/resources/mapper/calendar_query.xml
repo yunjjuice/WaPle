@@ -5,7 +5,7 @@
         select PROMISE_DATE, TITLE, G.GROUP_ID, NAME groupName, PROMISE_ID
         from PROMISES
                  inner join `GROUPS` G on PROMISES.GROUP_ID = G.GROUP_ID
-        where G.GROUP_ID in (select GROUP_ID, NAME
+        where G.GROUP_ID in (select GROUP_ID
                              from GROUP_MEMBERS
                              where USER_ID = #{userId})
     </select>

@@ -135,7 +135,7 @@ export default {
     next() {
       this.$refs.calendar.next();
     },
-    showEvent({ nativeEvent, event }) {
+    showEvent({ nativeEvent, event }) { // 일정 눌렀을 때
       const open = () => {
         this.selectedEvent = event;
         this.getVotes(this.selectedEvent.groupId, this.selectedEvent.promiseId);
@@ -168,6 +168,7 @@ export default {
             color: this.colors[this.rnd(0, this.colors.length - 1)],
             details: '',
             groupId: data[i].groupId,
+            groupName: data[i].groupName,
             promiseId: data[i].promiseId,
           });
         }
@@ -187,9 +188,11 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
+        detail = `<b>${this.selectedEvent.groupName}</b> 그룹과 <br>`;
         for (let i = 0; i < data.length; i += 1) {
-          detail += `<span>${data[i].name}</sapn><br>`;
+          detail += `<span><a href=${data[i].url} target="_blank">${data[i].name}</a></sapn><br>`;
         }
+        detail += '에 갈 예정입니다';
         this.selectedEvent.details = detail;
       });
     },
