@@ -3,6 +3,7 @@ package com.ssafy.waple.calendar.dto;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModelProperty;
 
 public class CalendarDto {
@@ -16,6 +17,9 @@ public class CalendarDto {
 
 	@ApiModelProperty(value = "그룹 아이디", example = "1")
 	private int groupId;
+
+	@ApiModelProperty(value = "그룹 이름", example = "나")
+	private String groupName;
 
 	@ApiModelProperty(value = "약속 번호", example = "1")
 	private int promiseId;
@@ -42,6 +46,14 @@ public class CalendarDto {
 
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
 	}
 
 	public int getPromiseId() {
