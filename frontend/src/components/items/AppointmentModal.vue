@@ -78,6 +78,7 @@
 
 <script>
 import store from '@/store/index';
+import moment from 'moment';
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
 import { required } from 'vee-validate/dist/rules';
 
@@ -120,9 +121,10 @@ export default {
       });
     },
     makeAppointment() { // 새 약속 만들기
+      console.log(moment(this.appointmentDate));
       store.dispatch('updateAppointmentName', this.appointmentName);
       store.dispatch('updateGroup', this.group);
-      store.dispatch('updateAppointmentDate', this.appointmentDate);
+      store.dispatch('updateAppointmentDate', moment(this.appointmentDate).tz('Asia/Seoul').format());
       store.dispatch('makeAppointment');
       store.dispatch('closeAppointmentDialog');
     },
