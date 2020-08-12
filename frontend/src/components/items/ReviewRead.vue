@@ -1,7 +1,7 @@
 <template>
 <v-main>
   <v-container fluid>
-  <v-bottom-sheet v-model="dialog" persistent inset attach scrollable>
+  <v-bottom-sheet v-model="dialog" fullscreen persistent inset attach scrollable>
     <v-sheet class="text-center sheet">
       <v-toolbar dense dark>
       <v-btn
@@ -22,11 +22,12 @@
         justify="center"
       >
       </v-row>
-      제목 : {{ review.title }} <br>
-      날짜 : {{ review.visitDate }} <br>
+      <h2>{{ review.title }}</h2>
+      <h5><i style="color:gray">{{ review.visitDate }}</i></h5>
       그룹 : {{ review.groupName }} <br>
       작성자 : {{ review.userName }} <br>
       내용 : {{ review.content }} <br>
+      <img v-gallery height="200" v-for="img in review.images" :key="img" :src="img"/>
     </v-container>
     </v-sheet>
   </v-bottom-sheet>

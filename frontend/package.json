@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
+    "img-vuer": "^0.19.2",
     "jwt-decode": "^2.2.0",
     "moment": "^2.27.0",
     "vee-validate": "^3.3.8",
