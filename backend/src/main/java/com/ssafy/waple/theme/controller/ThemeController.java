@@ -82,8 +82,6 @@ public class ThemeController {
 	@RequestMapping(method = RequestMethod.PUT, value = "/{groupId}/{themeId}", produces = "application/json")
 	@ApiOperation(value = "테마 수정", notes = "테마의 이름 및 아이콘 수정", response = ThemeDto.class)
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "groupId", value = "그룹 아이디", example = "1"),
-		@ApiImplicitParam(name = "themeId", value = "테마 아이디", example = "1"),
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
 		@ApiImplicitParam(name = "theme", value = "수정 할 테마 정보", dataTypeClass = ThemeDto.class)
 	})
@@ -94,10 +92,9 @@ public class ThemeController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "테마 수정 실패")
 	})
-	private ResponseEntity<?> update(@RequestBody ThemeDto theme, @PathVariable("groupId") int groupId,
-		@PathVariable("themeId") int themeId, @RequestHeader(value = "token") String token) {
+	private ResponseEntity<?> update(@RequestBody ThemeDto theme, @RequestHeader(value = "token") String token) {
 		logger.debug("테마 수정 호출");
-		service.update(token, groupId, themeId, theme);
+		service.update(token, theme);
 		return new ResponseEntity<>(theme, HttpStatus.CREATED);
 	}
 

@@ -17,7 +17,7 @@ public interface ThemeService {
 	List<ThemeDto> read(String token, int groupId);
 
 	// 테마 수정
-	void update(String token, int groupId, int themeId, ThemeDto theme);
+	void update(String token, ThemeDto theme);
 
 	// 테마 삭제
 	void delete(String token, int groupId, int themeId);

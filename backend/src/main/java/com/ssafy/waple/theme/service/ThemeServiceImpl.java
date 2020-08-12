@@ -66,12 +66,12 @@ public class ThemeServiceImpl implements ThemeService {
 	}
 
 	@Override
-	public void update(String token, int groupId, int themeId, ThemeDto theme) {
+	public void update(String token, ThemeDto theme) {
 
 		int result = dao.update(theme);
 
 		if (result < 1) {
-			throw new ThemeNotFoundException(groupId, themeId);
+			throw new ThemeNotFoundException(theme.getGroupId(), theme.getThemeId());
 		}
 
 	}
