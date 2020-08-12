@@ -23,6 +23,9 @@ export default {
     EventBus.$on('moveMap', (payload) => {
       this.panTo(this.map, payload.lat, payload.lng, payload.index);
     });
+    EventBus.$on('deleteCard', (payload) => {
+      this.deleteMap(payload);
+    });
   },
   components: {
     ReviewWrite: () => import('@/components/items/ReviewWrite.vue'),
@@ -162,6 +165,10 @@ export default {
       return () => {
         infowindow.close(map, marker);
       };
+    },
+    deleteMap(index) {
+      this.infowindows.splice(index, 1);
+      this.markers.splice(index, 1);
     },
   },
 };
