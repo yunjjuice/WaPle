@@ -33,7 +33,7 @@
                 FROM GROUP_MEMBERS
                 WHERE USER_ID = #{userId})
         GROUP BY B.PLACE_ID
-        ORDER BY B.GROUP_ID, THEME_ID
+        ORDER BY B.PLACE_ID
         LIMIT #{limit} OFFSET #{offset}
     </select>
 </mapper>

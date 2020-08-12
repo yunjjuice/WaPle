@@ -48,8 +48,11 @@ export default {
       isSelected: false,
     };
   },
+  computed: {
+    userGroupTheme: () => store.getters.groupsThemes,
+  },
   mounted() {
-    const temp = store.getters.groupsThemes;
+    const temp = this.userGroupTheme;
     const init = 0;
     for (let index = 0; index < temp.length; index += 1) {
       let innerData = {};
@@ -71,6 +74,9 @@ export default {
   methods: {
     selecting() {
       EventBus.$emit('userSelect', this.selectedThemes);
+    },
+    finding(groupTheme, inputData) {
+      return groupTheme.groupId === inputData;
     },
   },
 };

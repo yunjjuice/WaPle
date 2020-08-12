@@ -35,7 +35,7 @@ export default {
       // bookmark: true,
     };
   },
-  created() {
+  beforeCreate() {
     store.dispatch('getGroupsThemes');
     store.dispatch('getGroupTheme');
   },

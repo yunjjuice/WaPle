@@ -6,13 +6,23 @@
           dark
           v-bind="attrs"
           v-on="on"
+          v-if="modifyThemes.length !== 0"
         >
           수정
+        </v-btn>
+        <v-btn
+          dark
+          v-bind="attrs"
+          v-on="on"
+          v-else
+        >
+          삭제
         </v-btn>
       </template>
       <v-card>
         <v-card-title class="headline"></v-card-title>
-        <v-card-text> <b>정말로 수정하시겠습니까?</b></v-card-text>
+        <v-card-text v-if="modifyThemes.length !== 0"> <b>정말로 수정하시겠습니까?</b></v-card-text>
+        <v-card-text v-else> <b>정말로 삭제하시겠습니까?</b></v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="cancle">취소</v-btn>
@@ -26,6 +36,7 @@
 <script>
 import api from '@/utils/api';
 import store from '@/store/index';
+import eventBus from '@/utils/EventBus';
 
 export default {
   props: {
@@ -33,6 +44,7 @@ export default {
     menu: Boolean,
     item: Object,
     original: Array,
+    index: Number,
   },
   data() {
     return {
@@ -47,16 +59,24 @@ export default {
     },
     modify() {
       this.$emit('update:menu', false);
-      const add = this.modifyThemes.filter((x) => !this.original.includes(x));
-      const del = this.original.filter((x) => !this.modifyThemes.includes(x));
-      add.forEach((element) => {
-        this.additional = { groupId: element.groupId, themeId: element.themeId };
-        this.postBookmark();
-      });
-      del.forEach((element) => {
-        this.additional = { groupId: element.groupId, themeId: element.themeId };
-        this.delBookmark();
-      });
+      if (this.modifyThemes.length === 0) {
+        eventBus.$emit('deleteCard', this.index);
+        this.original.forEach((element) => {
+          this.additional = { groupId: element.groupId, themeId: element.themeId };
+          this.delBookmark();
+        });
+      } else {
+        const add = this.modifyThemes.filter((x) => !this.original.includes(x));
+        const del = this.original.filter((x) => !this.modifyThemes.includes(x));
+        add.forEach((element) => {
+          this.additional = { groupId: element.groupId, themeId: element.themeId };
+          this.postBookmark();
+        });
+        del.forEach((element) => {
+          this.additional = { groupId: element.groupId, themeId: element.themeId };
+          this.delBookmark();
+        });
+      }
       this.dialog = false;
     },
     postBookmark() {

@@ -20,6 +20,7 @@
       <v-col
         v-for="(item, i) in items"
         :key="i"
+        d-flex
         cols="12"
       >
         <v-card
@@ -69,6 +70,7 @@
                         :menu.sync="menu[i]"
                         :item="item"
                         :original="original"
+                        :index="i"
                         v-on:close="closeMenu"
                       >
                       </bookmark-modal>
@@ -143,6 +145,8 @@ export default {
       original: [],
       bottom: false,
       loading: false,
+      filterFlag: false,
+      filterData: [],
     };
   },
   components: {
@@ -150,6 +154,8 @@ export default {
     BookmarkModal: () => import('@/components/items/BookmarkModal.vue'),
   },
   mounted() {
+    store.dispatch('getGroupsThemes');
+    store.dispatch('getGroupTheme');
     this.callAll(this.limit, this.offset);
   },
   computed: {
@@ -161,37 +167,28 @@ export default {
       if (this.bottom) {
         this.offset += 1;
         this.bottom = false;
-        this.callAll(this.limit, this.offset);
+        if (this.filterFlag) {
+          this.filterSearch();
+        } else {
+          this.callAll(this.limit, this.offset);
+        }
       }
     },
   },
   created() {
     store.dispatch('visibleBookmark');
+    EventBus.$on('deleteCard', (data) => {
+      this.deleteCard(data);
+    });
     EventBus.$on('userSelect', (data) => {
-      if (data.length === 0) {
+      this.offset = 1;
+      this.filterData = data;
+      if (this.filterData.length === 0) {
+        this.filterFlag = false;
         this.callAll(this.limit, this.offset);
       } else {
-        const groups = [];
-        for (let index = 0; index < data.length; index += 1) {
-          groups.push({ groupId: data[index].groupId, themeId: data[index].themeId });
-        }
-        const searchData = {
-          userId: this.$session.get('uid'),
-          limit: 10,
-          offset: 1,
-          groups,
-        };
-        api.get('/bookmarks', {
-          params: {
-            searchType: encodeURI(JSON.stringify(searchData)),
-          },
-          headers: {
-            token: this.$session.get('token'),
-          },
-        }).then((res) => {
-          this.items = res.data;
-          this.$store.dispatch('doUpdate', this.items);
-        });
+        this.filterFlag = true;
+        this.filterSearch();
       }
     });
   },
@@ -219,7 +216,11 @@ export default {
       }).then(({ data }) => {
         this.loading = true;
         setTimeout(() => {
-          this.items = this.items.concat(data);
+          if (this.offset === 1) {
+            this.items = data;
+          } else {
+            this.items = this.items.concat(data);
+          }
           this.initMenu(this.items.length, data.length);
           this.$store.dispatch('doUpdate', this.items);
           this.loading = false;
@@ -264,6 +265,45 @@ export default {
       if (scrollTop + clientHeight === scrollHeight) {
         this.bottom = true;
       }
+    },
+    filterSearch() {
+      const data = this.filterData;
+      const groups = [];
+      for (let index = 0; index < data.length; index += 1) {
+        groups.push({ groupId: data[index].groupId, themeId: data[index].themeId });
+      }
+      const searchData = {
+        userId: this.$session.get('uid'),
+        limit: this.limit,
+        offset: this.offset,
+        groups,
+      };
+      api.get('/bookmarks', {
+        params: {
+          searchType: encodeURI(JSON.stringify(searchData)),
+        },
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then((res) => {
+        this.loading = true;
+        console.log(this.items);
+        console.log(res.data);
+        setTimeout(() => {
+          if (this.offset === 1) {
+            this.items = res.data;
+          } else {
+            this.items = this.items.concat(res.data);
+          }
+          this.$store.dispatch('doUpdate', this.items);
+          this.loading = false;
+        }, 500);
+      }).catch((error) => {
+        console.log(error);
+      });
+    },
+    deleteCard(index) {
+      this.items.splice(index, 1);
     },
   },
 };
