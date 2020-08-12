@@ -79,7 +79,7 @@ public class ThemeController {
 		return new ResponseEntity<>(service.read(token, groupId), HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{groupId}/{themeId}", produces = "application/json")
+	@RequestMapping(method = RequestMethod.PUT, produces = "application/json")
 	@ApiOperation(value = "테마 수정", notes = "테마의 이름 및 아이콘 수정", response = ThemeDto.class)
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
