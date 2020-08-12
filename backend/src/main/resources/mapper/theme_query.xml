@@ -21,7 +21,7 @@
         update THEMES
         set NAME = #{name},
             ICON = #{icon}
-        where GROUP_ID
+        where GROUP_ID = #{groupId} and THEME_ID = #{themeId}
     </update>
 
     <delete id="delete" parameterType="map">
