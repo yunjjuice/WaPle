@@ -30,14 +30,16 @@ export default {
       state.writeDialog = false;
     },
     setReview(state, payload) {
-      // Parse image paths
-      const images = payload.media.split(';');
-      images.pop(); // Last value is empty string
-      for (let index = 0; index < images.length; index += 1) {
-        images[index] = state.path + images[index];
-      }
       state.review = payload;
-      state.review.images = images;
+      if (payload.images !== '') {
+      // Parse image paths
+        const images = payload.media.split(';');
+        images.pop(); // Last value is empty string
+        for (let index = 0; index < images.length; index += 1) {
+          images[index] = state.path + images[index];
+        }
+        state.review.images = images;
+      }
     },
   },
   actions: {
