@@ -30,6 +30,13 @@ public class BookmarkDto {
 	@ApiModelProperty(value = "장소 상세페이지 URL", example = "http://place.map.kakao.com/19781214")
 	private String url;
 
+	@ApiModelProperty(value = "전화번호", example = "02-123-1234")
+	private String tel;
+
+	@ApiModelProperty(value = "매장 사진", example = "매장.jpg")
+	private  String img;
+
+
 	public int getGroupId() {
 		return groupId;
 	}
@@ -102,6 +109,22 @@ public class BookmarkDto {
 		this.url = url;
 	}
 
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
 	@Override
 	public String toString() {
 		return "BookmarkDto{" +
@@ -114,6 +137,8 @@ public class BookmarkDto {
 			", lng='" + lng + '\'' +
 			", lat='" + lat + '\'' +
 			", url='" + url + '\'' +
+			", tel='" + tel + '\'' +
+			", img='" + img + '\'' +
 			'}';
 	}
 }

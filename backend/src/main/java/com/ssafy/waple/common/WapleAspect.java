@@ -52,7 +52,7 @@ public class WapleAspect {
 
 		BookmarkDto dto = (BookmarkDto) parameterValues[1];
 		PlaceDto placeDto = new PlaceDto(dto.getPlaceId(), dto.getName(), dto.getAddress(), dto.getLng(), dto.getLat(),
-			dto.getUrl());
+			dto.getUrl(), dto.getTel() == null ? "" : dto.getTel(), dto.getImg() == null ? "" : dto.getImg());
 		placeService.create(placeDto);
 
 	}

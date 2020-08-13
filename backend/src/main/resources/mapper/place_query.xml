@@ -8,8 +8,8 @@
     </select>
 
     <insert id="create" parameterType="com.ssafy.waple.bookmark.dto.PlaceDto">
-        insert into PLACES (PLACE_ID, NAME, ADDRESS, LNG, LAT, URL)
-        values (#{placeId}, #{name}, #{address}, #{lng}, #{lat}, #{url})
+        insert into PLACES (PLACE_ID, NAME, ADDRESS, LNG, LAT, URL, TEL, IMG)
+        values (#{placeId}, #{name}, #{address}, #{lng}, #{lat}, #{url}, #{tel}, #{img})
         on duplicate key update NAME = #{name}
     </insert>
 

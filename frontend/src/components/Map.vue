@@ -72,16 +72,15 @@ export default {
           clickable: true,
         });
         bounds.extend(new window.kakao.maps.LatLng(items[i].lat, items[i].lng));
-        const infoContent = `<div style="padding:10px 15px; min-width:300px; line-height:100%; box-shadow:3px 3px 3px gray;">
-                          <h4 style="font-size:16px; line-height:1.5em; padding-bottom:5px; color:#333;">^PLACE_NAME</h4>
-                          <p>^PLACE_ADDRESS</p><p><a href="^PLACE_URL" target="_blank">상세보기</a>&nbsp;
-                          <a href="https://map.kakao.com/link/to/^PLACE_ID" target="_blank">길찾기</a></p></div>`;
+        const infoContent = '<div style="min-width:200px; line-height:100%; min-height: 165px"><div style="background-color: #ffd54f;"><h4 style="padding:10px 15px; font-size:20px; font-weight: 700; line-height:1.5em; padding-bottom:10px; color:#333;">^PLACE_NAME</h4></div><div><p style="opacity: 0.7; padding:10px 15px; ">^PLACE_ADDRESS</p><p style="color: #333; padding:10px 15px; "><a href="^PLACE_TEL" style="color: #333;">^PLACE_TEL1</a><div style="position: absolute; bottom: 10px; right: 15px;"><a href="https://map.kakao.com/link/to/^PLACE_ID" target="_blank"><i class="fas fa-location-arrow" style="float: right; color: #333"></i></a><a href="^PLACE_URL" target="_blank"><i class="fas fa-info" style="color: #333; float: right; margin-right: 1em;"></i></a></div></p></div></div>';
         const infowindow = new window.kakao.maps.InfoWindow({
           position: marker.getPosition(),
           content: infoContent.replace('^PLACE_ADDRESS', items[i].address)
             .replace('^PLACE_NAME', items[i].name)
             .replace('^PLACE_URL', items[i].url)
-            .replace('^PLACE_ID', items[i].placeId),
+            .replace('^PLACE_ID', items[i].placeId)
+            .replace('^PLACE_TEL', items[i].tel)
+            .replace('^PLACE_TEL1', items[i].tel),
           removable: true,
         });
         window.kakao.maps.event.addListener(
@@ -100,6 +99,7 @@ export default {
     searchMap(items) {
       this.markers = [];
       this.infowindows = [];
+      console.log(items);
       const container = document.getElementById('map');
       const options = {
         center: new window.kakao.maps.LatLng(items[0].y, items[0].x),
@@ -121,16 +121,15 @@ export default {
           image: markerImage,
         });
         bounds.extend(new window.kakao.maps.LatLng(items[i].y, items[i].x));
-        const infoContent = `<div style="padding:10px 15px; min-width:300px; line-height:100%; box-shadow:3px 3px 3px gray;">
-                          <h4 style="font-size:16px; line-height:1.5em; padding-bottom:5px; color:#333;">^PLACE_NAME</h4>
-                          <p>^PLACE_ADDRESS</p><p><a href="^PLACE_URL" target="_blank">상세보기</a>&nbsp;
-                          <a href="https://map.kakao.com/link/to/^PLACE_ID" target="_blank">길찾기</a></p></div>`;
+        const infoContent = '<div style="min-width:200px; line-height:100%; min-height: 165px"><div style="background-color: #ffd54f;"><h4 style="padding:10px 15px; font-size:20px; font-weight: 700; line-height:1.5em; padding-bottom:10px; color:#333;">^PLACE_NAME</h4></div><div><p style="opacity: 0.7; padding:10px 15px; ">^PLACE_ADDRESS</p><p style="color: #333; padding:10px 15px; "><a href="^PLACE_TEL" style="color: #333;">^PLACE_TEL1</a><div style="position: absolute; bottom: 10px; right: 15px;"><a href="https://map.kakao.com/link/to/^PLACE_ID" target="_blank"><i class="fas fa-location-arrow" style="float: right; color: #333"></i></a><a href="^PLACE_URL" target="_blank"><i class="fas fa-info" style="color: #333; float: right; margin-right: 1em;"></i></a></div></p></div></div>';
         const infowindow = new window.kakao.maps.InfoWindow({
           position: marker.getPosition(),
           content: infoContent.replace('^PLACE_ADDRESS', items[i].road_address_name)
             .replace('^PLACE_NAME', items[i].place_name)
             .replace('^PLACE_URL', items[i].place_url)
-            .replace('^PLACE_ID', items[i].id),
+            .replace('^PLACE_ID', items[i].id)
+            .replace('^PLACE_TEL', items[i].phone)
+            .replace('^PLACE_TEL1', items[i].phone),
           removable: true,
         });
         window.kakao.maps.event.addListener(

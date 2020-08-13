@@ -21,7 +21,6 @@
       <v-row
         v-scroll:#scroll-target="onScroll"
         justify="center"
-        style="height: 100vh"
       >
         <v-container>
           <v-row align='center' justify='center'>
@@ -239,6 +238,8 @@ export default {
         placeId: this.place.id,
         themeId: this.theme.themeId,
         url: this.place.place_url,
+        tel: this.place.phone,
+        img: '',
         userId: this.$session.get('uid'),
       }, {
         headers: {
@@ -300,7 +301,7 @@ export default {
     },
     onScroll(e) {
       const { scrollTop, clientHeight, scrollHeight } = e.target;
-      if (scrollTop + clientHeight === scrollHeight) {
+      if (scrollTop + clientHeight >= scrollHeight) {
         this.bottom = true;
       }
     },

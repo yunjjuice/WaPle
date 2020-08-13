@@ -5,15 +5,15 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-text-field
-        flat
-        solo-inverted
-        hide-details
-        prepend-inner-icon="mdi-magnify"
-        label="Search"
-        class="hidden-sm-and-down"
-        v-model="keyword"
-        @keyup.enter="searchByWord"
-      ></v-text-field>
+      flat
+      solo-inverted
+      hide-details
+      prepend-inner-icon="mdi-magnify"
+      label="Search"
+      class="hidden-sm-and-down"
+      v-model="keyword"
+      @keyup.enter="searchByWord"
+    ></v-text-field>
     <v-spacer></v-spacer>
     <div style="right:10rem; position:fixed">
       <v-btn icon>
