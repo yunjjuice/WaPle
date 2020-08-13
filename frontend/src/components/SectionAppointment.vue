@@ -1,7 +1,7 @@
 <template>
   <v-main>
     <v-toolbar color="#f5f5f5" dense flat>
-      <v-btn icon class="hidden-xs-only" @click="moveBack">
+      <v-btn icon @click="moveBack">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title>{{ appointment.title }}</v-toolbar-title>

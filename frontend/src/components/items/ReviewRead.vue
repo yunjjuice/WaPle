@@ -1,8 +1,18 @@
 <template>
 <v-main>
   <v-container fluid>
-  <v-bottom-sheet v-model="dialog" persistent inset attach scrollable>
-    <v-sheet class="text-center sheet">
+  <v-bottom-sheet
+    v-model="dialog"
+    persistent
+    inset
+    attach
+    scrollable
+    :fullscreen="$vuetify.breakpoint.smAndDown"
+  >
+    <v-sheet
+      class="text-center"
+      :class="{'sheet': $vuetify.breakpoint.mdAndUp}"
+    >
       <v-toolbar dense dark>
       <v-btn
         icon
