@@ -1,6 +1,16 @@
 <template>
-<v-container>
-  <v-row align='center' justify='center'>
+<v-container
+  align='center'
+  justify='center'
+  id="scroll-target"
+  style="height: calc(90vh - 50px)"
+  class="overflow-y-auto"
+>
+  <v-row
+    align='center'
+    justify='center'
+    v-scroll:#scroll-target="onScroll"
+  >
     <v-col
       v-for="(appointment, i) in appointments"
         :key="i"

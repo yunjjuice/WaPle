@@ -165,6 +165,7 @@ export default {
   watch: {
     bottom() {
       if (this.bottom && !this.noData) {
+        this.noData = true;
         this.offset += 1;
         this.bottom = false;
         if (this.filterFlag) {
@@ -218,6 +219,7 @@ export default {
         if (data.length === 0) {
           this.noData = true;
         } else {
+          this.noData = false;
           this.loading = true;
           setTimeout(() => {
             if (this.offset === 1) {
@@ -267,8 +269,6 @@ export default {
     },
     onScroll(e) {
       const { scrollTop, clientHeight, scrollHeight } = e.target;
-      console.log('scroll height : ', scrollTop + clientHeight);
-      console.log('cliet height : ', scrollHeight);
       if (scrollTop + clientHeight >= scrollHeight) {
         this.bottom = true;
       }
@@ -296,6 +296,7 @@ export default {
         if (res.data.length === 0) {
           this.noData = true;
         } else {
+          this.noData = false;
           this.loading = true;
           setTimeout(() => {
             if (this.offset === 1) {

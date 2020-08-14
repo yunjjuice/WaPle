@@ -6,6 +6,7 @@ export default {
     keyword: '', // 검색 키워드
     page: 1,
     noData: false,
+    bottom: false,
   },
   getters: {
     items(state) {
@@ -25,6 +26,9 @@ export default {
     },
     noData(state) {
       return state.noData;
+    },
+    bottom(state) {
+      return state.bottom;
     },
   },
   mutations: {
@@ -49,6 +53,9 @@ export default {
     setNoData(state, payload) {
       state.noData = payload.noData;
     },
+    setBottom(state, payload) {
+      state.bottom = payload.bottom;
+    },
   },
   actions: {
     doUpdate({ commit }, items) {
@@ -69,44 +76,47 @@ export default {
     updateNoData({ commit }, noData) {
       commit('setNoData', { noData });
     },
+    updateBottom({ commit }, bottom) {
+      commit('setBottom', { bottom });
+    },
     search({ commit, getters }) {
-      if (!getters.noData) {
-        const places = new window.kakao.maps.services.Places();
-        const callback = function (result, status) {
-          if (status === window.kakao.maps.services.Status.OK) {
-            const duplicateVal = result[0].id;
-            const placeDatas = getters.result;
-            const size = placeDatas.length;
-            let flag = false;
-            if (size >= 10) {
-              for (let i = size - 10; i < size; i += 1) {
-                if (placeDatas[i].placeId === duplicateVal) {
-                  commit('setNoData', { noData: true });
-                  flag = true;
-                  break;
-                }
-              }
-            } else {
-              for (let i = 0; i < size; i += 1) {
-                if (placeDatas[i].id === duplicateVal) {
-                  commit('setNoData', { noData: true });
-                  flag = true;
-                  break;
-                }
+      const places = new window.kakao.maps.services.Places();
+      const callback = function (result, status) {
+        if (status === window.kakao.maps.services.Status.OK) {
+          const duplicateVal = result[0].id;
+          const placeDatas = getters.result;
+          const size = placeDatas.length;
+          let flag = false;
+          if (size >= 10) {
+            for (let i = size - 10; i < size; i += 1) {
+              if (placeDatas[i].id === duplicateVal) {
+                flag = true;
+                break;
               }
             }
-            if (!flag) commit('setResult', { result });
-          } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-            alert('검색 결과가 존재하지 않습니다.');
-          } else if (status === window.kakao.maps.services.Status.ERROR) {
-            alert('검색 결과 중 오류가 발생했습니다.');
+          } else {
+            for (let i = 0; i < size; i += 1) {
+              if (placeDatas[i].id === duplicateVal) {
+                flag = true;
+                break;
+              }
+            }
           }
-        };
-        places.keywordSearch(getters.keyword, callback, {
-          size: 10,
-          page: getters.page,
-        });
-      }
+          if (!flag) {
+            commit('setResult', { result });
+            commit('setNoData', { noData: false });
+            commit('setBottom', { bottom: false });
+          }
+        } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
+          alert('검색 결과가 존재하지 않습니다.');
+        } else if (status === window.kakao.maps.services.Status.ERROR) {
+          alert('검색 결과 중 오류가 발생했습니다.');
+        }
+      };
+      places.keywordSearch(getters.keyword, callback, {
+        size: 10,
+        page: getters.page,
+      });
     },
   },
 };
