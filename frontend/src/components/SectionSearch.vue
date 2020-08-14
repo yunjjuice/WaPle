@@ -239,7 +239,7 @@ export default {
         themeId: this.theme.themeId,
         url: this.place.place_url,
         tel: this.place.phone,
-        img: '',
+        category: this.place.category_name,
         userId: this.$session.get('uid'),
       }, {
         headers: {

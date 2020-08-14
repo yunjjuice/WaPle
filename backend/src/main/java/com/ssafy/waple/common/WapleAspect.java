@@ -1,8 +1,5 @@
 package com.ssafy.waple.common;
 
-import java.lang.reflect.Method;
-import java.util.List;
-
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -51,8 +48,10 @@ public class WapleAspect {
 		Object[] parameterValues = point.getArgs();
 
 		BookmarkDto dto = (BookmarkDto) parameterValues[1];
+		String[] category = dto.getCategory().split(">");
 		PlaceDto placeDto = new PlaceDto(dto.getPlaceId(), dto.getName(), dto.getAddress(), dto.getLng(), dto.getLat(),
-			dto.getUrl(), dto.getTel() == null ? "" : dto.getTel(), dto.getImg() == null ? "" : dto.getImg());
+			dto.getUrl(), dto.getTel() == null ? "" : dto.getTel(),
+			category[category.length-1] == null ? "" : category[category.length-1]);
 		placeService.create(placeDto);
 
 	}

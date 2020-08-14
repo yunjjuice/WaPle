@@ -33,8 +33,8 @@ public class BookmarkDto {
 	@ApiModelProperty(value = "전화번호", example = "02-123-1234")
 	private String tel;
 
-	@ApiModelProperty(value = "매장 사진", example = "매장.jpg")
-	private  String img;
+	@ApiModelProperty(value = "카테고리", example = "음식점")
+	private  String category;
 
 
 	public int getGroupId() {
@@ -117,12 +117,12 @@ public class BookmarkDto {
 		this.tel = tel;
 	}
 
-	public String getImg() {
-		return img;
+	public String getCategory() {
+		return category;
 	}
 
-	public void setImg(String img) {
-		this.img = img;
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	@Override
@@ -138,7 +138,7 @@ public class BookmarkDto {
 			", lat='" + lat + '\'' +
 			", url='" + url + '\'' +
 			", tel='" + tel + '\'' +
-			", img='" + img + '\'' +
+			", category='" + category + '\'' +
 			'}';
 	}
 }

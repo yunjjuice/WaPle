@@ -68,7 +68,7 @@ export default {
       store.dispatch('initResult', []);
       store.dispatch('updateKeyword', this.keyword);
       store.dispatch('search', this.keyword);
-      this.$router.push('/search');
+      this.$router.push('/search').catch(() => {});
       this.keyword = '';
     },
     logout() {
