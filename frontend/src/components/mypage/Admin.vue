@@ -1,13 +1,15 @@
 <template>
-  <v-flex md10>
-    <br><br>
-    <v-data-table
-      :headers="headers"
-      :items="users"
-      :items-per-page="10"
-      class="elevation-1 mytable"
-    ></v-data-table>
-  </v-flex>
+<v-main>
+  <v-container style="height: 100%">
+  <br><br>
+  <v-data-table
+    :headers="headers"
+    :items="users"
+    :items-per-page="10"
+    class="elevation-1 mytable"
+  ></v-data-table>
+  </v-container>
+</v-main>
 </template>
 
 <script>

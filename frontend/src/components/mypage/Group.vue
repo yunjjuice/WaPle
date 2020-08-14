@@ -1,5 +1,6 @@
 <template>
-  <v-flex md10>
+<v-main>
+  <v-container>
     <br><br>
     <v-expansion-panels focusable>
       <v-expansion-panel
@@ -63,7 +64,9 @@
       <add-group class="mt-5"/>
     </v-expansion-panels>
     <leave-group-modal/>
-  </v-flex>
+    <br><br>
+  </v-container>
+</v-main>
 </template>
 
 <script>

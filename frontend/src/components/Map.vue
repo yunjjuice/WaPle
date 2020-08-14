@@ -1,6 +1,6 @@
 <template>
 <v-main>
-  <v-container id='map' style="height: 100%">
+  <v-container fluid class="fill-height" id='map' style="height: 100%">
   </v-container>
   <review-write></review-write>
   <review-read></review-read>

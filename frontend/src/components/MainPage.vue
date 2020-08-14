@@ -1,7 +1,7 @@
 <template>
 <v-app>
-    <nav-header></nav-header>
-    <router-view></router-view>
+  <nav-header @toggle-drawer="$refs.drawer.drawer = !$refs.drawer.drawer"></nav-header>
+  <router-view ref="drawer"></router-view>
 </v-app>
 </template>
 
