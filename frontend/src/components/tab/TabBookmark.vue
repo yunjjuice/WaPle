@@ -15,7 +15,6 @@
     <v-row
       v-scroll:#scroll-target="onScroll"
       justify="center"
-      style="height: 100vh"
     >
       <v-col
         v-for="(item, i) in items"
@@ -262,7 +261,7 @@ export default {
     },
     onScroll(e) {
       const { scrollTop, clientHeight, scrollHeight } = e.target;
-      if (scrollTop + clientHeight === scrollHeight) {
+      if (scrollTop + clientHeight >= scrollHeight) {
         this.bottom = true;
       }
     },
@@ -287,8 +286,6 @@ export default {
         },
       }).then((res) => {
         this.loading = true;
-        console.log(this.items);
-        console.log(res.data);
         setTimeout(() => {
           if (this.offset === 1) {
             this.items = res.data;

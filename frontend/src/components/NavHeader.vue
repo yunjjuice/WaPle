@@ -18,15 +18,15 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-text-field
-        flat
-        solo-inverted
-        hide-details
-        prepend-inner-icon="mdi-magnify"
-        label="Search"
-        class="hidden-sm-and-down"
-        v-model="keyword"
-        @keyup.enter="searchByWord"
-      ></v-text-field>
+      flat
+      solo-inverted
+      hide-details
+      prepend-inner-icon="mdi-magnify"
+      label="Search"
+      class="hidden-sm-and-down"
+      v-model="keyword"
+      @keyup.enter="searchByWord"
+    ></v-text-field>
     <v-spacer></v-spacer>
     <v-menu bottom offset-y allow-overflow>
       <template v-slot:activator="{ on, attrs }">
@@ -104,7 +104,7 @@ export default {
       store.dispatch('initResult', []);
       store.dispatch('updateKeyword', this.keyword);
       store.dispatch('search', this.keyword);
-      this.$router.push('/search');
+      this.$router.push('/search').catch(() => {});
       this.keyword = '';
     },
     logout() {

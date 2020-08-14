@@ -63,7 +63,28 @@ export default {
       const places = new window.kakao.maps.services.Places();
       const callback = function (result, status) {
         if (status === window.kakao.maps.services.Status.OK) {
-          commit('setResult', { result });
+          const duplicateVal = result[0].id;
+          const placeDatas = getters.result;
+          const size = placeDatas.length;
+          console.log(duplicateVal);
+          console.log(placeDatas);
+          let duplicate = false;
+          if (size >= 10) {
+            for (let i = size - 10; i < size; i += 1) {
+              if (placeDatas[i].placeId === duplicateVal) {
+                duplicate = true;
+                break;
+              }
+            }
+          } else {
+            for (let i = 0; i < size; i += 1) {
+              if (placeDatas[i].id === duplicateVal) {
+                duplicate = true;
+                break;
+              }
+            }
+          }
+          if (!duplicate) commit('setResult', { result });
         } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
           alert('검색 결과가 존재하지 않습니다.');
         } else if (status === window.kakao.maps.services.Status.ERROR) {
