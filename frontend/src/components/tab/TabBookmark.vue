@@ -146,6 +146,7 @@ export default {
       loading: false,
       filterFlag: false,
       filterData: [],
+      noData: false,
     };
   },
   components: {
@@ -163,7 +164,7 @@ export default {
   },
   watch: {
     bottom() {
-      if (this.bottom) {
+      if (this.bottom && !this.noData) {
         this.offset += 1;
         this.bottom = false;
         if (this.filterFlag) {
@@ -182,6 +183,7 @@ export default {
     EventBus.$on('userSelect', (data) => {
       this.offset = 1;
       this.filterData = data;
+      this.noData = false;
       if (this.filterData.length === 0) {
         this.filterFlag = false;
         this.callAll(this.limit, this.offset);
@@ -213,17 +215,21 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
-        this.loading = true;
-        setTimeout(() => {
-          if (this.offset === 1) {
-            this.items = data;
-          } else {
-            this.items = this.items.concat(data);
-          }
-          this.initMenu(this.items.length, data.length);
-          this.$store.dispatch('doUpdate', this.items);
-          this.loading = false;
-        }, 500);
+        if (data.length === 0) {
+          this.noData = true;
+        } else {
+          this.loading = true;
+          setTimeout(() => {
+            if (this.offset === 1) {
+              this.items = data;
+            } else {
+              this.items = this.items.concat(data);
+            }
+            this.initMenu(this.items.length, data.length);
+            this.$store.dispatch('doUpdate', this.items);
+            this.loading = false;
+          }, 500);
+        }
       }).catch((error) => {
         console.log(error.response);
       });
@@ -261,6 +267,8 @@ export default {
     },
     onScroll(e) {
       const { scrollTop, clientHeight, scrollHeight } = e.target;
+      console.log('scroll height : ', scrollTop + clientHeight);
+      console.log('cliet height : ', scrollHeight);
       if (scrollTop + clientHeight >= scrollHeight) {
         this.bottom = true;
       }
@@ -285,16 +293,20 @@ export default {
           token: this.$session.get('token'),
         },
       }).then((res) => {
-        this.loading = true;
-        setTimeout(() => {
-          if (this.offset === 1) {
-            this.items = res.data;
-          } else {
-            this.items = this.items.concat(res.data);
-          }
-          this.$store.dispatch('doUpdate', this.items);
-          this.loading = false;
-        }, 500);
+        if (res.data.length === 0) {
+          this.noData = true;
+        } else {
+          this.loading = true;
+          setTimeout(() => {
+            if (this.offset === 1) {
+              this.items = res.data;
+            } else {
+              this.items = this.items.concat(res.data);
+            }
+            this.$store.dispatch('doUpdate', this.items);
+            this.loading = false;
+          }, 500);
+        }
       }).catch((error) => {
         console.log(error);
       });
