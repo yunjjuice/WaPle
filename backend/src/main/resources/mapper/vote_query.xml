@@ -30,6 +30,7 @@
                  inner join USERS U on PROMISES_AND_PLACES.USER_ID = U.USER_ID
         where GROUP_ID = #{groupId}
           and PROMISE_ID = #{promiseId}
+        order by voteNum desc
     </select>
 
     <insert id="createVote" parameterType="com.ssafy.waple.vote.dto.VoteDto">
