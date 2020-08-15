@@ -120,8 +120,25 @@
               </v-card-title>
               <v-card-text>
                 <v-container>
-                  <v-row>
-                    <v-col cols="12">
+                  <v-row align="center" justify="center">
+                    <v-col align="center" cols="3">
+                      <v-tooltip bottom>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            @click="iconDialog = !iconDialog"
+                            icon
+                            v-bind="attrs"
+                            v-on="on"
+                          >
+                            <v-avatar width="33px" height="44px">
+                              <img :src="`/img/markers/${marker.icon}`">
+                            </v-avatar>
+                          </v-btn>
+                        </template>
+                        <span>아이콘 선택</span>
+                      </v-tooltip>
+                    </v-col>
+                    <v-col align="center" cols="8">
                       <v-form ref="themeForm" v-model="themeValid">
                         <v-text-field
                           label="테마 이름"
@@ -143,6 +160,11 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+          <icon-select-modal
+            :iconDialog="iconDialog"
+            @select="selectMarker"
+            @close="iconDialog = !iconDialog"
+          ></icon-select-modal>
         </v-container>
       </v-row>
     </v-container>
@@ -180,6 +202,11 @@ export default {
       bottom: false,
       loading: false,
       page: 1,
+      iconDialog: false,
+      marker: {
+        icon: 'default.png',
+        name: 'default',
+      },
     };
   },
   watch: {
@@ -198,6 +225,7 @@ export default {
   components: {
     ValidationObserver,
     ValidationProvider,
+    IconSelectModal: () => import('@/components/items/IconSelectModal.vue'),
   },
   computed: {
     searchResult: () => store.getters.result,
@@ -269,7 +297,7 @@ export default {
     makeTheme() {
       api.post('/themes', {
         groupId: this.group.groupId,
-        icon: 'gg.ico',
+        icon: this.marker.icon,
         name: this.themeName,
       }, {
         headers: {
@@ -304,6 +332,9 @@ export default {
       if (scrollTop + clientHeight >= scrollHeight) {
         this.bottom = true;
       }
+    },
+    selectMarker(marker) {
+      this.marker = marker;
     },
   },
   created() {

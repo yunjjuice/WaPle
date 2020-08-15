@@ -5,7 +5,7 @@
       max-width="600px"
     >
       <template v-slot:activator="{ on, attrs }">
-        <v-expansion-panel class="mt-4 border">
+        <v-expansion-panel>
           <v-expansion-panel-header
             dark
             v-bind="attrs"
