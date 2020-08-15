@@ -30,11 +30,21 @@
     <v-divider></v-divider>
     <br>
     <h3 class="d-inline">테마
-      <theme-plus-button
-        class="d-inline pl-2"
-        :groupId="groupId"
-        @addTheme="getGroupInfo(groupId)"
-      />
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            icon
+            v-bind="attrs"
+            v-on="on"
+            @click.stop="themeDialog = !themeDialog"
+          >
+            <v-icon>
+              mdi-plus-circle-outline
+            </v-icon>
+          </v-btn>
+        </template>
+        <span>테마 추가</span>
+      </v-tooltip>
     </h3>
     <v-container>
       <v-row class="my-4">
@@ -74,13 +84,18 @@
         </div>
       </v-row>
     </v-container>
+    <theme-add-modal
+      :themeDialog="themeDialog"
+      :groupId="groupId"
+      @closeTheme="themeDialog = !themeDialog"
+      @updateTheme="getGroupInfo(groupId)"
+    ></theme-add-modal>
   </v-expansion-panel-content>
 </template>
 
 <script>
 import api from '@/utils/api';
 import store from '@/store/index';
-import ThemePlusButton from '@/components/mypage/ThemePlusButton.vue';
 import ThemeMinusButton from '@/components/mypage/ThemeMinusButton.vue';
 
 export default {
@@ -91,8 +106,8 @@ export default {
     groupName: String,
   },
   components: {
-    ThemePlusButton,
     ThemeMinusButton,
+    ThemeAddModal: () => import('@/components/items/ThemeAddModal.vue'),
   },
   data() {
     return {
@@ -100,23 +115,25 @@ export default {
       groupThemes: null, // 특정 그룹에 속한 테마들 가져오기
       themeName: '',
       flag: [],
+      themeDialog: false,
     };
   },
   methods: {
     getGroupInfo(groupId) {
-      // 그룹에 속한 유저목록 가져오기
-      api.get(`groups/${groupId}`)
-        .then((res) => {
-          this.groupUsers = res.data;
-        })
-        .catch((err) => console.log(err));
-
-      // 그룹에 속한 테마목록 가져오기
-      api.get(`themes/${groupId}`, { headers: { token: this.$session.get('token') } })
-        .then((res) => {
-          this.groupThemes = res.data;
-        })
-        .catch((err) => console.log(err));
+      api.get(`groups/${groupId}`, {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then((res) => {
+        this.groupUsers = res.data;
+      }).catch((err) => console.log(err));
+      api.get(`themes/${groupId}`, {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then((res) => {
+        this.groupThemes = res.data;
+      }).catch((err) => console.log(err));
     },
     addGroupUser() {
       window.Kakao.Link.sendCustom({

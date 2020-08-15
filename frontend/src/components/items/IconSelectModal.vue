@@ -41,8 +41,8 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn color="green darken-1" text @click="closeDialog">close</v-btn>
-        <v-btn color="green darken-1" text @click="selectIcon">save</v-btn>
+        <v-btn color="green darken-1" text @click="closeDialog">취소</v-btn>
+        <v-btn color="green darken-1" text @click="selectIcon">저장</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
