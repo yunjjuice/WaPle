@@ -21,7 +21,7 @@
                       v-on="on"
                     >
                       <v-avatar width="33px" height="44px">
-                        <img :src="`/img/markers/${marker.icon}`">
+                        <img :src="`${marker.icon}`">
                       </v-avatar>
                     </v-btn>
                   </template>
@@ -78,7 +78,7 @@ export default {
       themeValid: true,
       iconDialog: false,
       marker: {
-        icon: 'default.png',
+        icon: '/markers/default.png',
         name: 'default',
       },
     };
@@ -95,7 +95,7 @@ export default {
     closeModal() {
       this.$refs.themeForm.reset();
       this.marker = {
-        icon: 'default.png',
+        icon: '/markers/default.png',
         name: 'default',
       };
       this.$emit('closeTheme');
