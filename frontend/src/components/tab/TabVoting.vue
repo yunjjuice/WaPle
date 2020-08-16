@@ -26,6 +26,12 @@
                   >
                   <v-icon>mdi-calendar-edit</v-icon>
                 </v-btn>
+                <v-btn
+                  icon
+                  @click.stop="remove(appointment)"
+                  >
+                  <v-icon>mdi-calendar-remove</v-icon>
+                </v-btn>
             </v-card-actions>
           </div>
         </div>
@@ -34,6 +40,8 @@
   </v-row>
   <edit-modal :dialog="editDialog" :appointment="appointment" @close="editDialog=false">
   </edit-modal>
+  <remove-modal :dialog="removeDialog" :appointment="appointment" @close="removeDialog=false">
+  </remove-modal>
 </v-container>
 </template>
 
@@ -46,10 +54,12 @@ export default {
     return {
       appointment: {},
       editDialog: false,
+      removeDialog: false,
     };
   },
   components: {
     EditModal: () => import('@/components/items/AppointmentEditModal.vue'),
+    RemoveModal: () => import('@/components/items/AppointmentRemoveModal.vue'),
   },
   computed: {
     appointments: () => store.getters.appointments,
@@ -70,6 +80,10 @@ export default {
     edit(appointment) {
       this.appointment = appointment;
       this.editDialog = true;
+    },
+    remove(appointment) {
+      this.appointment = appointment;
+      this.removeDialog = true;
     },
   },
 };

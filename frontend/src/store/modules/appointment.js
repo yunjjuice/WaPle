@@ -169,6 +169,17 @@ export default {
           dispatch('showSnackbar', { color: 'error', msg: '약속 수정 실패' }, { root: true });
         });
     },
+    removeAppointment({ dispatch }, { groupId, promiseId }) {
+      api.delete(`/promises/${groupId}/${promiseId}`)
+        .then(() => {
+          dispatch('showSnackbar', { color: 'success', msg: '약속 삭제 완료' }, { root: true });
+          dispatch('getAppointments');
+        })
+        .catch((err) => {
+          console.error(err);
+          dispatch('showSnackbar', { color: 'error', msg: '약속 삭제 실패' }, { root: true });
+        });
+    },
     getGroupsThemes({ commit }) {
       api.get(`/themes/all/${Vue.prototype.$session.get('uid')}`, {
         headers: {
