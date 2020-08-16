@@ -98,6 +98,8 @@ export default {
       bottom: false,
       loading: false,
       noData: false,
+      offset: 1,
+      limit: 10,
     };
   },
   components: {
@@ -134,6 +136,7 @@ export default {
   watch: {
     bottom() {
       if (this.bottom && !this.noData) {
+        this.noData = true;
         this.offset += 1;
         this.bottom = false;
         this.readAllReview();
@@ -158,20 +161,23 @@ export default {
     },
     onScroll(e) {
       const { scrollTop, clientHeight, scrollHeight } = e.target;
-      console.log('scroll height : ', scrollTop + clientHeight);
-      console.log('cliet height : ', scrollHeight);
       if (scrollTop + clientHeight >= scrollHeight) {
         this.bottom = true;
       }
     },
     readAllReview() {
-      api.get(`/reviews/all/${this.$session.get('uid')}/10/1`, {
+      api.get(`/reviews/all/${this.$session.get('uid')}/${this.limit}/${this.offset}`, {
         headers: {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
-        this.items = data;
-        this.$store.dispatch('doUpdate', this.filteredArray);
+        if (data.length === 0) {
+          this.noData = true;
+        } else {
+          this.noData = false;
+          this.items = this.items.concat(data);
+          this.$store.dispatch('doUpdate', this.filteredArray);
+        }
       });
     },
   },

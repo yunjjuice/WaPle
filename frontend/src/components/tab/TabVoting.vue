@@ -6,13 +6,18 @@
   style="height: calc(90vh - 50px)"
   class="overflow-y-auto"
 >
+  <transition name="fade">
+    <div class="loading" v-show="loading">
+      <span class="fa fa-spinner fa-spin"></span> Loading
+    </div>
+  </transition>
   <v-row
     align='center'
     justify='center'
     v-scroll:#scroll-target="onScroll"
   >
     <v-col
-      v-for="(appointment, i) in appointments"
+      v-for="(appointment, i) in appointmentDatas"
         :key="i"
         cols="12"
     >
@@ -77,8 +82,14 @@ export default {
   data() {
     return {
       appointment: {},
+      appointmentDatas: [],
       editDialog: false,
       removeDialog: false,
+      bottom: false,
+      loading: false,
+      noData: false,
+      offset: 1,
+      limit: 10,
     };
   },
   components: {
@@ -91,6 +102,28 @@ export default {
   created() {
     store.dispatch('getAppointments');
     store.dispatch('invisibleBookmark');
+    this.appointmentDatas = this.appointments.slice(this.offset - 1, this.limit);
+  },
+  watch: {
+    bottom() {
+      if (this.bottom && !this.noData) {
+        this.noData = true;
+        this.offset += 1;
+        this.bottom = false;
+        const size = this.appointments.length;
+        if (size >= (this.offset - 1) * this.limit) {
+          let t = [];
+          if (size < this.offset * this.limit) {
+            t = this.appointments.slice((this.offset - 1) * this.limit, size);
+            this.appointmentDatas = this.appointmentDatas.concat(t);
+          } else {
+            t = this.appointments.slice((this.offset - 1) * this.limit, this.offset * this.limit);
+            this.appointmentDatas = this.appointmentDatas.concat(t);
+          }
+          this.noData = false;
+        }
+      }
+    },
   },
   methods: {
     // 약속에 저장된 장소 목록을 띄워준다
@@ -108,6 +141,12 @@ export default {
     remove(appointment) {
       this.appointment = appointment;
       this.removeDialog = true;
+    },
+    onScroll(e) {
+      const { scrollTop, clientHeight, scrollHeight } = e.target;
+      if (scrollTop + clientHeight >= scrollHeight) {
+        this.bottom = true;
+      }
     },
   },
 };

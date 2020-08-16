@@ -89,6 +89,8 @@ export default {
         placeId: this.item.placeId,
         themeId: this.additional.themeId,
         url: this.item.url,
+        tel: this.item.tel,
+        category: this.item.category,
         userId: this.$session.get('uid'),
       }, {
         headers: {
