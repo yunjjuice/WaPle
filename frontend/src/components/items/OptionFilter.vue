@@ -61,7 +61,7 @@ export default {
       for (let index2 = 0; index2 < temp[index].themeIds.length; index2 += 1) {
         innerData = {};
         innerData.name = temp[index].themeNames[index2];
-        innerData.avatar = 'markers/'.concat(temp[index].themeIcons[index2]);
+        innerData.avatar = temp[index].themeIcons[index2];
         innerData.type = { groupId: temp[index].groupId, themeId: temp[index].themeIds[index2] };
         this.userThemes.push(innerData);
       }
