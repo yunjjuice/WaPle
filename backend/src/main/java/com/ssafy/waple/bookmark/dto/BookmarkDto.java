@@ -34,8 +34,10 @@ public class BookmarkDto {
 	private String tel;
 
 	@ApiModelProperty(value = "카테고리", example = "음식점")
-	private  String category;
+	private String category;
 
+	@ApiModelProperty(value = "아이콘", example = "gg.ico")
+	private  String icon;
 
 	public int getGroupId() {
 		return groupId;
@@ -125,6 +127,14 @@ public class BookmarkDto {
 		this.category = category;
 	}
 
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
 	@Override
 	public String toString() {
 		return "BookmarkDto{" +
@@ -139,6 +149,7 @@ public class BookmarkDto {
 			", url='" + url + '\'' +
 			", tel='" + tel + '\'' +
 			", category='" + category + '\'' +
+			", icon='" + icon + '\'' +
 			'}';
 	}
 }
