@@ -34,7 +34,7 @@
               {{ appointment.name }}<br>
               {{ getFormatDate(appointment.promiseDate) }}
             </v-card-text>
-            <v-card-actions style="position: absolute; top: 1%; right: 1%">
+            <v-card-actions style="position: absolute; bottom: 1%; right: 1%">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
