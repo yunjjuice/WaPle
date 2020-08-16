@@ -82,8 +82,8 @@ export default {
       // 마커 표시하기
       const bounds = new window.kakao.maps.LatLngBounds(); // 지도 범위 재설정을 위함
       // TODO: 나중에 마커 위치가 전국 각지에 있다면 어떻게 할 건지 고민해보자!
-      const imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/markerStar.png';
       for (let i = 0; i < items.length; i += 1) {
+        const imageSrc = items[i].icon;
         const imageSize = new window.kakao.maps.Size(24, 35);
         const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
         const marker = new window.kakao.maps.Marker({
