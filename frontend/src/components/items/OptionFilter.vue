@@ -22,7 +22,7 @@
             <template slot="item" slot-scope="data">
               <template>
                 <v-list-item-avatar>
-                  <img v-bind:src="data.item.avatar"/>
+                  <img style="height: 44px; width:33px" v-bind:src="data.item.avatar"/>
                 </v-list-item-avatar>
                 <v-list-item-content>
                   <v-list-item-title v-text="data.item.name"></v-list-item-title>
@@ -61,6 +61,7 @@ export default {
       for (let index2 = 0; index2 < temp[index].themeIds.length; index2 += 1) {
         innerData = {};
         innerData.name = temp[index].themeNames[index2];
+        innerData.avatar = 'markers/'.concat(temp[index].themeIcons[index2]);
         innerData.type = { groupId: temp[index].groupId, themeId: temp[index].themeIds[index2] };
         this.userThemes.push(innerData);
       }

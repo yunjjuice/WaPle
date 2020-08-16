@@ -35,7 +35,8 @@
         select G.GROUP_ID,
         GROUP_CONCAT(T.THEME_ID SEPARATOR ',') as "themes",
         GROUP_CONCAT(T.NAME SEPARATOR ',')     as "themeName",
-        GROUP_CONCAT(G.NAME SEPARATOR ',')     as "groupName"
+        GROUP_CONCAT(G.NAME SEPARATOR ',')     as "groupName",
+        GROUP_CONCAT(T.ICON SEPARATOR ',')     as "themeIcon"
         from (SELECT *
               FROM `GROUPS`
               WHERE `GROUPS`.GROUP_ID IN
@@ -58,7 +59,7 @@
     </select>
 
     <select id="readAllById" parameterType="long" resultType="com.ssafy.waple.theme.dto.ThemeGroupPlace">
-        SELECT distinct G.NAME "groupName", T.NAME "themeName", G.GROUP_ID "groupId", T.THEME_ID "themeId"
+        SELECT distinct G.NAME "groupName", T.NAME "themeName", G.GROUP_ID "groupId", T.THEME_ID "themeId", ICON
         FROM `GROUPS` G
             inner join THEMES T
                 on G.GROUP_ID = T.GROUP_ID and G.GROUP_ID

@@ -16,6 +16,9 @@ public class ThemeGroupPlace {
 	@ApiModelProperty(value = "테마 아이디", example = "1")
 	private int themeId;
 
+	@ApiModelProperty(value = "아이콘", example = "default.png")
+	private String icon;
+
 	public String getGroupName() {
 		return groupName;
 	}
@@ -46,5 +49,13 @@ public class ThemeGroupPlace {
 
 	public void setThemeId(int themeId) {
 		this.themeId = themeId;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 }

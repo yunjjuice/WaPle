@@ -97,6 +97,7 @@ public class ThemeServiceImpl implements ThemeService {
 				.collect(Collectors.toList()));
 			dto.setThemeNames(Arrays.stream(dto.getThemeName().split(",")).collect(Collectors.toList()));
 			dto.setGroupNames(Arrays.stream(dto.getGroupName().split(",")).collect(Collectors.toList()));
+			dto.setThemeIcons(Arrays.stream(dto.getThemeIcon().split(",")).collect(Collectors.toList()));
 		}
 		return list;
 	}
