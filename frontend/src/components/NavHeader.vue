@@ -9,7 +9,7 @@
       <router-link to="/" style="color: black; text-decoration: none">
         <span class="hidden-sm-and-down"><b>WAPLE</b></span>
         <v-img
-          src="@/assets/waffle.png"
+          src="/waffle.png"
           max-height="35px"
           max-width="35px"
           class="hidden-md-and-up"

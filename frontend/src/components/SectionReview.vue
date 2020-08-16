@@ -4,7 +4,7 @@
       <v-btn icon @click="moveBack">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
-      <v-toolbar-title> 리뷰 </v-toolbar-title>
+      <v-toolbar-title>{{ item.name }}</v-toolbar-title>
     </v-toolbar>
     <v-container>
       <v-row align='center' justify='center'>
@@ -42,6 +42,9 @@ export default {
       reviews: [],
     };
   },
+  computed: {
+    item: () => store.getters.item,
+  },
   created() {
     const userId = this.$session.get('uid');
     const { placeId } = store.getters.item;
@@ -50,7 +53,6 @@ export default {
         token: this.$session.get('token'),
       },
     }).then(({ data }) => {
-      console.log(data);
       this.reviews = data;
     });
   },
@@ -65,8 +67,8 @@ export default {
         },
       }).then(({ data }) => {
         store.dispatch('selectReview', data);
+        store.dispatch('changeReadDialog');
       });
-      store.dispatch('showReadDialog');
     },
   },
 };

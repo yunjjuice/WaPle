@@ -1,12 +1,13 @@
 <template>
 <v-main>
-  <v-container>
+  <v-container
+    :class="{'panel-padding': $vuetify.breakpoint.mdAndUp}"
+  >
     <br><br>
     <v-expansion-panels focusable>
       <v-expansion-panel
         v-for="(group, index) in groups"
         :key="group.groupId"
-        class="mt-4 border"
       >
         <v-expansion-panel-header style="font-size:20px; font-weight:570;">
           <div class="d-inline">
@@ -61,7 +62,7 @@
         </v-expansion-panel-header>
         <group-detail :groupId="group.groupId" :groupName="group.name" :token="group.token"/>
       </v-expansion-panel>
-      <add-group class="mt-5"/>
+      <add-group/>
     </v-expansion-panels>
     <leave-group-modal/>
     <br><br>
@@ -134,5 +135,10 @@ export default {
 </script>
 
 <style>
-
+.panel-padding {
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
 </style>

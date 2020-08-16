@@ -206,7 +206,7 @@ export default {
     },
     writeReview(item) {
       store.dispatch('updateItem', item);
-      store.dispatch('showWriteDialog');
+      store.dispatch('changeWriteDialog');
       store.dispatch('getGroups');
     },
     callAll(limit, offset) {

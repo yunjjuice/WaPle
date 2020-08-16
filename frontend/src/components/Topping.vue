@@ -1,7 +1,7 @@
 <template>
 <v-main>
   <v-container align="center" justify="center">
-  <v-img src="../assets/makingwaffle.jpg"
+  <v-img src="/makingwaffle.jpg"
     max-height="500px"></v-img>
     <v-stepper value="3">
     <v-stepper-header>

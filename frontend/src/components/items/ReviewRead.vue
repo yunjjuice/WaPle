@@ -1,54 +1,54 @@
 <template>
 <v-main>
   <v-container fluid>
-  <v-bottom-sheet
-    v-model="dialog"
-    persistent
-    inset
-    attach
-    scrollable
-    :fullscreen="$vuetify.breakpoint.smAndDown"
-  >
-    <v-sheet
-      class="text-center"
-      :class="{'sheet': $vuetify.breakpoint.mdAndUp}"
+    <v-bottom-sheet
+      v-model="dialog"
+      scrollable
+      :fullscreen="$vuetify.breakpoint.smAndDown"
     >
-      <v-toolbar dense dark>
-      <v-btn
-        icon
-        @click="close"
+      <v-sheet
+        class="text-center"
+        :class="{'sheet': $vuetify.breakpoint.mdAndUp}"
+        :style="{ height: height - 63 + 'px', width: width + 'px' }"
       >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-container
-      id="scroll-target"
-      class="overflow-y-auto"
-      style="max-height: 640px"
-    >
-      <v-row
-        v-scroll:#scroll-target="onScroll"
-        align="center"
-        justify="center"
-      >
-      </v-row>
-      <h1>{{ review.title }}</h1>
-      <h5><i style="color:gray">{{ review.visitDate }}</i></h5>
-      {{ review.groupName }}, wtitten by {{ review.userName }}
-      <div class="image">
-        <div class="card-container" v-if="review.images">
-          <div v-for="(img, index) in review.images" :key="index"
-            class="card"
-            :style="{ '--image': 'url(' + img + ')',
-                      '--x':x[index], '--y':y[index], '--angle':angle[index], 'z-index':z[index] }"
-            @click=onClickImg(img)
-          ></div>
-        </div>
-      </div>
-      <div class="review__block">{{ review.content }}</div>
-    </v-container>
-    </v-sheet>
-  </v-bottom-sheet>
+        <v-toolbar dense color="#ffc34d">
+          <v-spacer></v-spacer>
+          <v-btn
+            icon
+            @click="close"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-container
+          id="scroll-target"
+          class="overflow-y-auto"
+          style="max-height: 640px; padding:50px;"
+        >
+          <v-row
+            v-scroll:#scroll-target="onScroll"
+            align="center"
+            justify="center"
+          >
+          </v-row>
+          <h1>{{ review.title }}</h1>
+          <h5><i style="color:gray">{{ review.visitDate }}</i></h5>
+          {{ review.groupName }}, wtitten by {{ review.userName }}
+          <div class="image">
+            <div class="card-container">
+              <div v-for="(img, index) in review.images" :key="index"
+                class="card"
+                :style="{ '--image': 'url(' + img + ')',
+                          '--x':x[index], '--y':y[index],
+                          '--angle':angle[index], 'z-index':z[index] }"
+                @click=onClickImg(img)
+              ></div>
+            </div>
+          </div>
+          <div class="review__block" style="white-space:pre;">{{ review.content }}</div>
+        </v-container>
+      </v-sheet>
+    </v-bottom-sheet>
   </v-container>
   <div id="myModal" class="modal" @click=onClickModal>
     <img class="modal-content" id="modalImg">
@@ -66,15 +66,27 @@ export default {
       y: ['-5%', '5%', '5%', '-5%', '-5%'],
       angle: ['-2deg', '2deg', '2deg', '-2deg', '-2deg'],
       z: [2, 1, 3, 0, 4],
+      dialog: false,
     };
   },
+  props: [
+    'readDialog',
+  ],
   computed: {
-    dialog: () => store.getters.readDialog,
     review: () => store.getters.review,
+    height: () => store.getters.height,
+    width: () => store.getters.width,
+  },
+  watch: {
+    readDialog() {
+      this.dialog = !this.dialog;
+    },
   },
   methods: {
     close() {
-      this.$store.dispatch('closeReadDialog');
+      this.$store.dispatch('changeReadDialog');
+      this.dialog = !this.dialog;
+      this.$emit('closeRead');
     },
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;
@@ -99,8 +111,6 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  height: 691px;
-  width: 1139px;
   background-color: #F1F1F1;
 }
 
