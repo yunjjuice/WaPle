@@ -29,10 +29,7 @@
         select DISTINCT B.USER_ID, B.GROUP_ID, B.THEME_ID, P.*, T.ICON
         FROM BOOKMARKS B
         inner join PLACES P on B.PLACE_ID = P.PLACE_ID
-            inner join THEMES T on B.GROUP_ID IN
-                (select GROUP_ID
-                FROM GROUP_MEMBERS
-                WHERE USER_ID = #{userId})
+        inner join THEMES T on (B.GROUP_ID IN (select GROUP_ID FROM GROUP_MEMBERS WHERE USER_ID = #{userId}) and B.THEME_ID = T.THEME_ID)
         GROUP BY B.PLACE_ID
         ORDER BY B.PLACE_ID
         LIMIT #{limit} OFFSET #{offset}
