@@ -158,6 +158,17 @@ export default {
         dispatch('showSnackbar', payload, { root: true });
       });
     },
+    updateAppointmentInfo({ dispatch }, { appointment }) { // 약속 정보 업데이트
+      api.put('/promises', appointment)
+        .then(() => {
+          dispatch('showSnackbar', { color: 'success', msg: '약속 수정 완료' }, { root: true });
+          dispatch('getAppointments');
+        })
+        .catch((err) => {
+          console.error(err);
+          dispatch('showSnackbar', { color: 'error', msg: '약속 수정 실패' }, { root: true });
+        });
+    },
     getGroupsThemes({ commit }) {
       api.get(`/themes/all/${Vue.prototype.$session.get('uid')}`, {
         headers: {

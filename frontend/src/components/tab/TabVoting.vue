@@ -19,11 +19,21 @@
               {{ appointment.name }}<br>
               {{ getFormatDate(appointment.promiseDate) }}
             </v-card-text>
+            <v-card-actions style="position: absolute; top: 1%; right: 1%">
+                <v-btn
+                  icon
+                  @click.stop="edit(appointment)"
+                  >
+                  <v-icon>mdi-calendar-edit</v-icon>
+                </v-btn>
+            </v-card-actions>
           </div>
         </div>
       </v-card>
     </v-col>
   </v-row>
+  <edit-modal :dialog="editDialog" :appointment="appointment" @close="editDialog=false">
+  </edit-modal>
 </v-container>
 </template>
 
@@ -34,7 +44,12 @@ import moment from 'moment';
 export default {
   data() {
     return {
+      appointment: {},
+      editDialog: false,
     };
+  },
+  components: {
+    EditModal: () => import('@/components/items/AppointmentEditModal.vue'),
   },
   computed: {
     appointments: () => store.getters.appointments,
@@ -51,6 +66,10 @@ export default {
     },
     getFormatDate(datetime) {
       return moment(datetime).format('YYYY.MM.DD h:mm a');
+    },
+    edit(appointment) {
+      this.appointment = appointment;
+      this.editDialog = true;
     },
   },
 };
