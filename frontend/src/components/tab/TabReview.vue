@@ -1,7 +1,22 @@
 <template>
-<v-main>
-  <v-container>
-    <v-row align='center' justify='center'>
+<v-main style="height: 80%">
+  <v-container
+    align='center'
+    justify='center'
+    id="scroll-target"
+    style="height: calc(90vh - 50px)"
+    class="overflow-y-auto"
+  >
+    <transition name="fade">
+      <div class="loading" v-show="loading">
+        <span class="fa fa-spinner fa-spin"></span> Loading
+      </div>
+    </transition>
+    <v-row
+      align='center'
+      justify='center'
+      v-scroll:#scroll-target="onScroll"
+    >
       <v-col
         v-for="(item, i) in filteredArray"
           :key="i"
@@ -67,9 +82,7 @@
         </v-card>
       </v-col>
     </v-row>
-
     <appointment-modal :dialog="appointmentDialog" />
-
   </v-container>
 </v-main>
 </template>
@@ -82,6 +95,11 @@ export default {
   data() {
     return {
       items: [],
+      bottom: false,
+      loading: false,
+      noData: false,
+      offset: 1,
+      limit: 10,
     };
   },
   components: {
@@ -91,14 +109,7 @@ export default {
     store.dispatch('invisibleBookmark');
   },
   mounted() {
-    api.get(`/reviews/all/${this.$session.get('uid')}/10/1`, {
-      headers: {
-        token: this.$session.get('token'),
-      },
-    }).then(({ data }) => {
-      this.items = data;
-      this.$store.dispatch('doUpdate', this.filteredArray);
-    });
+    this.readAllReview();
   },
   computed: {
     appointmentDialog: () => store.getters.appointmentDialog,
@@ -122,10 +133,17 @@ export default {
       return Object.values(ret);
     },
   },
-  methods: {
-    click() {
-      alert('click');
+  watch: {
+    bottom() {
+      if (this.bottom && !this.noData) {
+        this.noData = true;
+        this.offset += 1;
+        this.bottom = false;
+        this.readAllReview();
+      }
     },
+  },
+  methods: {
     showDialog(item) {
       store.dispatch('selectPlace', item);
       store.dispatch('openAppointmentDialog');
@@ -140,6 +158,27 @@ export default {
       store.dispatch('updateItem', item);
       store.dispatch('changeWriteDialog');
       store.dispatch('getGroups');
+    },
+    onScroll(e) {
+      const { scrollTop, clientHeight, scrollHeight } = e.target;
+      if (scrollTop + clientHeight >= scrollHeight) {
+        this.bottom = true;
+      }
+    },
+    readAllReview() {
+      api.get(`/reviews/all/${this.$session.get('uid')}/${this.limit}/${this.offset}`, {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then(({ data }) => {
+        if (data.length === 0) {
+          this.noData = true;
+        } else {
+          this.noData = false;
+          this.items = this.items.concat(data);
+          this.$store.dispatch('doUpdate', this.filteredArray);
+        }
+      });
     },
   },
 };

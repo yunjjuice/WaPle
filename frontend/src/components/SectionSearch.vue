@@ -88,7 +88,12 @@ export default {
       group: {}, // 선택된 그룹
       themes: [], // 데이터에서 받아온 테마 목록
       theme: {}, // 선택된 테마
-      bottom: false,
+      themeName: '',
+      rules: {
+        required: (value) => !!value || 'theme can not be empty',
+        counter: (value) => (value && value.length <= 50) || 'Max 50 chracters',
+      },
+      themeValid: true,
       loading: false,
       page: 1,
       bookmarkDialog: false,
@@ -99,20 +104,23 @@ export default {
   },
   watch: {
     bottom() {
-      if (this.bottom) {
+      if (this.bottom && !this.noData) {
+        store.dispatch('updateNoData', true);
+        store.dispatch('updateBottom', false);
         this.loading = true;
         setTimeout(() => {
           store.dispatch('updatePage', this.page += 1);
           store.dispatch('search', this.keyword);
           this.loading = false;
         }, 500);
-        this.bottom = false;
       }
     },
   },
   computed: {
     searchResult: () => store.getters.result,
     keyword: () => store.getters.keyword,
+    noData: () => store.getters.noData,
+    bottom: () => store.getters.bottom,
   },
   methods: {
     moveBack() {
@@ -128,7 +136,7 @@ export default {
     onScroll(e) {
       const { scrollTop, clientHeight, scrollHeight } = e.target;
       if (scrollTop + clientHeight >= scrollHeight) {
-        this.bottom = true;
+        store.dispatch('updateBottom', true);
       }
     },
   },

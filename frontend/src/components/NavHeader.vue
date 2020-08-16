@@ -102,6 +102,7 @@ export default {
       }
       store.dispatch('updatePage', 1);
       store.dispatch('updateNoData', false);
+      store.dispatch('updateBottom', false);
       store.dispatch('initResult', []);
       store.dispatch('updateKeyword', this.keyword);
       store.dispatch('search', this.keyword);
