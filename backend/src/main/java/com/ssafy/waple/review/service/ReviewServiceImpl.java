@@ -31,7 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
 	@Override
 	public void create(String token, ReviewDto dto) {
 		// 유효성 검증 : 유저 찾기, 그룹 찾기, 장소 찾기
-		if (dto.getTitle() == null || dto.getTitle() == "") {
+		if ("".equals(dto.getTitle())) {
 			throw new NameNotEmptyException();
 		}
 		try {
@@ -88,11 +88,11 @@ public class ReviewServiceImpl implements ReviewService {
 	}
 
 	@Override
-	public void update(String token, int reviewId, String title, String content, String media) {
-		if (title == null || title == "") {
+	public void update(String token, int reviewId, String title, String content) {
+		if ("".equals(title)) {
 			throw new NameNotEmptyException();
 		}
-		if (dao.update(reviewId, title, content, media) < 1) {
+		if (dao.update(reviewId, title, content) < 1) {
 			throw new ReviewNotFoundException(reviewId);
 		}
 	}

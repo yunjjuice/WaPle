@@ -2,7 +2,6 @@ package com.ssafy.waple.review.service;
 
 import java.util.List;
 
-import com.ssafy.waple.bookmark.dto.SearchType;
 import com.ssafy.waple.review.dto.ReviewDto;
 import com.ssafy.waple.review.dto.ReviewPlaceDto;
 
@@ -21,7 +20,7 @@ public interface ReviewService {
 	ReviewDto read(String token, int reviewId);
 
 	// 리뷰 업데이트
-	void update(String token, int reviewId, String title ,String content, String media);
+	void update(String token, int reviewId, String title, String content);
 
 	// 리뷰 삭제
 	void delete(String token, int reviewId);
