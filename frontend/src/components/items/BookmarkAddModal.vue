@@ -94,6 +94,8 @@ export default {
   watch: {
     bookmarkDialog() {
       this.dialog = !this.dialog;
+      this.group = '';
+      this.theme = '';
     },
   },
   created() {

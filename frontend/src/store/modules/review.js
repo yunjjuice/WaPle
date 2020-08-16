@@ -17,17 +17,11 @@ export default {
     },
   },
   mutations: {
-    trueReadDialog(state) {
-      state.readDialog = true;
+    setReadDialog(state) {
+      state.readDialog = !state.readDialog;
     },
-    falseReadDialog(state) {
-      state.readDialog = false;
-    },
-    trueWriteDialog(state) {
-      state.writeDialog = true;
-    },
-    falseWriteDialog(state) {
-      state.writeDialog = false;
+    setWriteDialog(state) {
+      state.writeDialog = !state.writeDialog;
     },
     setReview(state, payload) {
       state.review = payload;
@@ -43,17 +37,11 @@ export default {
     },
   },
   actions: {
-    showReadDialog({ commit }) {
-      commit('trueReadDialog');
+    changeReadDialog({ commit }) {
+      commit('setReadDialog');
     },
-    closeReadDialog({ commit }) {
-      commit('falseReadDialog');
-    },
-    showWriteDialog({ commit }) {
-      commit('trueWriteDialog');
-    },
-    closeWriteDialog({ commit }) {
-      commit('falseWriteDialog');
+    changeWriteDialog({ commit }) {
+      commit('setWriteDialog');
     },
     selectReview({ commit }, review) {
       commit('setReview', review);

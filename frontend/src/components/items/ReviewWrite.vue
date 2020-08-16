@@ -1,102 +1,115 @@
 <template>
 <v-main>
   <v-container fluid>
-  <v-bottom-sheet
-    v-model="dialog"
-    persistent
-    inset
-    attach
-    scrollable
-    :fullscreen="$vuetify.breakpoint.smAndDown"
-  >
-    <v-sheet
-      class="text-center"
-      :class="{'sheet': $vuetify.breakpoint.mdAndUp}"
+    <v-bottom-sheet
+      v-model="dialog"
+      scrollable
+      :fullscreen="$vuetify.breakpoint.smAndDown"
     >
-      <v-toolbar dense dark>
-      <v-btn
-        icon
-        @click="close"
+      <v-sheet
+        class="text-center"
+        :class="{'sheet': $vuetify.breakpoint.mdAndUp}"
+        :style="{ height: height - 63 + 'px', width: width + 'px' }"
       >
-        <v-icon>mdi-close</v-icon>
-      </v-btn>
-    </v-toolbar>
-    <v-container
-      id="scroll-target"
-      class="overflow-y-auto"
-      style="max-height: 640px"
-    >
-      <v-row
-        v-scroll:#scroll-target="onScroll"
-        align="center"
-        justify="center"
-      >
-      </v-row>
-      <v-form>
-        <v-text-field
-          v-model="title"
-          label="제목"
-          outlined
-        ></v-text-field>
-        <v-select
-          label="그룹 선택"
-          :items="groups"
-          v-model="group"
-          item-text="name"
-          return-object
-          outlined
-        ></v-select>
-        <v-menu
-          ref="menu"
-          v-model="menu"
-          :close-on-content-click="false"
-          :return-value.sync="visitDate"
-          transition="scale-transition"
-          offset-y
-          min-width="290px"
+        <v-toolbar dense color="#ffc34d">
+          <v-spacer></v-spacer>
+          <v-toolbar-title>{{ item.name }}</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn
+            icon
+            @click="close"
+          >
+            <v-icon>mdi-close</v-icon>
+          </v-btn>
+        </v-toolbar>
+        <v-container
+          id="scroll-target"
+          class="overflow-y-auto"
+          style="max-height: 640px; padding:50px;"
         >
-          <template v-slot:activator="{ on, attrs }">
-            <v-text-field
-              v-model="visitDate"
-              label="날짜"
-              readonly
-              v-bind="attrs"
-              v-on="on"
-              outlined
-            ></v-text-field>
-          </template>
-          <v-date-picker v-model="visitDate" no-title scrollable>
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
-            <v-btn text color="primary" @click="$refs.menu.save(visitDate)">OK</v-btn>
-          </v-date-picker>
-        </v-menu>
-        <v-textarea
-          v-model="content"
-          label="내용"
-          outlined
-          rows="10"
-          no-resize
-        ></v-textarea>
-        <div style="display: flex; justify-content: center;">
-          <vue-upload-multiple-image
-            drag-text='사진 업로드'
-            browse-text='파일 고르기'
-            drop-text='업로드'
-            accept='image/jpeg,image/png,image/jpg'
-            :show-primary=false
-            @upload-success="uploadImageSuccess"
-            @before-remove="beforeRemove"
-            @edit-image="editImage"
-            :data-images="images"
-          ></vue-upload-multiple-image>
-        </div>
-        <v-btn color="primary" @click="writeReview">작성하기</v-btn>
-        <v-btn color="error" @click="close">취소하기</v-btn>
-      </v-form>
-    </v-container>
-    </v-sheet>
-  </v-bottom-sheet>
+          <v-row
+            v-scroll:#scroll-target="onScroll"
+            align="center"
+            justify="center"
+          >
+          </v-row>
+          <validation-observer ref="reviewForm">
+            <validation-provider v-slot="{ errors }" name="title" rules="required">
+              <v-text-field
+                v-model="title"
+                label="제목"
+                outlined
+                :error-messages="errors"
+              ></v-text-field>
+            </validation-provider>
+            <validation-provider v-slot="{ errors }" name="group" rules="required">
+              <v-select
+                label="그룹 선택"
+                :items="groups"
+                v-model="group"
+                item-text="name"
+                return-object
+                outlined
+                :error-messages="errors"
+              ></v-select>
+            </validation-provider>
+            <v-menu
+              ref="menu"
+              v-model="menu"
+              :close-on-content-click="false"
+              :return-value.sync="visitDate"
+              transition="scale-transition"
+              offset-y
+              min-width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="visitDate"
+                  label="날짜"
+                  readonly
+                  v-bind="attrs"
+                  v-on="on"
+                  outlined
+                  required
+                ></v-text-field>
+              </template>
+              <v-date-picker v-model="visitDate" no-title scrollable>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="menu = false">Cancel</v-btn>
+                <v-btn text color="primary" @click="$refs.menu.save(visitDate)">OK</v-btn>
+              </v-date-picker>
+            </v-menu>
+            <validation-provider v-slot="{ errors }" name="content" rules="required">
+              <v-textarea
+                v-model="content"
+                label="내용"
+                outlined
+                rows="10"
+                no-resize
+                required
+                :error-messages="errors"
+              ></v-textarea>
+            </validation-provider>
+          </validation-observer>
+          <div style="display: flex; justify-content: center;">
+            <vue-upload-multiple-image
+              drag-text='사진 업로드'
+              browse-text='파일 고르기'
+              drop-text='업로드'
+              accept='image/jpeg,image/png,image/jpg'
+              :show-primary=false
+              @upload-success="uploadImageSuccess"
+              @before-remove="beforeRemove"
+              @edit-image="editImage"
+              :data-images="images"
+            ></vue-upload-multiple-image>
+          </div>
+          <br>
+          <v-btn color="primary" @click="isValid">작성하기</v-btn>
+          <v-btn color="error" @click="close">취소하기</v-btn>
+        </v-container>
+      </v-sheet>
+    </v-bottom-sheet>
   </v-container>
 </v-main>
 </template>
@@ -106,31 +119,55 @@ import store from '@/store/index';
 import api from '@/utils/api';
 import axios from 'axios';
 import VueUploadMultipleImage from 'vue-upload-multiple-image';
+import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
+import { required } from 'vee-validate/dist/rules';
+
+extend('required', {
+  ...required,
+  message: '{_field_} can not be empty',
+});
 
 export default {
   components: {
     VueUploadMultipleImage,
+    ValidationObserver,
+    ValidationProvider,
   },
   data() {
     return {
       title: '',
-      group: {},
-      visitDate: '',
+      group: '',
+      visitDate: new Date().toISOString().substr(0, 10),
       content: '',
       menu: false,
       images: [],
       formDatas: [],
       maxImageSize: 512 * 1024, // 512KB
+      dialog: false,
+      valid: true,
     };
   },
+  props: [
+    'writeDialog',
+  ],
   computed: {
-    dialog: () => store.getters.writeDialog,
     groups: () => store.getters.groups,
+    item: () => store.getters.item,
+    height: () => store.getters.height,
+    width: () => store.getters.width,
+  },
+  watch: {
+    writeDialog() {
+      this.dialog = !this.dialog;
+    },
   },
   methods: {
     close() {
       this.initReview();
-      store.dispatch('closeWriteDialog');
+      store.dispatch('changeWriteDialog');
+      this.dialog = !this.dialog;
+      this.$emit('closeWrite');
+      this.$refs.reviewForm.reset();
     },
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;
@@ -138,7 +175,7 @@ export default {
     initReview() { // 내용 초기화
       this.title = '';
       this.group = {};
-      this.visitDate = null;
+      this.visitDate = new Date().toISOString().substr(0, 10);
       this.content = '';
     },
     uploadImage(formData) {
@@ -151,6 +188,14 @@ export default {
           .then((res) => resolve(res.data))
           .catch((err) => reject(err));
       });
+    },
+    isValid() {
+      this.$refs.reviewForm.validate()
+        .then((result) => {
+          if (result) { // 입력이 다 되었다면 요청 보내기
+            this.writeReview();
+          }
+        });
     },
     async writeReview() { // 리뷰 작성
       /* eslint-disable no-restricted-syntax */
@@ -221,7 +266,5 @@ export default {
   position: absolute;
   bottom: 0;
   right: 0;
-  height: 691px;
-  width: 1139px;
 }
 </style>

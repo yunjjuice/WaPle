@@ -28,7 +28,7 @@
                         <v-icon>mdi-calendar-plus</v-icon>
                       </v-btn>
                     </template>
-                    <sapn>약속 추가</sapn>
+                    <span>약속 추가</span>
                   </v-tooltip>
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
@@ -138,7 +138,7 @@ export default {
     },
     writeReview(item) {
       store.dispatch('updateItem', item);
-      store.dispatch('showWriteDialog');
+      store.dispatch('changeWriteDialog');
       store.dispatch('getGroups');
     },
   },

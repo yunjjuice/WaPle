@@ -1,9 +1,9 @@
 <template>
 <v-main>
-  <v-container fluid class="fill-height" id='map' style="height: 100%">
+  <v-container fluid class="fill-height" id='map' ref="map" style="height: 100%">
   </v-container>
-  <review-write></review-write>
-  <review-read></review-read>
+  <review-write :writeDialog="write" @closeWrite="closeWriteDialog"></review-write>
+  <review-read :readDialog="read" @closeRead="closeReadDialog"></review-read>
 </v-main>
 </template>
 
@@ -17,6 +17,8 @@ export default {
       map: null,
       infowindows: [],
       markers: [],
+      write: false,
+      read: false,
     };
   },
   created() {
@@ -27,6 +29,10 @@ export default {
       this.deleteMap(payload);
     });
   },
+  mounted() {
+    store.dispatch('updateHeight', this.$refs.map.clientHeight);
+    store.dispatch('updateWidth', this.$refs.map.clientWidth);
+  },
   components: {
     ReviewWrite: () => import('@/components/items/ReviewWrite.vue'),
     ReviewRead: () => import('@/components/items/ReviewRead.vue'),
@@ -34,6 +40,10 @@ export default {
   computed: {
     currentLocation: () => store.getters.items, // 서버에서 정보 받아올 때
     searchLocation: () => store.getters.result, // 카카오 검색에서 정보 받아올 때
+    writeDialog: () => store.getters.writeDialog,
+    readDialog: () => store.getters.readDialog,
+    height: () => store.getters.height,
+    width: () => store.getters.width,
   },
   watch: {
     currentLocation(newItems) {
@@ -43,6 +53,18 @@ export default {
       if (newItems.length !== 0) {
         this.searchMap(newItems);
       }
+    },
+    writeDialog() {
+      this.write = !this.write;
+    },
+    readDialog() {
+      this.read = !this.read;
+    },
+    height() {
+      store.dispatch('updateHeight', this.$refs.map.clientHeight);
+    },
+    width() {
+      store.dispatch('updateWidth', this.$refs.map.clientWidth);
     },
   },
   methods: {
@@ -170,6 +192,12 @@ export default {
     deleteMap(index) {
       this.infowindows.splice(index, 1);
       this.markers.splice(index, 1);
+    },
+    closeReadDialog() {
+      this.read = !this.read;
+    },
+    closeWriteDialog() {
+      this.write = !this.write;
     },
   },
 };
