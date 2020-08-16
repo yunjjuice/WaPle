@@ -189,9 +189,7 @@ export default {
         },
       }).then(({ data }) => {
         detail = `<b>${this.selectedEvent.groupName}</b> 그룹과 <br>`;
-        for (let i = 0; i < data.length; i += 1) {
-          detail += `<span><a href=${data[i].url} target="_blank">${data[i].name}</a></sapn><br>`;
-        }
+        detail += `<span><a href=${data[0].url} target="_blank">${data[0].name}</a></sapn><br>`;
         detail += '에 갈 예정입니다';
         this.selectedEvent.details = detail;
       });

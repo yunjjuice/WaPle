@@ -19,11 +19,43 @@
               {{ appointment.name }}<br>
               {{ getFormatDate(appointment.promiseDate) }}
             </v-card-text>
+            <v-card-actions style="position: absolute; top: 1%; right: 1%">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click.stop="edit(appointment)"
+                  >
+                  <v-icon>mdi-calendar-edit</v-icon>
+                </v-btn>
+                </template>
+                <span>약속 수정</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click.stop="remove(appointment)"
+                    >
+                    <v-icon>mdi-calendar-remove</v-icon>
+                  </v-btn>
+                </template>
+                <span>약속 삭제</span>
+              </v-tooltip>
+            </v-card-actions>
           </div>
         </div>
       </v-card>
     </v-col>
   </v-row>
+  <edit-modal :dialog="editDialog" :appointment="appointment" @close="editDialog=false">
+  </edit-modal>
+  <remove-modal :dialog="removeDialog" :appointment="appointment" @close="removeDialog=false">
+  </remove-modal>
 </v-container>
 </template>
 
@@ -34,7 +66,14 @@ import moment from 'moment';
 export default {
   data() {
     return {
+      appointment: {},
+      editDialog: false,
+      removeDialog: false,
     };
+  },
+  components: {
+    EditModal: () => import('@/components/items/AppointmentEditModal.vue'),
+    RemoveModal: () => import('@/components/items/AppointmentRemoveModal.vue'),
   },
   computed: {
     appointments: () => store.getters.appointments,
@@ -51,6 +90,14 @@ export default {
     },
     getFormatDate(datetime) {
       return moment(datetime).format('YYYY.MM.DD h:mm a');
+    },
+    edit(appointment) {
+      this.appointment = appointment;
+      this.editDialog = true;
+    },
+    remove(appointment) {
+      this.appointment = appointment;
+      this.removeDialog = true;
     },
   },
 };
