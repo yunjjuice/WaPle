@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiResponses;
 
 import com.ssafy.waple.review.dto.ReviewDto;
 import com.ssafy.waple.review.dto.ReviewPlaceDto;
-import com.ssafy.waple.review.service.ImageUploadService;
+import com.ssafy.waple.review.service.FileService;
 import com.ssafy.waple.review.service.ReviewService;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
@@ -39,7 +39,7 @@ public class ReviewController {
 	@Autowired
 	ReviewService service;
 	@Autowired
-	ImageUploadService imageUploadService;
+	FileService fileService;
 
 	@RequestMapping(method = RequestMethod.POST, value = "images", produces = "application/json")
 	@ApiOperation(value = "이미지 업로드")
@@ -52,7 +52,7 @@ public class ReviewController {
 	})
 	private ResponseEntity<?> create(@RequestParam(value = "file") MultipartFile image) {
 		logger.debug("이미지 업로드 호출");
-		return new ResponseEntity<>(imageUploadService.store(image), HttpStatus.CREATED);
+		return new ResponseEntity<>(fileService.store(image), HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -178,6 +178,7 @@ public class ReviewController {
 	private ResponseEntity<?> delete(@PathVariable("reviewId") int reviewId,
 		@RequestHeader(value = "token") String token) {
 		logger.debug("리뷰 삭제 호출");
+		fileService.delete(service.read(token, reviewId).getMedia()); //이미지 파일 삭제
 		service.delete(token, reviewId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}

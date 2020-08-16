@@ -20,9 +20,9 @@ import com.ssafy.waple.user.exception.UserNotFoundException;
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-	private static final String USER_FOREIGN_KEY_COSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`REVIEWS`, CONSTRAINT `FK_USERS_REVIEWS` FOREIGN KEY (`USER_ID`) REFERENCES `USERS` (`USER_ID`)";
-	private static final String GROUP_FOREIGN_KEY_COSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`REVIEWS`, CONSTRAINT `FK_GROUPS_REVIEWS` FOREIGN KEY (`GROUP_ID`) REFERENCES `GROUPS` (`GROUP_ID`)";
-	private static final String PLACE_FOREIGN_KEY_COSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`REVIEWS`, CONSTRAINT `FK_PLACES_REVIEWS` FOREIGN KEY (`PLACE_ID`) REFERENCES `PLACES` (`PLACE_ID`)";
+	private static final String USER_FOREIGN_KEY_CONSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`REVIEWS`, CONSTRAINT `FK_USERS_REVIEWS` FOREIGN KEY (`USER_ID`) REFERENCES `USERS` (`USER_ID`)";
+	private static final String GROUP_FOREIGN_KEY_CONSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`REVIEWS`, CONSTRAINT `FK_GROUPS_REVIEWS` FOREIGN KEY (`GROUP_ID`) REFERENCES `GROUPS` (`GROUP_ID`)";
+	private static final String PLACE_FOREIGN_KEY_CONSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`REVIEWS`, CONSTRAINT `FK_PLACES_REVIEWS` FOREIGN KEY (`PLACE_ID`) REFERENCES `PLACES` (`PLACE_ID`)";
 	private static final String INCORRECT_DATE_TYPE = "Incorrect date value";
 
 	@Autowired
@@ -37,13 +37,13 @@ public class ReviewServiceImpl implements ReviewService {
 		try {
 			dao.create(dto);
 		} catch (DataAccessException e) {
-			if (e.getMessage().contains(USER_FOREIGN_KEY_COSTRAINT_MSG)) {
+			if (e.getMessage().contains(USER_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new UserNotFoundException(dto.getUserId());
 			}
-			if (e.getMessage().contains(GROUP_FOREIGN_KEY_COSTRAINT_MSG)) {
+			if (e.getMessage().contains(GROUP_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new GroupNotFoundException(dto.getGroupId());
 			}
-			if (e.getMessage().contains(PLACE_FOREIGN_KEY_COSTRAINT_MSG)) {
+			if (e.getMessage().contains(PLACE_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new PlaceNotFoundException(dto.getPlaceId());
 			}
 			if (e.getMessage().contains(INCORRECT_DATE_TYPE)) {
