@@ -20,18 +20,32 @@
               {{ getFormatDate(appointment.promiseDate) }}
             </v-card-text>
             <v-card-actions style="position: absolute; top: 1%; right: 1%">
-                <v-btn
-                  icon
-                  @click.stop="edit(appointment)"
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click.stop="edit(appointment)"
                   >
                   <v-icon>mdi-calendar-edit</v-icon>
                 </v-btn>
-                <v-btn
-                  icon
-                  @click.stop="remove(appointment)"
-                  >
-                  <v-icon>mdi-calendar-remove</v-icon>
-                </v-btn>
+                </template>
+                <span>약속 수정</span>
+              </v-tooltip>
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    icon
+                    v-bind="attrs"
+                    v-on="on"
+                    @click.stop="remove(appointment)"
+                    >
+                    <v-icon>mdi-calendar-remove</v-icon>
+                  </v-btn>
+                </template>
+                <span>약속 삭제</span>
+              </v-tooltip>
             </v-card-actions>
           </div>
         </div>
