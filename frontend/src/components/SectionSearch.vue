@@ -27,8 +27,12 @@
               v-for="(item, i) in searchResult"
               :key="i"
               cols="12"
+              style="padding: 3px; height: 5.1rem;"
             >
-              <v-card @click="clickCard(i)">
+              <v-card
+                @click="clickCard(i)"
+                style="height: 5rem; box-shadow: none !important;"
+              >
                 <div>
                   <div class="d-flex flex-no-wrap justify-space-between">
                     <v-row>
@@ -36,6 +40,7 @@
                         <v-card-title
                           class="headline"
                           v-text="item.place_name"
+                          style="font-size: 1rem !important; padding-top: 0.5rem;padding-bottom:0;"
                         ></v-card-title>
                         <v-card-text>
                           {{ item.road_address_name }}
@@ -61,6 +66,7 @@
                     </v-row>
                   </div>
                 </div>
+                <v-divider style="position: relative; top: -2.4rem;"></v-divider>
               </v-card>
             </v-col>
           </v-row>
@@ -143,7 +149,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .loading {
   text-align: center;
   position: absolute;
@@ -160,5 +166,9 @@ export default {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0
+}
+.d-flex.flex-no-wrap.justify-space-between:hover{
+  background-color: #d2d2d4;
+  opacity: 0.8;
 }
 </style>
