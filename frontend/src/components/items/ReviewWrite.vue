@@ -9,7 +9,7 @@
       <v-sheet
         class="text-center"
         :class="{'sheet': $vuetify.breakpoint.mdAndUp}"
-        :style="{ height: height - 63 + 'px', width: width + 'px' }"
+        :style="{ height: height + 'px', width: width + 'px' }"
       >
         <v-toolbar dense color="#ffc34d">
           <v-spacer></v-spacer>

@@ -1,17 +1,36 @@
 <template>
 <v-app>
-  <v-layout>
+  <v-layout style="display: block">
     <v-navigation-drawer
       v-model="drawer"
       clipped
       absolute
       :class="{'drawer-width': $vuetify.breakpoint.mdAndUp}"
     >
+    <router-link
+      to="/"
+      style="color: black; text-decoration: none; max-height: 64px; max-width: 25%;"
+      class="hidden-sm-and-down"
+    >
+      <div align='center' justify='center'>
+        <v-img
+          src="/waplelogo.png"
+          max-height="5rem"
+          max-width="10rem"
+        ></v-img>
+      </div>
+    </router-link>
       <router-view></router-view>
     </v-navigation-drawer>
-    <map-comp
-      :class="{'map-margin': $vuetify.breakpoint.mdAndUp}"
-    ></map-comp>
+    <div
+      :class="{'map-width' : $vuetify.breakpoint.mdAndUp}"
+      style="float:right; width: 100%; height: 100%;"
+    >
+      <map-comp
+        style="width: 100%; height: 100%"
+        :class="{'map-margin': $vuetify.breakpoint.mdAndUp}"
+      ></map-comp>
+    </div>
   </v-layout>
   <snack-bar></snack-bar>
 </v-app>
@@ -41,7 +60,10 @@ export default {
 .drawer-width {
   width: 25% !important;
 }
-.map-margin {
+/* .map-margin {
   margin-left: 25% !important;
+} */
+.map-width {
+  width: 75% !important;
 }
 </style>

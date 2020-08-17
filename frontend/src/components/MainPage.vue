@@ -1,6 +1,7 @@
 <template>
 <v-app>
-  <nav-header @toggle-drawer="$refs.drawer.drawer = !$refs.drawer.drawer"></nav-header>
+  <nav-header @toggle-drawer="$refs.drawer.drawer = !$refs.drawer.drawer" class="hidden-md-and-up">
+  </nav-header>
   <router-view ref="drawer"></router-view>
 </v-app>
 </template>

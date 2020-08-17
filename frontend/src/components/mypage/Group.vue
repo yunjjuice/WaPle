@@ -8,6 +8,7 @@
       <v-expansion-panel
         v-for="(group, index) in groups"
         :key="group.groupId"
+        style="margin-bottom: 1rem;"
       >
         <v-expansion-panel-header style="font-size:20px; font-weight:570;">
           <div class="d-inline">
@@ -21,11 +22,9 @@
                     v-model="groupName"
                     outlined
                     @click.stop
-                    style="width: 300px;"
+                    style="width: 10rem;"
                   ></v-text-field>
                 </template>
-              </v-col>
-              <v-col cols="1">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
@@ -34,11 +33,17 @@
                       v-on="on"
                       @click.stop="modifyFlag(group, index)"
                     >
-                      <v-icon>mdi-pencil-outline</v-icon>
+                      <v-icon style="position: relative; left: -0.7rem; top: -0.4rem;">
+                        mdi-pencil-outline
+                      </v-icon>
                     </v-btn>
                   </template>
                   <span>그룹명 변경</span>
                 </v-tooltip>
+              </v-col>
+              <v-col cols="1">
+              </v-col>
+              <v-col cols="1">
               </v-col>
               <v-col cols="1">
                 <v-tooltip bottom>
@@ -50,7 +55,7 @@
                       @click="showLeaveGroupModal(group.groupId)"
                     >
                       <v-icon>
-                        mdi-minus-circle-outline
+                        mdi-delete
                       </v-icon>
                     </v-btn>
                   </template>
