@@ -1,6 +1,6 @@
 <template>
 <v-app>
-  <v-layout style="display: block">
+  <v-layout style="display: block; overflow-y: hidden;">
     <v-navigation-drawer
       v-model="drawer"
       clipped
@@ -24,10 +24,10 @@
     </v-navigation-drawer>
     <div
       :class="{'map-width' : $vuetify.breakpoint.mdAndUp}"
-      style="float:right; width: 100%; height: 100%;"
+      style="float:right; width: 100%; height: 100%; overflow-y: hidden;"
     >
       <map-comp
-        style="width: 100%; height: 100%"
+        style="width: 100%; height: 100%;"
         :class="{'map-margin': $vuetify.breakpoint.mdAndUp}"
       ></map-comp>
     </div>

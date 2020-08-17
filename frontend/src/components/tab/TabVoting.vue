@@ -3,7 +3,7 @@
   align='center'
   justify='center'
   id="scroll-target"
-  style="height: calc(90vh - 50px)"
+  style="height: calc(90vh - 4rem)"
   class="overflow-y-auto"
 >
   <transition name="fade">
@@ -11,6 +11,7 @@
       <span class="fa fa-spinner fa-spin"></span> Loading
     </div>
   </transition>
+  <v-divider style="position: relative;top: 0rem; margin: 0;"></v-divider>
   <v-row
     align='center'
     justify='center'
@@ -18,17 +19,20 @@
   >
     <v-col
       v-for="(appointment, i) in appointmentDatas"
-        :key="i"
-        cols="12"
+      :key="i"
+      cols="12"
+      style="padding: 3px; height: 5.1rem;"
     >
       <v-card
         @click="appointmentToPlace(appointment)"
+        style="height: 5rem; box-shadow: none !important;"
       >
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
             <v-card-title
               class="headline"
               v-text="appointment.title"
+              style="font-size: 1rem !important; padding-top: 0.5rem; padding-bottom: 0;"
             />
             <v-card-text>
               {{ appointment.name }}<br>
@@ -43,7 +47,7 @@
                     v-on="on"
                     @click.stop="edit(appointment)"
                   >
-                  <v-icon>mdi-calendar-edit</v-icon>
+                  <v-icon style="font-size: 1rem;">mdi-calendar-edit</v-icon>
                 </v-btn>
                 </template>
                 <span>약속 수정</span>
@@ -56,7 +60,7 @@
                     v-on="on"
                     @click.stop="remove(appointment)"
                     >
-                    <v-icon>mdi-calendar-remove</v-icon>
+                    <v-icon style="font-size: 1rem;">mdi-calendar-remove</v-icon>
                   </v-btn>
                 </template>
                 <span>약속 삭제</span>
@@ -64,6 +68,7 @@
             </v-card-actions>
           </div>
         </div>
+        <v-divider style="position: relative; top: -1.75rem;"></v-divider>
       </v-card>
     </v-col>
   </v-row>
@@ -102,7 +107,8 @@ export default {
   created() {
     store.dispatch('getAppointments');
     store.dispatch('invisibleBookmark');
-    this.appointmentDatas = this.appointments.slice(this.offset - 1, this.limit);
+    this.getAppointment();
+    // this.appointmentDatas = this.appointments.slice(this.offset - 1, this.limit);
   },
   watch: {
     bottom() {
@@ -110,18 +116,8 @@ export default {
         this.noData = true;
         this.offset += 1;
         this.bottom = false;
-        const size = this.appointments.length;
-        if (size >= (this.offset - 1) * this.limit) {
-          let t = [];
-          if (size < this.offset * this.limit) {
-            t = this.appointments.slice((this.offset - 1) * this.limit, size);
-            this.appointmentDatas = this.appointmentDatas.concat(t);
-          } else {
-            t = this.appointments.slice((this.offset - 1) * this.limit, this.offset * this.limit);
-            this.appointmentDatas = this.appointmentDatas.concat(t);
-          }
-          this.noData = false;
-        }
+        this.loading = true;
+        this.getAppointment();
       }
     },
   },
@@ -148,6 +144,24 @@ export default {
         this.bottom = true;
       }
     },
+    getAppointment() {
+      const size = this.appointments.length;
+      this.loading = true;
+      setTimeout(() => {
+        if (size >= (this.offset - 1) * this.limit) {
+          let t = [];
+          if (size < this.offset * this.limit) {
+            t = this.appointments.slice((this.offset - 1) * this.limit, size);
+            this.appointmentDatas = this.appointmentDatas.concat(t);
+          } else {
+            t = this.appointments.slice((this.offset - 1) * this.limit, this.offset * this.limit);
+            this.appointmentDatas = this.appointmentDatas.concat(t);
+          }
+          this.noData = false;
+        }
+        this.loading = false;
+      }, 500);
+    },
   },
 };
 </script>
@@ -155,5 +169,26 @@ export default {
 <style scoped>
 .v-main {
   padding-top: 0px !important;
+}
+.d-flex.flex-no-wrap.justify-space-between:hover{
+  background-color: #d2d2d4;
+  opacity: 0.8;
+}
+.loading {
+  text-align: center;
+  position: absolute;
+  color: #fff;
+  z-index: 9;
+  background: grey;
+  padding: 8px 18px;
+  border-radius: 5px;
+  left: calc(50% - 45px);
+  top: calc(50% - 18px);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
 }
 </style>

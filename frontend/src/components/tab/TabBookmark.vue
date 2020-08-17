@@ -1,10 +1,10 @@
 <template>
-<v-main style="height: 80%">
+<v-main>
   <v-container
     align='center'
     justify='center'
     id="scroll-target"
-    style="height: calc(75vh - 50px)"
+    style="height: calc(90vh - 4rem)"
     class="overflow-y-auto"
   >
     <transition name="fade">
@@ -21,18 +21,21 @@
         :key="i"
         d-flex
         cols="12"
+        style="padding: 3px; height: 5.1rem;"
       >
         <v-card
           @click="setItem(i)"
+          style="height: 5rem; box-shadow: none !important;"
         >
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title
                 class="headline"
                 v-text="item.name"
+                style="font-size: 1rem !important; padding-top: 0.5rem; padding-bottom: 0;"
               >
               </v-card-title>
-                <v-card-actions style="position: absolute; top: 1%; right: 1%">
+                <v-card-actions style="font-size: 1rem; position: absolute; top: 1%; right: 1%">
                   <v-menu
                     v-model="menu[i]"
                     :close-on-content-click='false'
@@ -85,7 +88,7 @@
                         v-on="on"
                         @click.stop="showDialog(item)"
                       >
-                        <v-icon>mdi-calendar-plus</v-icon>
+                        <v-icon style="font-size: 1rem;">mdi-calendar-plus</v-icon>
                       </v-btn>
                     </template>
                     <span>약속 추가</span>
@@ -98,7 +101,7 @@
                         v-on="on"
                         @click.stop="readReview(item)"
                       >
-                        <v-icon>mdi-text-box-multiple-outline</v-icon>
+                        <v-icon style="font-size: 1rem;">mdi-text-box-multiple-outline</v-icon>
                       </v-btn>
                     </template>
                     <span>리뷰 읽기</span>
@@ -111,7 +114,7 @@
                         v-on="on"
                         @click.stop="writeReview(item)"
                       >
-                        <v-icon>mdi-pencil-plus-outline</v-icon>
+                        <v-icon style="font-size: 1rem;">mdi-pencil-plus-outline</v-icon>
                       </v-btn>
                     </template>
                     <span>리뷰 쓰기</span>
@@ -119,6 +122,7 @@
                 </v-card-actions>
               </div>
           </div>
+          <v-divider style="position: relative; top: -1.75rem;"></v-divider>
         </v-card>
       </v-col>
     </v-row>
@@ -348,5 +352,9 @@ label.v-label.theme--light {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0
+}
+.d-flex.flex-no-wrap.justify-space-between:hover{
+  background-color: #d2d2d4;
+  opacity: 0.8;
 }
 </style>

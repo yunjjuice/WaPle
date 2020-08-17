@@ -135,7 +135,8 @@ export default {
       const bounds = new window.kakao.maps.LatLngBounds(); // 지도 범위 재설정을 위함
       // TODO: 나중에 마커 위치가 전국 각지에 있다면 어떻게 할 건지 고민해보자!
       for (let i = 0; i < items.length; i += 1) {
-        const imageSrc = items[i].icon;
+        let imageSrc = items[i].icon;
+        if (imageSrc === undefined) imageSrc = 'markers/default.png';
         const imageSize = new window.kakao.maps.Size(24, 35);
         const markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
         const marker = new window.kakao.maps.Marker({
@@ -153,9 +154,9 @@ export default {
             .replace('^PLACE_NAME', items[i].name)
             .replace('^PLACE_URL', items[i].url)
             .replace('^PLACE_ID', items[i].placeId)
-            .replace('^PLACE_TEL', items[i].tel)
-            .replace('^PLACE_TEL1', items[i].tel)
-            .replace('^PLACE_CATEGORY', items[i].category),
+            .replace('^PLACE_TEL', items[i].tel === undefined ? '' : items[i].tel)
+            .replace('^PLACE_TEL1', items[i].tel === undefined ? '' : items[i].tel)
+            .replace('^PLACE_CATEGORY', items[i].category === undefined ? '' : items[i].category),
           removable: true,
         });
         window.kakao.maps.event.addListener(
