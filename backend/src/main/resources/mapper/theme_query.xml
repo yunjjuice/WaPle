@@ -50,8 +50,8 @@
     </select>
 
     <select id="readAllByPlace" parameterType="map" resultType="com.ssafy.waple.theme.dto.ThemeGroupPlace">
-        select KK.groupName, KK.themeName, KK.groupId, KK.themeId
-        FROM (SELECT G.NAME "groupName", T.NAME "themeName", G.GROUP_ID "groupId", T.THEME_ID "themeId"
+        select KK.groupName, KK.themeName, KK.groupId, KK.themeId, KK.ICON
+        FROM (SELECT G.NAME "groupName", T.NAME "themeName", G.GROUP_ID "groupId", T.THEME_ID "themeId", T.ICON
               FROM `GROUPS` G inner join THEMES T on G.GROUP_ID = T.GROUP_ID and G.GROUP_ID IN
              (select GROUP_ID from GROUP_MEMBERS where GROUP_MEMBERS.USER_ID = #{userId})) KK,
              (select BOOKMARKS.GROUP_ID, BOOKMARKS.THEME_ID from BOOKMARKS where PLACE_ID = #{placeId}) TT
