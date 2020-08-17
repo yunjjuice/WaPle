@@ -13,32 +13,34 @@
       >
         <v-toolbar dense color="#ffc34d">
           <v-spacer></v-spacer>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-                @click.stop="editDialog = true"
-              >
-                <v-icon>mdi-pencil-outline</v-icon>
-              </v-btn>
-            </template>
-            <span>수정</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn
-                icon
-                v-bind="attrs"
-                v-on="on"
-                @click.stop="removeDialog = true"
-              >
-                <v-icon>mdi-trash-can-outline</v-icon>
-              </v-btn>
-            </template>
-            <span>삭제</span>
-          </v-tooltip>
+          <template v-if="review.userId == this.$session.get('uid')">
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                  @click.stop="editDialog = true"
+                >
+                  <v-icon>mdi-pencil-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>수정</span>
+            </v-tooltip>
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn
+                  icon
+                  v-bind="attrs"
+                  v-on="on"
+                  @click.stop="removeDialog = true"
+                >
+                  <v-icon>mdi-trash-can-outline</v-icon>
+                </v-btn>
+              </template>
+              <span>삭제</span>
+            </v-tooltip>
+          </template>
           <v-btn
             icon
             @click="close"
