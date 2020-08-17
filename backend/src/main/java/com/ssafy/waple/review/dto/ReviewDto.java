@@ -14,9 +14,6 @@ public class ReviewDto {
 	@ApiModelProperty(value = "그룹 아이디", example = "1")
 	private int groupId;
 
-	@ApiModelProperty(value = "테마 아이디", example = "1")
-	private int themeId;
-
 	@ApiModelProperty(value = "장소 아이디", example = "19781214")
 	private String placeId;
 
@@ -62,14 +59,6 @@ public class ReviewDto {
 
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
-	}
-
-	public int getThemeId() {
-		return themeId;
-	}
-
-	public void setThemeId(int themeId) {
-		this.themeId = themeId;
 	}
 
 	public String getPlaceId() {
@@ -157,7 +146,6 @@ public class ReviewDto {
 		return "ReviewDto{" +
 			"reviewId=" + reviewId +
 			", groupId=" + groupId +
-			", themeId=" + themeId +
 			", placeId='" + placeId + '\'' +
 			", userId=" + userId +
 			", visitDate=" + visitDate +

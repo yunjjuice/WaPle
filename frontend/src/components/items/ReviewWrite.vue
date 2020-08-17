@@ -213,7 +213,6 @@ export default {
         userId: this.$session.get('uid'),
         groupId: this.group.groupId,
         placeId: store.getters.item.placeId,
-        themeId: store.getters.item.themeId,
         media,
       }, {
         headers: {
