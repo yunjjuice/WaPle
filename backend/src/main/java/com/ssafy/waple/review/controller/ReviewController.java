@@ -27,7 +27,7 @@ import io.swagger.annotations.ApiResponses;
 
 import com.ssafy.waple.review.dto.ReviewDto;
 import com.ssafy.waple.review.dto.ReviewPlaceDto;
-import com.ssafy.waple.review.service.ImageUploadService;
+import com.ssafy.waple.review.service.FileService;
 import com.ssafy.waple.review.service.ReviewService;
 
 @CrossOrigin(origins = {"*"}, maxAge = 6000)
@@ -39,7 +39,7 @@ public class ReviewController {
 	@Autowired
 	ReviewService service;
 	@Autowired
-	ImageUploadService imageUploadService;
+	FileService fileService;
 
 	@RequestMapping(method = RequestMethod.POST, value = "images", produces = "application/json")
 	@ApiOperation(value = "이미지 업로드")
@@ -52,7 +52,7 @@ public class ReviewController {
 	})
 	private ResponseEntity<?> create(@RequestParam(value = "file") MultipartFile image) {
 		logger.debug("이미지 업로드 호출");
-		return new ResponseEntity<>(imageUploadService.store(image), HttpStatus.CREATED);
+		return new ResponseEntity<>(fileService.store(image), HttpStatus.CREATED);
 	}
 
 	@RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -142,11 +142,10 @@ public class ReviewController {
 		return new ResponseEntity<>(review, HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{reviewId}", produces = "application/json")
-	@ApiOperation(value = "리뷰 수정", notes = "리뷰 아이디로 리뷰 수정")
+	@RequestMapping(method = RequestMethod.PUT, produces = "application/json")
+	@ApiOperation(value = "리뷰 수정", notes = "리뷰 수정")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
-		@ApiImplicitParam(name = "reviewId", value = "리뷰 아이디", example = "1"),
 		@ApiImplicitParam(name = "review", value = "수정 할 리뷰 정보", dataTypeClass = UpdateData.class)
 	})
 	@ApiResponses({
@@ -156,11 +155,11 @@ public class ReviewController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "리뷰 수정 실패")
 	})
-	private ResponseEntity<?> update(@PathVariable("reviewId") int reviewId, @RequestBody UpdateData review,
+	private ResponseEntity<?> update(@RequestBody UpdateData review,
 		@RequestHeader(value = "token") String token) {
 		logger.debug("리뷰 업데이트 호출");
-		service.update(token, reviewId, review.title, review.content, review.media);
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		service.update(token, review.reviewId, review.title, review.content);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "/{reviewId}", produces = "application/json")
@@ -179,21 +178,27 @@ public class ReviewController {
 	private ResponseEntity<?> delete(@PathVariable("reviewId") int reviewId,
 		@RequestHeader(value = "token") String token) {
 		logger.debug("리뷰 삭제 호출");
+		fileService.delete(service.read(token, reviewId).getMedia()); //이미지 파일 삭제
 		service.delete(token, reviewId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 	// 리뷰 수정 임시 테이블
 	public static class UpdateData {
-
+		@ApiModelProperty(value = "리뷰 아이디", example = "1")
+		private int reviewId;
 		@ApiModelProperty(value = "제목", example = "사장님이 쏜다")
-		String title;
-
+		private String title;
 		@ApiModelProperty(value = "내용", example = "내 자식에게 밥을 준다는 마인드!")
-		String content;
+		private String content;
 
-		@ApiModelProperty(value = "미디어", example = "hahaha.jpg")
-		String media;
+		public int getReviewId() {
+			return reviewId;
+		}
+
+		public void setReviewId(int reviewId) {
+			this.reviewId = reviewId;
+		}
 
 		public String getTitle() {
 			return title;
@@ -209,14 +214,6 @@ public class ReviewController {
 
 		public void setContent(String content) {
 			this.content = content;
-		}
-
-		public String getMedia() {
-			return media;
-		}
-
-		public void setMedia(String media) {
-			this.media = media;
 		}
 	}
 

@@ -3,6 +3,7 @@ package com.ssafy.waple.review.dto;
 import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+
 import io.swagger.annotations.ApiModelProperty;
 
 public class ReviewDto {
@@ -12,9 +13,6 @@ public class ReviewDto {
 
 	@ApiModelProperty(value = "그룹 아이디", example = "1")
 	private int groupId;
-
-	@ApiModelProperty(value = "테마 아이디", example = "1")
-	private int themeId;
 
 	@ApiModelProperty(value = "장소 아이디", example = "19781214")
 	private String placeId;
@@ -41,6 +39,12 @@ public class ReviewDto {
 	@ApiModelProperty(value = "그룹 이름", example = "먹방")
 	private String groupName;
 
+	@ApiModelProperty(value = "전화번호", example = "02-123-1234")
+	private String tel;
+
+	@ApiModelProperty(value = "카테고리", example = "음식점")
+	private String category;
+
 	public int getReviewId() {
 		return reviewId;
 	}
@@ -55,14 +59,6 @@ public class ReviewDto {
 
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
-	}
-
-	public int getThemeId() {
-		return themeId;
-	}
-
-	public void setThemeId(int themeId) {
-		this.themeId = themeId;
 	}
 
 	public String getPlaceId() {
@@ -129,12 +125,27 @@ public class ReviewDto {
 		this.groupName = groupName;
 	}
 
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 	@Override
 	public String toString() {
 		return "ReviewDto{" +
 			"reviewId=" + reviewId +
 			", groupId=" + groupId +
-			", themeId=" + themeId +
 			", placeId='" + placeId + '\'' +
 			", userId=" + userId +
 			", visitDate=" + visitDate +
@@ -143,6 +154,8 @@ public class ReviewDto {
 			", media='" + media + '\'' +
 			", userName='" + userName + '\'' +
 			", groupName='" + groupName + '\'' +
+			", tel='" + tel + '\'' +
+			", category='" + category + '\'' +
 			'}';
 	}
 }

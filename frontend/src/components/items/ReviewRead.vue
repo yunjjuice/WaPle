@@ -13,6 +13,32 @@
       >
         <v-toolbar dense color="#ffc34d">
           <v-spacer></v-spacer>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click.stop="editDialog = true"
+              >
+                <v-icon>mdi-pencil-outline</v-icon>
+              </v-btn>
+            </template>
+            <span>수정</span>
+          </v-tooltip>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                icon
+                v-bind="attrs"
+                v-on="on"
+                @click.stop="removeDialog = true"
+              >
+                <v-icon>mdi-trash-can-outline</v-icon>
+              </v-btn>
+            </template>
+            <span>삭제</span>
+          </v-tooltip>
           <v-btn
             icon
             @click="close"
@@ -34,7 +60,7 @@
           <h1>{{ review.title }}</h1>
           <h5><i style="color:gray">{{ review.visitDate }}</i></h5>
           {{ review.groupName }}, wtitten by {{ review.userName }}
-          <div class="image">
+          <div class="image" v-if="review.images && review.images.length > 0">
             <div class="card-container">
               <div v-for="(img, index) in review.images" :key="index"
                 class="card"
@@ -45,7 +71,7 @@
               ></div>
             </div>
           </div>
-          <div class="review__block" style="white-space:pre;">{{ review.content }}</div>
+          <div class="review__block" style="white-space:pre-wrap;">{{ review.content }}</div>
         </v-container>
       </v-sheet>
     </v-bottom-sheet>
@@ -53,6 +79,8 @@
   <div id="myModal" class="modal" @click=onClickModal>
     <img class="modal-content" id="modalImg">
   </div>
+  <remove-modal :dialog="removeDialog" @close="removeDialog = false; close()"></remove-modal>
+  <edit-sheet :dialog="editDialog" @close="editDialog = false"></edit-sheet>
 </v-main>
 </template>
 
@@ -60,6 +88,10 @@
 import store from '@/store/index';
 
 export default {
+  components: {
+    RemoveModal: () => import('@/components/items/ReviewRemoveModal.vue'),
+    EditSheet: () => import('@/components/items/ReviewEdit.vue'),
+  },
   data() {
     return {
       x: ['0%', '-50%', '50%', '-100%', '100%'],
@@ -67,6 +99,8 @@ export default {
       angle: ['-2deg', '2deg', '2deg', '-2deg', '-2deg'],
       z: [2, 1, 3, 0, 4],
       dialog: false,
+      removeDialog: false,
+      editDialog: false,
     };
   },
   props: [

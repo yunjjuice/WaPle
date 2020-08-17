@@ -5,7 +5,6 @@ import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import com.ssafy.waple.bookmark.dto.SearchType;
 import com.ssafy.waple.review.dto.ReviewDto;
 import com.ssafy.waple.review.dto.ReviewPlaceDto;
 
@@ -16,7 +15,7 @@ public interface ReviewDao {
 	int create(ReviewDto dto);
 
 	// 장소 리뷰 리스트 조회
-	List<ReviewDto> readAll(@Param("userId")long userId, @Param("placeId") String placeId);
+	List<ReviewDto> readAll(@Param("userId") long userId, @Param("placeId") String placeId);
 
 	// 리뷰 장소 리스트 조회
 	List<ReviewPlaceDto> readAllByUserId(long userId);
@@ -25,8 +24,7 @@ public interface ReviewDao {
 	ReviewDto read(int reviewId);
 
 	// 리뷰 업데이트
-	int update(@Param("reviewId")int reviewId, @Param("title")String title ,@Param("content")String content,
-		@Param("media")String media);
+	int update(@Param("reviewId") int reviewId, @Param("title") String title, @Param("content") String content);
 
 	// 리뷰 삭제
 	int delete(int reviewId);
