@@ -1,32 +1,29 @@
 <template>
-<v-layout>
-  <v-app-bar color="#ffd54f" flat :clipped-left="$vuetify.breakpoint.lgAndUp">
+<v-layout align='center' justify='center'>
+  <v-app-bar color="#fff" flat :clipped-left="$vuetify.breakpoint.lgAndUp">
     <v-app-bar-nav-icon
       class="hidden-md-and-up"
       @click.stop="$emit('toggle-drawer')"
     ></v-app-bar-nav-icon>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
     <v-toolbar-title>
       <router-link to="/" style="color: black; text-decoration: none">
-        <span class="hidden-sm-and-down"><b>WAPLE</b></span>
-        <v-img
-          src="/waffle.png"
-          max-height="35px"
-          max-width="35px"
-          class="hidden-md-and-up"
-        ></v-img>
+        <div align='center' justify='center'>
+          <v-img
+            src="/waplelogo.png"
+            max-height="5rem"
+            max-width="10rem"
+          ></v-img>
+        </div>
       </router-link>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-text-field
-      flat
-      solo-inverted
-      hide-details
-      prepend-inner-icon="mdi-magnify"
-      label="Search"
-      class="hidden-sm-and-down"
-      v-model="keyword"
-      @keyup.enter="searchByWord"
-    ></v-text-field>
+    <v-spacer></v-spacer>
+    <v-spacer></v-spacer>
     <v-spacer></v-spacer>
     <v-menu bottom offset-y allow-overflow>
       <template v-slot:activator="{ on, attrs }">
@@ -54,7 +51,7 @@
         </v-list-item>
       </v-list>
     </v-menu>
-    <div class="text-center">
+    <div class="text-center hidden-md-and-up">
       <v-menu offset-y>
         <template v-slot:activator="{ on, attrs }">
           <v-btn

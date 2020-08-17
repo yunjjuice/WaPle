@@ -1,10 +1,9 @@
 <template>
 <v-main>
   <v-container fluid>
-  <div>
-    <h1 class="mt-5"> {{ uname }}님, 환영합니다!</h1>
-    <hr class="mb-5">
-  </div>
+    <div>
+      <h1 class="mt-5"> {{ uname }}님, 환영합니다!</h1>
+    </div>
   </v-container>
 </v-main>
 </template>

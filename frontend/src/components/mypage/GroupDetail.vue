@@ -11,7 +11,7 @@
             @click="addGroupUser()"
           >
             <v-icon>
-              mdi-plus-circle-outline
+              mdi-account-multiple-plus
             </v-icon>
           </v-btn>
         </template>
@@ -69,7 +69,11 @@
                   v-on="on"
                   @click.stop="modifyFlag(groupTheme, index)"
                 >
-                  <v-icon>mdi-pencil-outline</v-icon>
+                  <v-icon
+                    style="font-size: 0.8rem; position: relative; left: -0.7rem; top: -0.4rem;"
+                  >
+                    mdi-pencil-outline
+                  </v-icon>
                 </v-btn>
               </template>
               <span>테마명 변경</span>

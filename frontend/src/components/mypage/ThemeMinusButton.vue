@@ -8,7 +8,7 @@
           v-on="on"
           @click.stop="dialog = true"
         >
-          <v-icon>
+          <v-icon style="position: relative; left: -0.6rem;">
             mdi-minus-circle-outline
           </v-icon>
         </v-btn>

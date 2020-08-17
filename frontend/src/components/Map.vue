@@ -1,6 +1,53 @@
 <template>
 <v-main>
   <v-container fluid class="fill-height" id='map' ref="map" style="height: 100%">
+    <div
+      class="text-center hidden-sm-and-down"
+      style="z-index: 2;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;"
+    >
+      <v-menu offset-y>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn
+            color="#ffd633"
+            v-bind="attrs"
+            v-on="on"
+          >
+            <span class="hidden-sm-and-down">{{ uname }}</span>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item to="/mypage">
+            <v-list-item-title>마이페이지</v-list-item-title>
+          </v-list-item>
+          <v-list-item to="/toppings">
+            <v-list-item-title>개발자정보</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logout">
+            <v-list-item-title>로그아웃</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </div>
+    <v-text-field
+      flat
+      solo-inverted
+      hide-details
+      prepend-inner-icon="mdi-magnify"
+      label="Search"
+      class="hidden-sm-and-down"
+      v-model="keyword"
+      @keypress.enter="searchByWord"
+      style="z-index: 2;
+      position: absolute;
+      bottom: 2rem;
+      right: 1rem;
+      background-color: #ffd54f;
+      opacity: 0.8;
+      width: 20rem;"
+    ></v-text-field>
   </v-container>
   <review-write :writeDialog="write" @closeWrite="closeWriteDialog"></review-write>
   <review-read :readDialog="read" @closeRead="closeReadDialog"></review-read>
@@ -10,6 +57,8 @@
 <script>
 import store from '@/store/index';
 import EventBus from '@/utils/EventBus';
+import api from '@/utils/api';
+import JWT from 'jwt-decode';
 
 export default {
   data() {
@@ -19,6 +68,8 @@ export default {
       markers: [],
       write: false,
       read: false,
+      keyword: '',
+      uname: '',
     };
   },
   created() {
@@ -28,6 +79,7 @@ export default {
     EventBus.$on('deleteCard', (payload) => {
       this.deleteMap(payload);
     });
+    this.uname = this.$session.get('uname');
   },
   mounted() {
     store.dispatch('updateHeight', this.$refs.map.clientHeight);
@@ -198,6 +250,41 @@ export default {
     },
     closeWriteDialog() {
       this.write = !this.write;
+    },
+    searchByWord() {
+      console.log(this.keyword);
+      if (this.keyword === '') {
+        alert('검색어를 입력해주세요');
+        return;
+      }
+      store.dispatch('updatePage', 1);
+      store.dispatch('updateNoData', false);
+      store.dispatch('updateBottom', false);
+      store.dispatch('initResult', []);
+      store.dispatch('updateKeyword', this.keyword);
+      store.dispatch('search', this.keyword);
+      this.$router.push('/search').catch(() => {});
+      this.keyword = '';
+    },
+    logout() {
+      api.post('/users/logout', {
+        refresh_token: this.$session.get('refresh_token'),
+      },
+      {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then(({ data }) => {
+        const decodeData = JWT(data);
+        if (decodeData.User_ID === this.$session.get('uid')) {
+          this.$session.destroy();
+          this.$router.push('/');
+          window.location.reload();
+        } else {
+          alert('로그아웃 실패');
+        }
+      }).catch(() => {
+      });
     },
   },
 };
