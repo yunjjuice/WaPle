@@ -39,6 +39,10 @@ export default {
         state.review.images = images;
       }
     },
+    setUpdatedReview(state, { title, content }) {
+      state.review.title = title;
+      state.review.content = content;
+    },
   },
   actions: {
     changeReadDialog({ commit }) {
@@ -56,13 +60,27 @@ export default {
           token: Vue.prototype.$session.get('token'),
         },
       }).then(() => {
-        dispatch('showSnackbar', { color: 'success', msg: '리뷰 삭제 완료' }, { root: true });
+        dispatch('showSnackbar', { color: 'success', msg: '리뷰 삭제 완료' });
         // TODO 리뷰 목록 refresh
       })
         .catch((err) => {
           console.error(err);
-          dispatch('showSnackbar', { color: 'error', msg: '리뷰 삭제 실패' }, { root: true });
+          dispatch('showSnackbar', { color: 'error', msg: '리뷰 삭제 실패' });
         });
+    },
+    updateReview({ commit, dispatch }, review) { // 리뷰 수정
+      api.put('/reviews', review, {
+        headers: {
+          token: Vue.prototype.$session.get('token'),
+        },
+      }).then(() => {
+        // 다시 안 불러오고 야매로 선택된 데이터 수정했습니다
+        commit('setUpdatedReview', { title: review.title, content: review.content });
+        dispatch('showSnackbar', { color: 'success', msg: '리뷰 수정 완료' });
+      }).catch((err) => {
+        console.error(err);
+        dispatch('showSnackbar', { color: 'error', msg: '리뷰 수정 실패' });
+      });
     },
   },
 };
