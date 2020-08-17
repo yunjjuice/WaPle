@@ -48,7 +48,7 @@
                   @click.stop="modify"
                   style="font-size: 0.9em; position: relative; top: -0.5rem; left: -0.8rem;"
                 >
-                  <v-icon>mdi-pencil-outline</v-icon>
+                  <v-icon style="font-size: 0.8rem;">mdi-pencil-outline</v-icon>
                 </v-btn>
               </template>
               <span>닉네임 변경</span>

@@ -69,7 +69,9 @@
                   v-on="on"
                   @click.stop="modifyFlag(groupTheme, index)"
                 >
-                  <v-icon style="position: relative; left: -0.7rem; top: -0.4rem;">
+                  <v-icon
+                    style="font-size: 0.8rem; position: relative; left: -0.7rem; top: -0.4rem;"
+                  >
                     mdi-pencil-outline
                   </v-icon>
                 </v-btn>
