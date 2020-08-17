@@ -27,6 +27,12 @@ public class ReviewPlaceDto {
 	@ApiModelProperty(value = "그룹 아이디", example = "1")
 	private int groupId;
 
+	@ApiModelProperty(value = "전화번호", example = "02-123-1234")
+	private String tel;
+
+	@ApiModelProperty(value = "카테고리", example = "음식점")
+	private String category;
+
 	public String getPlaceId() {
 		return placeId;
 	}
@@ -81,6 +87,22 @@ public class ReviewPlaceDto {
 
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	@Override

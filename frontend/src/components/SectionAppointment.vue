@@ -7,19 +7,28 @@
       <v-toolbar-title>{{ appointment.title }}</v-toolbar-title>
     </v-toolbar>
     <v-container>
+      <transition name="fade">
+        <div class="loading" v-show="loading">
+          <span class="fa fa-spinner fa-spin"></span> Loading
+        </div>
+      </transition>
       <v-row align='center' justify='center'>
         <v-col
           v-for="(item, i) in items"
-            :key="i"
-            cols="12"
+          :key="i"
+          cols="12"
+          style="padding: 3px; height: 5.1rem;"
         >
           <v-card
+            @click="infowindow(i)"
+            style="height: 5rem; box-shadow: none !important;"
           >
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
                 <v-card-title
                   class="headline"
                   v-text="item.name"
+                  style="font-size: 1rem !important; padding-top: 0.5rem; padding-bottom: 0;"
                 />
                 <v-card-text>
                   {{ item.address }} <br>
@@ -62,6 +71,7 @@
                 </v-card-text>
               </div>
             </div>
+            <v-divider style="position: relative; top: -1.75rem;"></v-divider>
           </v-card>
         </v-col>
       </v-row>
@@ -72,10 +82,12 @@
 <script>
 import store from '@/store/index';
 import api from '@/utils/api';
+import EventBus from '@/utils/EventBus';
 
 export default {
   data() {
     return {
+      loading: false,
     };
   },
   computed: {
@@ -86,6 +98,9 @@ export default {
     this.getVotePlaceList();
   },
   methods: {
+    infowindow(index) {
+      EventBus.$emit('moveMap', { lat: this.items[index].lat, lng: this.items[index].lng, index });
+    },
     moveBack() {
       this.$router.go(-1);
     },
@@ -95,7 +110,11 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
-        store.dispatch('doUpdate', data);
+        this.loading = true;
+        setTimeout(() => {
+          store.dispatch('doUpdate', data);
+        }, 500);
+        this.loading = false;
       });
     },
     voteTo(item) { // 해당 장소에 투표
@@ -138,6 +157,26 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.d-flex.flex-no-wrap.justify-space-between:hover{
+  background-color: #d2d2d4;
+  opacity: 0.8;
+}
+.loading {
+  text-align: center;
+  position: absolute;
+  color: #fff;
+  z-index: 9;
+  background: grey;
+  padding: 8px 18px;
+  border-radius: 5px;
+  left: calc(50% - 45px);
+  top: calc(50% - 18px);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
+}
 </style>

@@ -1,21 +1,18 @@
 <template>
 <v-main>
   <v-tabs
-    background-color="#f5f5f5"
+    background-color="#fff"
     color="000080"
     light
     fixed-tabs
+    height="2rem"
   >
     <v-tab to="/">북마크</v-tab>
     <v-tab to="/review">리뷰</v-tab>
     <v-tab to="/voting">약속</v-tab>
   </v-tabs>
-  <v-container>
-    <v-row>
-      <option-filter v-if="bookmark"></option-filter>
-      <router-view></router-view>
-    </v-row>
-  </v-container>
+  <option-filter v-if="bookmark"></option-filter>
+  <router-view></router-view>
 </v-main>
 </template>
 
@@ -31,7 +28,6 @@ export default {
   },
   data() {
     return {
-      // bookmark: true,
     };
   },
   beforeCreate() {
@@ -42,5 +38,4 @@ export default {
 </script>
 
 <style>
-
 </style>

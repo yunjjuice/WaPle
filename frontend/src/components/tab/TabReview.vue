@@ -1,10 +1,10 @@
 <template>
-<v-main style="height: 80%">
+<v-main>
   <v-container
     align='center'
     justify='center'
     id="scroll-target"
-    style="height: calc(90vh - 50px)"
+    style="height: calc(90vh - 4rem)"
     class="overflow-y-auto"
   >
     <transition name="fade">
@@ -12,6 +12,7 @@
         <span class="fa fa-spinner fa-spin"></span> Loading
       </div>
     </transition>
+    <v-divider style="position: relative;top: 0rem; margin: 0;"></v-divider>
     <v-row
       align='center'
       justify='center'
@@ -19,16 +20,20 @@
     >
       <v-col
         v-for="(item, i) in filteredArray"
-          :key="i"
-          cols="12"
+        :key="i"
+        cols="12"
+        style="padding: 3px; height: 5.1rem;"
       >
         <v-card
+          @click="infowindow(i)"
+          style="height: 5rem; box-shadow: none !important;"
         >
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
               <v-card-title
                 class="headline"
                 v-text="item.name"
+                style="font-size: 1rem !important; padding-top: 0.5rem; padding-bottom: 0;"
               >
                 </v-card-title>
                 <v-card-actions>
@@ -40,7 +45,7 @@
                         v-on="on"
                         @click.stop="showDialog(item)"
                       >
-                        <v-icon>mdi-calendar-plus</v-icon>
+                        <v-icon style="font-size: 1rem;">mdi-calendar-plus</v-icon>
                       </v-btn>
                     </template>
                     <span>약속 추가</span>
@@ -57,7 +62,7 @@
                           color="blue"
                           :content="item.count"
                         >
-                          <v-icon>mdi-text-box-multiple-outline</v-icon>
+                          <v-icon style="font-size: 1rem;">mdi-text-box-multiple-outline</v-icon>
                         </v-badge>
                       </v-btn>
                     </template>
@@ -71,7 +76,7 @@
                         v-on="on"
                         @click.stop="writeReview(item)"
                       >
-                        <v-icon>mdi-pencil-plus-outline</v-icon>
+                        <v-icon style="font-size: 1rem;">mdi-pencil-plus-outline</v-icon>
                       </v-btn>
                     </template>
                     <span>리뷰 쓰기</span>
@@ -79,6 +84,7 @@
                 </v-card-actions>
               </div>
           </div>
+          <v-divider style="position: relative; top: -1.75rem;"></v-divider>
         </v-card>
       </v-col>
     </v-row>
@@ -90,6 +96,7 @@
 <script>
 import store from '@/store/index';
 import api from '@/utils/api';
+import EventBus from '@/utils/EventBus';
 
 export default {
   data() {
@@ -144,6 +151,9 @@ export default {
     },
   },
   methods: {
+    infowindow(index) {
+      EventBus.$emit('moveMap', { lat: this.filteredArray[index].lat, lng: this.filteredArray[index].lng, index });
+    },
     showDialog(item) {
       store.dispatch('selectPlace', item);
       store.dispatch('openAppointmentDialog');
@@ -171,13 +181,17 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
-        if (data.length === 0) {
-          this.noData = true;
-        } else {
-          this.noData = false;
-          this.items = this.items.concat(data);
-          this.$store.dispatch('doUpdate', this.filteredArray);
-        }
+        this.loading = true;
+        setTimeout(() => {
+          if (data.length === 0) {
+            this.noData = true;
+          } else {
+            this.noData = false;
+            this.items = this.items.concat(data);
+            this.$store.dispatch('doUpdate', this.filteredArray);
+          }
+          this.loading = false;
+        }, 500);
       });
     },
   },
@@ -187,5 +201,26 @@ export default {
 <style scoped>
 .v-main {
   padding-top: 0px !important;
+}
+.d-flex.flex-no-wrap.justify-space-between:hover{
+  background-color: #d2d2d4;
+  opacity: 0.8;
+}
+.loading {
+  text-align: center;
+  position: absolute;
+  color: #fff;
+  z-index: 9;
+  background: grey;
+  padding: 8px 18px;
+  border-radius: 5px;
+  left: calc(50% - 45px);
+  top: calc(50% - 18px);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
 }
 </style>
