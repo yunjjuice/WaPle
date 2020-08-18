@@ -25,7 +25,7 @@
       <v-list-item class="ml-2">
         <v-list-item-content>
           <v-list-item-title class="title">
-            <router-link to="/mypage"><b>나의 공간</b></router-link>
+            <b>나의 공간</b>
           </v-list-item-title>
           <v-list-item-subtitle class="mt-2 ml-4">
             <template v-if="!flag">
@@ -130,7 +130,6 @@ export default {
   created() {
     this.uname = this.$session.get('uname');
     this.isAdmin = this.$session.get('admin');
-    this.$router.push('/mypage/group').catch(() => {});
   },
   mounted() {
     document.documentElement.style.overflowY = 'auto';

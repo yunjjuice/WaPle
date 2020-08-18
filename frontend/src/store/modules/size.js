@@ -29,11 +29,9 @@ export default {
   actions: {
     updateHeight({ commit }, height) {
       commit('setHeight', { height });
-      console.log(height);
     },
     updateWidth({ commit }, width) {
       commit('setWidth', { width });
-      console.log(width);
     },
     updateSafari({ commit }, isSafari) {
       commit('setSafari', { isSafari });

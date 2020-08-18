@@ -121,7 +121,6 @@ export default {
       });
     },
     makeAppointment() { // 새 약속 만들기
-      console.log(moment(this.appointmentDate));
       store.dispatch('updateAppointmentName', this.appointmentName);
       store.dispatch('updateGroup', this.group);
       store.dispatch('updateAppointmentDate', moment(this.appointmentDate).tz('Asia/Seoul').format());
