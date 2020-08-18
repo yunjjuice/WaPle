@@ -19,12 +19,15 @@
       </v-tooltip>
     </h3>
     <v-container>
-      <v-row class="my-4">
-        <div class="col-6" v-for="groupUser in groupUsers" :key="groupUser.userId">
-          <v-col class="d-inline">
-            {{ groupUser.name }}
-          </v-col>
-        </div>
+      <v-row
+      :class="{'mdUpRow': $vuetify.breakpoint.mdAndUp, 'smDownRow': $vuetify.breakpoint.smAndDown}">
+        <v-col
+          cols="8" sm="8" md="6"
+          v-for="groupUser in groupUsers" :key="groupUser.userId"
+          :class="{'mdUpCol': $vuetify.breakpoint.mdAndUp}"
+        >
+        {{ groupUser.name }}
+        </v-col>
       </v-row>
     </v-container>
     <v-divider></v-divider>
@@ -47,45 +50,48 @@
       </v-tooltip>
     </h3>
     <v-container>
-      <v-row class="my-4">
-        <div class="col-6" v-for="(groupTheme, index) in groupThemes" :key="groupTheme.themeId">
-          <v-col class="d-inline">
-            <template v-if="!flag[index]">
-              {{ groupTheme.name }}
-            </template>
-            <template v-else>
-              <v-text-field
-                v-model="themeName"
-                outlined
-                @click.stop
-                style="width: 300px;"
-              ></v-text-field>
-            </template>
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn
-                  icon
-                  v-bind="attrs"
-                  v-on="on"
-                  @click.stop="modifyFlag(groupTheme, index)"
-                >
-                  <v-icon
-                    style="font-size: 0.8rem; position: relative; left: -0.7rem; top: -0.4rem;"
-                  >
-                    mdi-pencil-outline
-                  </v-icon>
-                </v-btn>
-              </template>
-              <span>테마명 변경</span>
-            </v-tooltip>
-            <theme-minus-button
-              class="d-inline pl-2"
-              :groupId="groupId"
-              :themeId="groupTheme.themeId"
-              @delTheme="getGroupInfo(groupId)"
-            />
-          </v-col>
-        </div>
+      <v-row
+      :class="{'mdUpRow': $vuetify.breakpoint.mdAndUp, 'smDownRow': $vuetify.breakpoint.smAndDown}">
+        <v-col
+          cols="8" sm="8" md="6"
+          v-for="(groupTheme, index) in groupThemes" :key="groupTheme.themeId"
+          :class="{'mdUpCol': $vuetify.breakpoint.mdAndUp}"
+        >
+        <template v-if="!flag[index]">
+          {{ groupTheme.name }}
+        </template>
+        <template v-else>
+          <v-text-field
+            v-model="themeName"
+            outlined
+            @click.stop
+            style="width: 300px;"
+          ></v-text-field>
+        </template>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              icon
+              v-bind="attrs"
+              v-on="on"
+              @click.stop="modifyFlag(groupTheme, index)"
+            >
+              <v-icon
+                style="font-size: 0.8rem; position: relative; left: -0.7rem; top: -0.4rem;"
+              >
+                mdi-pencil-outline
+              </v-icon>
+            </v-btn>
+          </template>
+          <span>테마명 변경</span>
+        </v-tooltip>
+        <theme-minus-button
+          class="d-inline pl-2"
+          :groupId="groupId"
+          :themeId="groupTheme.themeId"
+          @delTheme="getGroupInfo(groupId)"
+        />
+        </v-col>
       </v-row>
     </v-container>
     <theme-add-modal
@@ -197,6 +203,14 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.mdUpRow {
+  padding-top: 5vh;
+  padding-bottom: 5vh;
+  padding-left: 10vh;
+  padding-right: 10vh;
+}
+.smDownRow {
+  margin: 1vh;
+}
 </style>

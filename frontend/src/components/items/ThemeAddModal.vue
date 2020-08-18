@@ -37,7 +37,7 @@
                     :rules="[rules.required, rules.counter]"
                     counter
                     @keyup.enter="isThemeValid"
-                    maxlength="50"
+                    maxlength="15"
                   />
                 </v-form>
               </v-col>
@@ -74,7 +74,7 @@ export default {
       themeName: '',
       rules: {
         required: (value) => !!value || 'theme can not be empty',
-        counter: (value) => (value && value.length <= 50) || 'Max 50 chracters',
+        counter: (value) => (value && value.length <= 15) || 'Max 15 chracters',
       },
       themeValid: true,
       iconDialog: false,

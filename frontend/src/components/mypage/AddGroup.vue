@@ -32,7 +32,7 @@
                     required
                     :rules="[rules.required, rules.counter]"
                     counter
-                    maxlength="10"
+                    maxlength="15"
                   />
                 </v-form>
               </v-col>
@@ -60,7 +60,7 @@ export default {
       name: '',
       rules: {
         required: (value) => !!value || 'theme can not be empty',
-        counter: (value) => (value && value.length <= 10) || 'Max 10 chracters',
+        counter: (value) => (value && value.length <= 15) || 'Max 15 chracters',
       },
       valid: true,
     };
