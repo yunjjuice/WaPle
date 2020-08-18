@@ -22,7 +22,7 @@
       <v-row
       :class="{'mdUpRow': $vuetify.breakpoint.mdAndUp, 'smDownRow': $vuetify.breakpoint.smAndDown}">
         <v-col
-          cols="8" sm="8" md="6"
+          cols="12" sm="12" md="6"
           v-for="groupUser in groupUsers" :key="groupUser.userId"
           :class="{'mdUpCol': $vuetify.breakpoint.mdAndUp}"
         >
@@ -53,28 +53,19 @@
       <v-row
       :class="{'mdUpRow': $vuetify.breakpoint.mdAndUp, 'smDownRow': $vuetify.breakpoint.smAndDown}">
         <v-col
-          cols="8" sm="8" md="6"
-          v-for="(groupTheme, index) in groupThemes" :key="groupTheme.themeId"
+          cols="12" sm="12" md="6"
+          v-for="(groupTheme) in groupThemes" :key="groupTheme.themeId"
           :class="{'mdUpCol': $vuetify.breakpoint.mdAndUp}"
         >
-        <template v-if="!flag[index]">
-          {{ groupTheme.name }}
-        </template>
-        <template v-else>
-          <v-text-field
-            v-model="themeName"
-            outlined
-            @click.stop
-            style="width: 300px;"
-          ></v-text-field>
-        </template>
+        <img style="height: 22px; width:21px; padding-right: 5px;" :src="groupTheme.icon"/>
+        {{ groupTheme.name }}
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
             <v-btn
               icon
               v-bind="attrs"
               v-on="on"
-              @click.stop="modifyFlag(groupTheme, index)"
+              @click.stop="openModifyModal(groupTheme)"
             >
               <v-icon
                 style="font-size: 0.8rem; position: relative; left: -0.7rem; top: -0.4rem;"
@@ -83,10 +74,10 @@
               </v-icon>
             </v-btn>
           </template>
-          <span>테마명 변경</span>
+          <span>테마 수정</span>
         </v-tooltip>
         <theme-minus-button
-          class="d-inline pl-2"
+          class="d-inline"
           :groupId="groupId"
           :themeId="groupTheme.themeId"
           @delTheme="getGroupInfo(groupId)"
@@ -98,8 +89,14 @@
       :themeDialog="themeDialog"
       :groupId="groupId"
       @closeTheme="themeDialog = !themeDialog"
-      @updateTheme="getGroupInfo(groupId)"
+      @updateTheme="getGroupInfo()"
     ></theme-add-modal>
+    <theme-edit-modal
+      :dialog="themeEditDialog"
+      :theme="selectedTheme"
+      @close="themeEditDialog = false"
+      @update="getGroupInfo()"
+    ></theme-edit-modal>
   </v-expansion-panel-content>
 </template>
 
@@ -118,6 +115,7 @@ export default {
   components: {
     ThemeMinusButton,
     ThemeAddModal: () => import('@/components/items/ThemeAddModal.vue'),
+    ThemeEditModal: () => import('@/components/items/ThemeEditModal.vue'),
   },
   data() {
     return {
@@ -126,11 +124,13 @@ export default {
       themeName: '',
       flag: [],
       themeDialog: false,
+      themeEditDialog: false,
+      selectedTheme: {},
     };
   },
   methods: {
-    getGroupInfo(groupId) {
-      api.get(`groups/${groupId}`, {
+    getGroupInfo() {
+      api.get(`groups/${this.groupId}`, {
         headers: {
           token: this.$session.get('token'),
         },
@@ -140,7 +140,7 @@ export default {
         console.error(err);
         store.dispatch('showSnackbar', { color: 'error', msg: '그룹 조회 실패, 다시 시도해주세요.' });
       });
-      api.get(`themes/${groupId}`, {
+      api.get(`themes/${this.groupId}`, {
         headers: {
           token: this.$session.get('token'),
         },
@@ -167,36 +167,13 @@ export default {
         this.flag.push(false);
       }
     },
-    modifyFlag(theme, index) {
-      if (!this.flag[index]) {
-        this.themeName = theme.name;
-        this.makeFlag();
-        this.flag.splice(index, 1, true);
-      } else {
-        if (theme.name !== this.themeName) { // 값이 변했을 때만 수정
-          api.put('/themes', {
-            groupId: theme.groupId,
-            icon: '',
-            name: this.themeName,
-            themeId: theme.themeId,
-          }, {
-            headers: {
-              token: this.$session.get('token'),
-            },
-          }).then(() => {
-            this.getGroupInfo(theme.groupId);
-            store.dispatch('showSnackbar', { color: 'success', msg: '테마 이름 수정 성공' });
-          }).catch((err) => {
-            console.error(err);
-            store.dispatch('showSnackbar', { color: 'error', msg: '테마 이름 수정 실패, 다시 시도해주세요.' });
-          });
-        }
-        this.makeFlag();
-      }
+    openModifyModal(theme) {
+      this.selectedTheme = theme;
+      this.themeEditDialog = true;
     },
   },
   created() {
-    this.getGroupInfo(this.groupId);
+    this.getGroupInfo();
   },
   mounted() {
     if (!window.Kakao) {
