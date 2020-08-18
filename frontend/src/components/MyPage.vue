@@ -103,7 +103,6 @@
       </v-list>
     </v-navigation-drawer>
     <router-view :style="(drawer) ? 'margin-left:250px' : 'margin-left:0'"></router-view>
-    <snack-bar></snack-bar>
   </v-layout>
   <signout-modal :dialog="signoutDialog" @close="signoutDialog = false"></signout-modal>
 </v-app>
@@ -142,7 +141,6 @@ export default {
     };
   },
   components: {
-    SnackBar: () => import('@/components/items/Snackbars.vue'),
     SignoutModal: () => import('@/components/items/SignoutModal.vue'),
   },
   created() {

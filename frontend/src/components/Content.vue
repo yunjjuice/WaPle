@@ -32,13 +32,11 @@
       ></map-comp>
     </div>
   </v-layout>
-  <snack-bar></snack-bar>
 </v-app>
 </template>
 
 <script>
 import MapComp from '@/components/Map.vue';
-import SnackBar from '@/components/items/Snackbars.vue';
 
 export default {
   data() {
@@ -48,7 +46,6 @@ export default {
   },
   components: {
     MapComp,
-    SnackBar,
   },
 };
 </script>
