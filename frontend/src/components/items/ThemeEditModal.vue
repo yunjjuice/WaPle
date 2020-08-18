@@ -6,7 +6,7 @@
     >
       <v-card>
         <v-card-title>
-          <span class="headline">테마 추가하기</span>
+          <span class="headline">테마 수정하기</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -29,7 +29,7 @@
                 </v-tooltip>
               </v-col>
               <v-col align="center" cols="8">
-                <v-form ref="themeForm" v-model="themeValid">
+                <v-form ref="form" v-model="themeValid">
                   <v-text-field
                     label="테마 이름"
                     v-model="themeName"
@@ -47,13 +47,13 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="closeModal">취소</v-btn>
-          <v-btn color="green darken-1" text @click="isThemeValid">추가</v-btn>
+          <v-btn color="green darken-1" text @click="isThemeValid">확인</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
     <icon-select-modal
       :iconDialog="iconDialog"
-      @select="selectMarker"
+      @select="(newMarker) => {marker = newMarker}"
       @close="iconDialog = !iconDialog"
     ></icon-select-modal>
 </v-main>
@@ -64,70 +64,59 @@ import store from '@/store/index';
 import api from '@/utils/api';
 
 export default {
-  props: [
-    'groupId',
-    'themeDialog',
-  ],
+  props: ['theme', 'dialog'],
   data() {
     return {
-      dialog: false,
       themeName: '',
+      marker: {},
       rules: {
         required: (value) => !!value || 'theme can not be empty',
         counter: (value) => (value && value.length <= 10) || 'Max 10 chracters',
       },
       themeValid: true,
       iconDialog: false,
-      marker: {
-        icon: '/markers/default.png',
-        name: 'default',
-      },
     };
   },
   components: {
     IconSelectModal: () => import('@/components/items/IconSelectModal.vue'),
   },
   watch: {
-    themeDialog() {
-      this.dialog = !this.dialog;
+    theme: {
+      deep: true,
+      handler(val) {
+        this.themeName = val.name;
+        this.marker.icon = val.icon;
+      },
     },
   },
   methods: {
     closeModal() {
-      this.$refs.themeForm.reset();
-      this.marker = {
-        icon: '/markers/default.png',
-        name: 'default',
-      };
-      this.$emit('closeTheme');
+      this.$emit('close');
     },
-    selectMarker(marker) {
-      this.marker = marker;
+    isThemeValid() {
+      this.$refs.form.validate();
+      if (this.themeValid) {
+        this.editTheme();
+      }
     },
-    makeTheme() {
-      api.post('/themes', {
-        groupId: this.groupId,
+    editTheme() {
+      api.put('/themes', {
+        groupId: this.theme.groupId,
+        themeId: this.theme.themeId,
         icon: this.marker.icon,
         name: this.themeName,
       }, {
         headers: {
           token: this.$session.get('token'),
         },
-      }).then(({ data }) => {
-        this.$emit('updateTheme'); // 그룹 페이지에서
-        this.$emit('addTheme', data); // 북마크 모달에서
-        store.dispatch('showSnackbar', { color: 'success', msg: '테마 생성 성공' });
+      }).then(() => {
+        this.$emit('update');
+        store.dispatch('showSnackbar', { color: 'success', msg: '테마 수정 성공' });
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '테마 생성 실패, 다시 시도해주세요.' });
+        store.dispatch('showSnackbar', { color: 'error', msg: '테마 수정 실패, 다시 시도해주세요.' });
       });
       this.closeModal();
-    },
-    isThemeValid() {
-      this.$refs.themeForm.validate();
-      if (this.themeValid) {
-        this.makeTheme();
-      }
     },
   },
 };
