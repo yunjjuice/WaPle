@@ -15,6 +15,11 @@ export default {
   data: () => ({
   }),
   created() {
+    // 사파리일경우 하단에 잘리는 현상으로 인해 동적 클래스 바인딩해줄 필요가 있음
+    const agent = navigator.userAgent.toLowerCase();
+    if (agent.indexOf('safari') !== -1) {
+      this.$store.dispatch('updateSafari', true);
+    }
   },
 };
 </script>

@@ -10,6 +10,7 @@
       id="scroll-target"
       style="height: 85vh"
       class="overflow-y-auto"
+      :class="{ safari: isSafari && $vuetify.breakpoint.mdAndDown}"
     >
       <transition name="fade">
         <div class="loading" v-show="loading">
@@ -127,6 +128,7 @@ export default {
     keyword: () => store.getters.keyword,
     noData: () => store.getters.noData,
     bottom: () => store.getters.bottom,
+    isSafari: () => store.getters.isSafari,
   },
   methods: {
     moveBack() {
@@ -170,5 +172,8 @@ export default {
 .d-flex.flex-no-wrap.justify-space-between:hover{
   background-color: #d2d2d4;
   opacity: 0.8;
+}
+.safari {
+  height: calc(75vh - 50px) !important;
 }
 </style>

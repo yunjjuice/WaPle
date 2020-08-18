@@ -6,6 +6,7 @@
     id="scroll-target"
     style="height: calc(90vh - 4rem)"
     class="overflow-y-auto"
+    :class="{ safari: isSafari && $vuetify.breakpoint.mdAndDown}"
   >
     <transition name="fade">
       <div class="loading" v-show="loading">
@@ -165,6 +166,7 @@ export default {
   computed: {
     appointmentDialog: () => store.getters.appointmentDialog,
     themes: () => store.getters.groupTheme,
+    isSafari: () => store.getters.isSafari,
   },
   watch: {
     bottom() {
@@ -356,5 +358,8 @@ label.v-label.theme--light {
 .d-flex.flex-no-wrap.justify-space-between:hover{
   background-color: #d2d2d4;
   opacity: 0.8;
+}
+.safari {
+  height: calc(75vh - 50px) !important;
 }
 </style>

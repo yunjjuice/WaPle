@@ -2,6 +2,7 @@ export default {
   state: {
     height: '',
     width: '',
+    isSafari: false,
   },
   getters: {
     height(state) {
@@ -10,6 +11,9 @@ export default {
     width(state) {
       return state.width;
     },
+    isSafari(state) {
+      return state.isSafari;
+    },
   },
   mutations: {
     setHeight(state, payload) {
@@ -17,6 +21,9 @@ export default {
     },
     setWidth(state, payload) {
       state.width = payload.width;
+    },
+    setSafari(state, payload) {
+      state.isSafari = payload.isSafari;
     },
   },
   actions: {
@@ -27,6 +34,9 @@ export default {
     updateWidth({ commit }, width) {
       commit('setWidth', { width });
       console.log(width);
+    },
+    updateSafari({ commit }, isSafari) {
+      commit('setSafari', { isSafari });
     },
   },
 };

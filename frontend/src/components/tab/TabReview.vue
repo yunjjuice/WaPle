@@ -6,6 +6,7 @@
     id="scroll-target"
     style="height: calc(90vh - 4rem)"
     class="overflow-y-auto"
+    :class="{ safari: isSafari && $vuetify.breakpoint.mdAndDown}"
   >
     <transition name="fade">
       <div class="loading" v-show="loading">
@@ -120,6 +121,7 @@ export default {
   },
   computed: {
     appointmentDialog: () => store.getters.appointmentDialog,
+    isSafari: () => store.getters.isSafari,
     uniquePlace() {
       return this.items.reduce((seed, cur) => Object.assign(seed, { [cur.placeId]: cur }), {});
     },
@@ -222,5 +224,8 @@ export default {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0
+}
+.safari {
+  height: calc(75vh - 50px) !important;
 }
 </style>

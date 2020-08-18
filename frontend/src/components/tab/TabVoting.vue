@@ -5,6 +5,7 @@
   id="scroll-target"
   style="height: calc(90vh - 4rem)"
   class="overflow-y-auto"
+  :class="{ safari: isSafari && $vuetify.breakpoint.mdAndDown}"
 >
   <transition name="fade">
     <div class="loading" v-show="loading">
@@ -103,6 +104,7 @@ export default {
   },
   computed: {
     appointments: () => store.getters.appointments,
+    isSafari: () => store.getters.isSafari,
   },
   created() {
     store.dispatch('getAppointments');
@@ -190,5 +192,8 @@ export default {
 }
 .fade-enter, .fade-leave-to {
   opacity: 0
+}
+.safari {
+  height: calc(75vh - 50px) !important;
 }
 </style>
