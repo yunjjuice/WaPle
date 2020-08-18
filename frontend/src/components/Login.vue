@@ -49,10 +49,8 @@ export default {
       });
     },
     onFailure(result) {
-      console.log(result);
-      console.log('failure');
-      const payload = { color: 'error', msg: '로그인 실패' };
-      store.dispatch('showSnackbar', payload);
+      console.error(result);
+      store.dispatch('showSnackbar', { color: 'error', msg: '로그인 실패, 다시 시도해주세요.' });
     },
   },
 };

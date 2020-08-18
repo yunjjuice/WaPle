@@ -54,6 +54,9 @@ export default {
       },
     }).then(({ data }) => {
       this.reviews = data;
+    }).catch((err) => {
+      console.error(err);
+      store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 조회 실패, 다시 시도해주세요.' });
     });
   },
   methods: {
@@ -68,6 +71,9 @@ export default {
       }).then(({ data }) => {
         store.dispatch('selectReview', data);
         store.dispatch('changeReadDialog');
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 조회 실패, 다시 시도해주세요.' });
       });
     },
   },

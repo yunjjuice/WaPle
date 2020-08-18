@@ -80,13 +80,12 @@ export default {
       })
         .then(() => {
           this.$emit('addGroup');
-          const payload = { color: 'success', msg: '그룹 생성 완료' };
-          store.dispatch('showSnackbar', payload);
           store.dispatch('getGroups');
+          store.dispatch('showSnackbar', { color: 'success', msg: '그룹 생성 성공' });
         })
-        .catch(() => {
-          const payload = { color: 'error', msg: '그룹 생성 실패' };
-          store.dispatch('showSnackbar', payload);
+        .catch((err) => {
+          console.error(err);
+          store.dispatch('showSnackbar', { color: 'error', msg: '그룹 생성 실패, 다시 시도해주세요.' });
         });
       this.closeModal();
     },

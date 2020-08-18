@@ -65,7 +65,7 @@ export default {
       })
         .catch((err) => {
           console.error(err);
-          dispatch('showSnackbar', { color: 'error', msg: '리뷰 삭제 실패' });
+          dispatch('showSnackbar', { color: 'error', msg: '리뷰 삭제 실패, 다시 시도해주세요.' });
         });
     },
     updateReview({ commit, dispatch }, review) { // 리뷰 수정
@@ -79,7 +79,7 @@ export default {
         dispatch('showSnackbar', { color: 'success', msg: '리뷰 수정 완료' });
       }).catch((err) => {
         console.error(err);
-        dispatch('showSnackbar', { color: 'error', msg: '리뷰 수정 실패' });
+        dispatch('showSnackbar', { color: 'error', msg: '리뷰 수정 실패, 다시 시도해주세요.' });
       });
     },
   },

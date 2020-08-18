@@ -180,10 +180,10 @@ export default {
         this.$session.set('uname', this.uname);
         this.username = this.uname;
         // TODO 그룹 디테일 리로드
-        store.dispatch('showSnackbar', { color: 'success', msg: '닉네임 변경 성공' });
+        store.dispatch('showSnackbar', { color: 'success', msg: '회원 이름 변경 성공' });
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '닉네임 변경 실패, 다시 시도해주세요.' });
+        store.dispatch('showSnackbar', { color: 'error', msg: '회원 이름 변경 실패, 다시 시도해주세요.' });
       });
     },
   },

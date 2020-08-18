@@ -134,9 +134,14 @@ export default {
           promiseId: data,
           userId: Vue.prototype.$session.get('uid'),
         }).then(() => {
-          const payload = { color: 'success', msg: '약속 추가 완료' };
-          dispatch('showSnackbar', payload);
+          dispatch('showSnackbar', { color: 'success', msg: '약속 추가 성공' });
+        }).catch((err) => {
+          console.error(err);
+          dispatch('showSnackbar', { color: 'error', msg: '약속 추가 실패, 다시 시도해주세요.' });
         });
+      }).catch((err) => {
+        console.error(err);
+        dispatch('showSnackbar', { color: 'error', msg: '약속 추가 실패, 다시 시도해주세요.' });
       });
     },
     addAppointment({ getters, dispatch }) { // 기존 약속 추가
@@ -150,52 +155,56 @@ export default {
           token: Vue.prototype.$session.get('token'),
         },
       }).then(() => {
-        const payload = { color: 'success', msg: '약속 추가 완료' };
-        dispatch('showSnackbar', payload, { root: true });
-      }).catch((data) => {
-        console.log(data);
-        const payload = { color: 'error', msg: '약속 추가 실패' };
-        dispatch('showSnackbar', payload, { root: true });
+        dispatch('showSnackbar', { color: 'success', msg: '약속 추가 성공' });
+      }).catch((err) => {
+        console.error(err);
+        dispatch('showSnackbar', { color: 'error', msg: '약속 추가 실패, 다시 시도해주세요.' });
       });
     },
     updateAppointmentInfo({ dispatch }, { appointment }) { // 약속 정보 업데이트
       api.put('/promises', appointment)
         .then(() => {
-          dispatch('showSnackbar', { color: 'success', msg: '약속 수정 완료' }, { root: true });
+          dispatch('showSnackbar', { color: 'success', msg: '약속 수정 성공' });
           dispatch('getAppointments');
         })
         .catch((err) => {
           console.error(err);
-          dispatch('showSnackbar', { color: 'error', msg: '약속 수정 실패' }, { root: true });
+          dispatch('showSnackbar', { color: 'error', msg: '약속 수정 실패, 다시 시도해주세요.' });
         });
     },
     removeAppointment({ dispatch }, { groupId, promiseId }) {
       api.delete(`/promises/${groupId}/${promiseId}`)
         .then(() => {
-          dispatch('showSnackbar', { color: 'success', msg: '약속 삭제 완료' }, { root: true });
+          dispatch('showSnackbar', { color: 'success', msg: '약속 삭제 성공' });
           dispatch('getAppointments');
         })
         .catch((err) => {
           console.error(err);
-          dispatch('showSnackbar', { color: 'error', msg: '약속 삭제 실패' }, { root: true });
+          dispatch('showSnackbar', { color: 'error', msg: '약속 삭제 실패, 다시 시도해주세요.' });
         });
     },
-    getGroupsThemes({ commit }) {
+    getGroupsThemes({ commit, dispatch }) {
       api.get(`/themes/all/${Vue.prototype.$session.get('uid')}`, {
         headers: {
           token: Vue.prototype.$session.get('token'),
         },
       }).then(({ data }) => {
         commit('setGroupsThemes', { data });
+      }).catch((err) => {
+        console.error(err);
+        dispatch('showSnackbar', { color: 'error', msg: '조회 실패, 다시 시도해주세요.' });
       });
     },
-    getGroupTheme({ commit }) {
+    getGroupTheme({ commit, dispatch }) {
       api.get(`/themes/place/${Vue.prototype.$session.get('uid')}`, {
         headers: {
           token: Vue.prototype.$session.get('token'),
         },
       }).then(({ data }) => {
         commit('setGroupTheme', { data });
+      }).catch((err) => {
+        console.error(err);
+        dispatch('showSnackbar', { color: 'error', msg: '조회 실패, 다시 시도해주세요.' });
       });
     },
   },

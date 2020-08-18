@@ -238,8 +238,9 @@ export default {
             this.loading = false;
           }, 500);
         }
-      }).catch((error) => {
-        console.log(error.response);
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '북마크 조회 실패, 다시 시도해주세요.' });
       });
     },
     setItem(index) {
@@ -260,8 +261,9 @@ export default {
           this.result = data;
           this.original = data;
         })
-        .catch((error) => {
-          console.log(error.response);
+        .catch((err) => {
+          console.error(err);
+          store.dispatch('showSnackbar', { color: 'error', msg: '테마 조회 실패, 다시 시도해주세요.' });
         });
     },
     closeMenu(index) {
@@ -314,8 +316,9 @@ export default {
             this.loading = false;
           }, 500);
         }
-      }).catch((error) => {
-        console.log(error);
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '북마크 조회 실패, 다시 시도해주세요.' });
       });
     },
     deleteCard(index) {

@@ -198,11 +198,14 @@ export default {
         });
     },
     async writeReview() { // 리뷰 작성
-      /* eslint-disable no-restricted-syntax */
-      /* eslint-disable no-await-in-loop  */
       let media = '';
+      // eslint-disable-next-line
       for (const data of this.formDatas) {
-        media += await this.uploadImage(data);
+        // eslint-disable-next-line
+        media += await this.uploadImage(data).catch((err) => {
+          console.error(err);
+          store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 등록 실패, 다시 시도해주세요.' });
+        });
         media += ';';
       }
 
@@ -218,13 +221,13 @@ export default {
         headers: {
           token: this.$session.get('token'),
         },
-      }).then((res) => {
-        if (res.status === 201) {
-          const payload = { color: 'success', msg: '리뷰 등록 완료' };
-          store.dispatch('showSnackbar', payload);
-          this.close();
-        }
+      }).then(() => {
+        store.dispatch('showSnackbar', { color: 'success', msg: '리뷰 등록 성공' });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 등록 실패, 다시 시도해주세요.' });
       });
+      this.close();
     },
     checkImageExtension(filename) {
       const extension = filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();

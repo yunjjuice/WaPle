@@ -96,11 +96,11 @@ export default {
         headers: {
           token: this.$session.get('token'),
         },
-      }).then((res) => {
-        if (res.status === 201) {
-          const payload = { color: 'success', msg: '북마크가 수정되었습니다' };
-          store.dispatch('showSnackbar', payload);
-        }
+      }).then(() => {
+        store.dispatch('showSnackbar', { color: 'success', msg: '북마크 수정 성공' });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '북마크 수정 실패, 다시 시도해주세요.' });
       });
     },
     delBookmark() {
@@ -108,11 +108,11 @@ export default {
         headers: {
           token: this.$session.get('token'),
         },
-      }).then((res) => {
-        if (res.status === 204) {
-          const payload = { color: 'success', msg: '북마크가 삭제되었습니다.' };
-          store.dispatch('showSnackbar', payload);
-        }
+      }).then(() => {
+        store.dispatch('showSnackbar', { color: 'success', msg: '북마크 삭제 성공' });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '북마크 삭제 실패, 다시 시도해주세요.' });
       });
     },
   },

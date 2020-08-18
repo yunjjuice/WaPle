@@ -134,16 +134,22 @@ export default {
         headers: {
           token: this.$session.get('token'),
         },
-      }).then((res) => {
-        this.groupUsers = res.data;
-      }).catch((err) => console.log(err));
+      }).then(({ data }) => {
+        this.groupUsers = data;
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '그룹 조회 실패, 다시 시도해주세요.' });
+      });
       api.get(`themes/${groupId}`, {
         headers: {
           token: this.$session.get('token'),
         },
-      }).then((res) => {
-        this.groupThemes = res.data;
-      }).catch((err) => console.log(err));
+      }).then(({ data }) => {
+        this.groupThemes = data;
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '그룹 조회 실패, 다시 시도해주세요.' });
+      });
     },
     addGroupUser() {
       window.Kakao.Link.sendCustom({
@@ -179,10 +185,10 @@ export default {
             },
           }).then(() => {
             this.getGroupInfo(theme.groupId);
-            const payload = { color: 'success', msg: '테마명 수정 완료' };
-            store.dispatch('showSnackbar', payload);
-          }).catch((res) => {
-            console.log(res);
+            store.dispatch('showSnackbar', { color: 'success', msg: '테마 이름 수정 성공' });
+          }).catch((err) => {
+            console.error(err);
+            store.dispatch('showSnackbar', { color: 'error', msg: '테마 이름 수정 실패, 다시 시도해주세요.' });
           });
         }
         this.makeFlag();

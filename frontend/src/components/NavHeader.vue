@@ -123,9 +123,11 @@ export default {
           this.$router.push('/');
           window.location.reload();
         } else {
-          alert('로그아웃 실패');
+          store.dispatch('showSnackbar', { color: 'error', msg: '로그아웃 실패, 다시 시도해주세요.' });
         }
-      }).catch(() => {
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '로그아웃 실패, 다시 시도해주세요.' });
       });
     },
   },

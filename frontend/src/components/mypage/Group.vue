@@ -122,13 +122,12 @@ export default {
             headers: {
               token: this.$session.get('token'),
             },
-          }).then((res) => {
-            console.log(res);
+          }).then(() => {
             store.dispatch('getGroups');
-            const payload = { color: 'success', msg: '그룹명 수정 완료' };
-            store.dispatch('showSnackbar', payload);
-          }).catch((res) => {
-            console.log(res);
+            store.dispatch('showSnackbar', { color: 'success', msg: '그룹 이름 수정 성공' });
+          }).catch((err) => {
+            console.error(err);
+            store.dispatch('showSnackbar', { color: 'error', msg: '그룹 이름 수정 실패, 다시 시도해주세요.' });
           });
         }
         this.makeFlag();

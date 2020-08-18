@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import store from '@/store/index';
 import api from '@/utils/api';
 
 export default {
@@ -52,11 +53,13 @@ export default {
         headers: {
           token: this.$session.get('token'),
         },
-      })
-        .then(() => {
-          this.$emit('delTheme');
-        })
-        .catch((err) => console.log(err));
+      }).then(() => {
+        this.$emit('delTheme');
+        store.dispatch('showSnackbar', { color: 'success', msg: '테마 삭제 성공' });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '테마 삭제 실패, 다시 시도해주세요.' });
+      });
     },
   },
 };

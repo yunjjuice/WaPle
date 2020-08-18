@@ -25,8 +25,10 @@ export default {
         .then(() => {
           dispatch('getGroups');
           commit('closeLeaveGroupDialog');
-        })
-        .catch((err) => console.log(err));
+        }).catch((err) => {
+          console.error(err);
+          dispatch('showSnackbar', { color: 'error', msg: '그룹 탈퇴 실패, 다시 시도해주세요.' });
+        });
     },
   },
 };

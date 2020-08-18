@@ -128,12 +128,12 @@ export default {
         headers: {
           token: this.$session.get('token'),
         },
-      }).then((res) => {
-        if (res.status === 201) {
-          const payload = { color: 'success', msg: '투표 완료' };
-          store.dispatch('showSnackbar', payload);
-          this.getVotePlaceList();
-        }
+      }).then(() => {
+        store.dispatch('showSnackbar', { color: 'success', msg: '투표 성공' });
+        this.getVotePlaceList();
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '투표 실패, 다시 시도해주세요.' });
       });
     },
     voteCancel(item) { // 투표 취소
@@ -145,12 +145,12 @@ export default {
         headers: {
           token: this.$session.get('token'),
         },
-      }).then((res) => {
-        if (res.status === 204) {
-          const payload = { color: 'success', msg: '투표 취소 완료' };
-          store.dispatch('showSnackbar', payload);
-          this.getVotePlaceList();
-        }
+      }).then(() => {
+        store.dispatch('showSnackbar', { color: 'success', msg: '투표 취소 성공' });
+        this.getVotePlaceList();
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '투표 취소 실패, 다시 시도해주세요.' });
       });
     },
   },
