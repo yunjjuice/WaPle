@@ -17,6 +17,8 @@
             src="/waplelogo.png"
             max-height="5rem"
             max-width="10rem"
+            min-height="1rem"
+            min-width="4rem"
           ></v-img>
         </div>
       </router-link>
