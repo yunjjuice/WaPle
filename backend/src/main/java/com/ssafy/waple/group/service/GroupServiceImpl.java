@@ -13,7 +13,6 @@ import com.ssafy.waple.group.dao.GroupDao;
 import com.ssafy.waple.group.dto.GroupCreateDto;
 import com.ssafy.waple.group.dto.GroupDto;
 import com.ssafy.waple.group.dto.GroupMemberDto;
-import com.ssafy.waple.group.exception.DuplicateMemberException;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
 import com.ssafy.waple.group.exception.InvalidGroupTokenException;
 import com.ssafy.waple.group.exception.MemberNotFoundException;
@@ -74,11 +73,13 @@ public class GroupServiceImpl implements GroupService {
 			if (e.getMessage().contains(USER_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new UserNotFoundException(group.getUserId());
 			}
-			if (e.getMessage().contains(PRIMARY_KEY_CONSTRAINT_MSG)) {
-				throw new DuplicateMemberException(group.getGroupId(), group.getUserId());
-			}
 			if (e.getMessage().contains(INVALID_TOKEN_MSG)) {
 				throw new InvalidGroupTokenException();
+			}
+			if (e.getMessage().contains(PRIMARY_KEY_CONSTRAINT_MSG)) {
+				// throw new DuplicateMemberException(group.getGroupId(), group.getUserId());
+				// 에러로 처리 안하겠습니다
+				return;
 			}
 			throw e;
 		}
