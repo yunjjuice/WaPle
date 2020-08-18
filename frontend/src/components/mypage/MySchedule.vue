@@ -95,6 +95,7 @@
 </template>
 
 <script>
+import store from '@/store/index';
 import api from '@/utils/api';
 import moment from 'moment';
 
@@ -172,6 +173,9 @@ export default {
             promiseId: data[i].promiseId,
           });
         }
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '일정 조회 실패, 다시 시도해주세요.' });
       });
       this.events = events;
     },
@@ -192,6 +196,9 @@ export default {
         detail += `<span><a href=${data[0].url} target="_blank">${data[0].name}</a></sapn><br>`;
         detail += '에 갈 예정입니다';
         this.selectedEvent.details = detail;
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '정보 조회 실패, 다시 시도해주세요.' });
       });
     },
   },

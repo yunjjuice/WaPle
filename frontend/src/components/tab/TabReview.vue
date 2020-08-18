@@ -194,6 +194,9 @@ export default {
           }
           this.loading = false;
         }, 500);
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 목록 조회 실패, 다시 시도해주세요.' });
       });
     },
   },

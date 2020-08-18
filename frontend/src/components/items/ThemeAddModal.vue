@@ -114,13 +114,12 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
-        const payload = { color: 'success', msg: '테마 생성 성공' };
-        store.dispatch('showSnackbar', payload);
         this.$emit('updateTheme'); // 그룹 페이지에서
         this.$emit('addTheme', data); // 북마크 모달에서
-      }).catch(() => {
-        const payload = { color: 'error', msg: '테마 생성 실패' };
-        store.dispatch('showSnackbar', payload);
+        store.dispatch('showSnackbar', { color: 'success', msg: '테마 생성 성공' });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '테마 생성 실패, 다시 시도해주세요.' });
       });
       this.closeModal();
     },

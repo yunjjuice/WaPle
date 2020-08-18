@@ -81,7 +81,7 @@ export default {
     },
     search({ commit, getters }) {
       const places = new window.kakao.maps.services.Places();
-      const callback = function (result, status) {
+      const callback = (result, status) => {
         if (status === window.kakao.maps.services.Status.OK) {
           const duplicateVal = result[0].id;
           const placeDatas = getters.result;

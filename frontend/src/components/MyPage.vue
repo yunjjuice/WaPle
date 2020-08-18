@@ -25,19 +25,25 @@
       <v-list-item class="ml-2">
         <v-list-item-content>
           <v-list-item-title class="title">
-            <router-link to="/mypage"><b>나의 공간</b></router-link>
+            <b>나의 공간</b>
           </v-list-item-title>
           <v-list-item-subtitle class="mt-2 ml-4">
             <template v-if="!flag">
-              {{ uname }}님
+              {{ username }}님
             </template>
             <template v-if="flag">
-              <v-text-field
-                v-model="uname"
-                outlined
-                @keypress.enter="modify"
-                style="width: 10rem;"
-              ></v-text-field>
+              <v-form ref="unameForm" v-model="unameValid">
+                <v-text-field
+                  v-model="uname"
+                  required
+                  counter
+                  maxlength="10"
+                  :rules="[rules.required, rules.counter]"
+                  outlined
+                  @keypress.enter="modify"
+                  style="width: 10rem;"
+                ></v-text-field>
+              </v-form>
             </template>
             <v-tooltip bottom>
               <template v-slot:activator="{ on, attrs }">
@@ -86,7 +92,7 @@
               <v-list-item-title>회원 목록 조회</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item id="out" style="cursor: pointer" @click.stop="signout">
+        <v-list-item id="out" style="cursor: pointer" @click.stop="signoutDialog = true">
           <v-list-item-icon>
             <v-icon>mdi-close-circle-outline</v-icon>
           </v-list-item-icon>
@@ -97,12 +103,15 @@
       </v-list>
     </v-navigation-drawer>
     <router-view :style="(drawer) ? 'margin-left:250px' : 'margin-left:0'"></router-view>
-    <snack-bar></snack-bar>
   </v-layout>
+  <signout-modal :dialog="signoutDialog" @close="signoutDialog = false"></signout-modal>
 </v-app>
 </template>
 
 <script>
+import api from '@/utils/api';
+import store from '@/store/index';
+
 export default {
   data() {
     return {
@@ -118,19 +127,25 @@ export default {
           address: '/mypage/myschedule',
         },
       ],
-      uname: '',
+      rules: {
+        required: (value) => !!value || 'name can not be empty',
+        counter: (value) => (value && value.length <= 10) || 'Max 10 chracters',
+      },
+      username: '', // for see
+      uname: '', // for modify form
+      unameValid: true,
       isAdmin: false,
       drawer: true,
       flag: false,
+      signoutDialog: false,
     };
   },
   components: {
-    SnackBar: () => import('@/components/items/Snackbars.vue'),
+    SignoutModal: () => import('@/components/items/SignoutModal.vue'),
   },
   created() {
-    this.uname = this.$session.get('uname');
+    this.username = this.$session.get('uname');
     this.isAdmin = this.$session.get('admin');
-    this.$router.push('/mypage/group').catch(() => {});
   },
   mounted() {
     document.documentElement.style.overflowY = 'auto';
@@ -141,11 +156,35 @@ export default {
   methods: {
     modify() {
       this.flag = !this.flag;
-      if (!this.flag) {
-        console.log('modify');
+      if (this.flag) {
+        this.uname = this.username;
+      } else {
+        this.isUnameValid();
       }
     },
-    signout() {
+    isUnameValid() {
+      this.$refs.unameForm.validate();
+      if (this.unameValid && this.username !== this.uname) {
+        this.updateUname();
+      }
+    },
+    updateUname() {
+      api.put(`/users/${this.$session.get('uid')}`, {
+        userId: this.$session.get('uid'),
+        name: this.uname,
+      }, {
+        headers: {
+          token: this.$session.get('token'),
+        },
+      }).then(() => {
+        this.$session.set('uname', this.uname);
+        this.username = this.uname;
+        // TODO 그룹 디테일 리로드
+        store.dispatch('showSnackbar', { color: 'success', msg: '회원 이름 변경 성공' });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '회원 이름 변경 실패, 다시 시도해주세요.' });
+      });
     },
   },
 };

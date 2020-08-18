@@ -21,9 +21,6 @@ export default {
   computed: {
     dialog: () => store.getters.leaveGroupDialog,
   },
-  data: () => ({
-    // dialog: false,
-  }),
   methods: {
     closeModal: () => store.commit('closeLeaveGroupDialog'),
     leaveGroup: () => store.dispatch('leaveGroup'),

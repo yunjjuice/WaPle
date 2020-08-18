@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import store from '@/store/index';
 import api from '@/utils/api';
 import moment from 'moment';
 
@@ -43,6 +44,9 @@ export default {
           this.users.push(data[i]);
           this.users[i].lastDate = this.getFormatDate(data[i].lastDate);
         }
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '회원 목록 로드 실패, 다시 시도해주세요.' });
       });
     },
     getFormatDate(datetime) {

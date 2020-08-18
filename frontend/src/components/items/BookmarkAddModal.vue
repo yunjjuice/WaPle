@@ -102,6 +102,9 @@ export default {
     api.get(`/groups/of/${this.$session.get('uid')}`)
       .then(({ data }) => {
         this.groups = data;
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '그룹 조회 실패, 다시 시도해주세요.' });
       });
   },
   methods: {
@@ -116,6 +119,9 @@ export default {
           name: '테마 추가하기 ...',
           act: 'add',
         });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '테마 조회 실패, 다시 시도해주세요.' });
       });
     },
     showThemeModal(theme) {
@@ -123,8 +129,8 @@ export default {
         this.themeDialog = true;
       }
     },
-    updateTheme(theme) {
-      this.findTheme();
+    async updateTheme(theme) {
+      await this.findTheme();
       this.theme = theme;
     },
     closeThemeModal() {
@@ -149,11 +155,10 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(() => {
-        const payload = { color: 'success', msg: '북마크가 등록되었습니다' };
-        store.dispatch('showSnackbar', payload);
-      }).catch(() => {
-        const payload = { color: 'error', msg: '북마크 등록에 실패했습니다' };
-        store.dispatch('showSnackbar', payload);
+        store.dispatch('showSnackbar', { color: 'success', msg: '북마크 등록 성공' });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '북마크 등록 실패, 다시 시도해주세요.' });
       });
       this.closeBookmarkModal();
     },

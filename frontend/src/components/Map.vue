@@ -253,7 +253,6 @@ export default {
       this.write = !this.write;
     },
     searchByWord() {
-      console.log(this.keyword);
       if (this.keyword === '') {
         alert('검색어를 입력해주세요');
         return;
@@ -282,9 +281,11 @@ export default {
           this.$router.push('/');
           window.location.reload();
         } else {
-          alert('로그아웃 실패');
+          store.dispatch('showSnackbar', { color: 'error', msg: '로그아웃 실패, 다시 시도해주세요.' });
         }
-      }).catch(() => {
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '로그아웃 실패, 다시 시도해주세요.' });
       });
     },
   },

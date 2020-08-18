@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <router-view></router-view>
+    <snack-bar></snack-bar>
   </v-app>
 </template>
 
@@ -8,12 +9,11 @@
 
 export default {
   components: {
+    SnackBar: () => import('@/components/items/Snackbars.vue'),
   },
   props: {
     source: String,
   },
-  data: () => ({
-  }),
   created() {
     // 사파리일경우 하단에 잘리는 현상으로 인해 동적 클래스 바인딩해줄 필요가 있음
     const agent = navigator.userAgent.toLowerCase();

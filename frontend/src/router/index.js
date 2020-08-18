@@ -16,17 +16,14 @@ const requireAuth = () => (to, from, next) => {
 const routes = [
   {
     path: '/',
-    name: 'Main',
     component: Main,
     beforeEnter: requireAuth(),
     children: [
       {
         path: '',
-        name: 'Content',
         component: () => import('@/components/Content.vue'),
         children: [
           {
-            name: 'section-default',
             path: '',
             component: () => import('@/components/SectionTab.vue'),
             children: [
@@ -66,14 +63,9 @@ const routes = [
       },
       {
         path: '/mypage',
-        name: 'MyPage',
+        redirect: '/mypage/group',
         component: () => import('@/components/MyPage.vue'),
         children: [
-          {
-            path: '',
-            name: 'my-info',
-            component: () => import('@/components/mypage/MyInfo.vue'),
-          },
           {
             path: 'group',
             name: 'group',
@@ -92,6 +84,11 @@ const routes = [
         ],
       },
       {
+        path: 'invite/:code',
+        component: () => import('@/components/Invite.vue'),
+        props: true,
+      },
+      {
         path: 'toppings',
         name: 'toppings',
         component: () => import('@/components/Topping.vue'),
@@ -103,12 +100,6 @@ const routes = [
     name: 'Login',
     component: Login,
     props: (route) => ({ redirect: route.query.redirect }),
-  },
-  {
-    path: '/invite/:code',
-    component: () => import('@/components/Invite.vue'),
-    props: true,
-    beforeEnter: requireAuth(),
   },
 ];
 

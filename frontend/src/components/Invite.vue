@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import store from '@/store/index';
 import api from '@/utils/api';
 import JWT from 'jwt-decode';
 
@@ -23,9 +24,13 @@ export default {
       api.post('/groups/member', {
         token: this.code,
         userId: this.$session.get('uid'),
-      })
-        .then(() => this.$router.push('/'))
-        .catch(() => alert('에러 발생'));
+      }).then(() => {
+        this.$router.push('/');
+        store.dispatch('showSnackbar', { color: 'success', msg: '그룹 가입 성공' });
+      }).catch((err) => {
+        console.error(err);
+        store.dispatch('showSnackbar', { color: 'error', msg: '그룹 가입 실패, 다시 시도해주세요.' });
+      });
     },
   },
   created() {
