@@ -129,8 +129,8 @@ export default {
         this.themeDialog = true;
       }
     },
-    updateTheme(theme) {
-      this.findTheme();
+    async updateTheme(theme) {
+      await this.findTheme();
       this.theme = theme;
     },
     closeThemeModal() {
