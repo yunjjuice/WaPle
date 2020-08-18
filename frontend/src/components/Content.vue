@@ -24,10 +24,10 @@
     </v-navigation-drawer>
     <div
       :class="{'map-width' : $vuetify.breakpoint.mdAndUp}"
-      style="float:right; width: 100%; height: 100%; overflow-y: hidden;"
+      style="float:right; width: 100%; height: 100vh; overflow-y: hidden;"
     >
       <map-comp
-        style="width: 100%; height: 100%;"
+        style="width: 100%; height: 100vh;"
         :class="{'map-margin': $vuetify.breakpoint.mdAndUp}"
       ></map-comp>
     </div>
