@@ -29,7 +29,6 @@
           </p>
         </v-col>
         <v-col cols="12" sm="8" md="12" align="center" justify="center">
-          <v-btn icon>
           <kakao-login
             api-key='0e8b85c161beec7b11ccccb161ab81ab'
             :on-success=onSuccess
@@ -37,7 +36,6 @@
             :image="button = $vuetify.breakpoint.mdAndUp ?
             'kakao_account_login_btn_medium_wide' : 'kakao_account_login_btn_medium_narrow'"
           />
-          </v-btn>
         </v-col>
       </v-row>
     </v-layout>
