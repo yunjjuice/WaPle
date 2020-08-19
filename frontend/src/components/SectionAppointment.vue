@@ -6,7 +6,7 @@
       </v-btn>
       <v-toolbar-title>{{ appointment.title }}</v-toolbar-title>
     </v-toolbar>
-    <v-container>
+    <v-container style="padding-top: 0rem;">
       <transition name="fade">
         <div class="loading" v-show="loading">
           <span class="fa fa-spinner fa-spin"></span> Loading
@@ -17,7 +17,7 @@
           v-for="(item, i) in items"
           :key="i"
           cols="12"
-          style="padding: 3px; height: 5.1rem;"
+          style="padding: 3px; height: 5.8rem;"
         >
           <v-card
             @click="infowindow(i)"
@@ -31,12 +31,13 @@
                   style="font-size: 1rem !important; padding-top: 0.5rem; padding-bottom: 0;"
                 />
                 <v-card-text>
-                  {{ item.address }} <br>
-                  {{ item.pickedUserName }}<br>
+                  <span style="color: gray;">{{ item.address }}</span> <br>
+                  {{ item.pickedUserName }}'s pick<br>
                   <!--
                     TODO : 투표하기
                     투표 후에 items를 다시 싹 업데이트 해야 voted가 잘 넘어올 텐데 ..?
                   -->
+                  <div style="position: absolute; bottom: 1%; right: 5%">
                   <template v-if="!item.voted">
                     <v-tooltip bottom>
                       <template v-slot:activator="{ on, attrs }">
@@ -44,7 +45,7 @@
                           icon
                           v-bind="attrs"
                           v-on="on"
-                          @click="voteTo(item)"
+                          @click.stop="voteTo(item, i)"
                         >
                           <v-icon>mdi-thumb-up-outline</v-icon>
                         </v-btn>
@@ -59,19 +60,20 @@
                           icon
                           v-bind="attrs"
                           v-on="on"
-                          @click="voteCancel(item)"
+                          @click.stop="voteCancel(item, i)"
                         >
                           <v-icon>mdi-thumb-up</v-icon>
                         </v-btn>
                       </template>
-                      <sapn>투표 취소</sapn>
+                      <span>투표 취소</span>
                     </v-tooltip>
                   </template>
                   {{ item.voteNum }}
+                  </div>
                 </v-card-text>
               </div>
             </div>
-            <v-divider style="position: relative; top: -1.75rem;"></v-divider>
+            <v-divider style="position: relative; top: -1.5rem;"></v-divider>
           </v-card>
         </v-col>
       </v-row>
@@ -83,6 +85,8 @@
 import store from '@/store/index';
 import api from '@/utils/api';
 import EventBus from '@/utils/EventBus';
+
+const waitForMs = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export default {
   data() {
@@ -104,54 +108,64 @@ export default {
     moveBack() {
       this.$router.go(-1);
     },
-    getVotePlaceList() {
-      api.get(`/votes/${this.appointment.groupId}/${this.appointment.promiseId}`, {
+    async getVotePlaceList() {
+      this.loading = true;
+      await api.get(`/votes/${this.appointment.groupId}/${this.appointment.promiseId}`, {
         headers: {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
-        this.loading = true;
-        setTimeout(() => {
-          store.dispatch('doUpdate', data);
-        }, 500);
-        this.loading = false;
+        store.dispatch('doUpdate', data);
       });
+      this.loading = false;
     },
-    voteTo(item) { // 해당 장소에 투표
-      api.post('/votes/to', {
-        groupId: store.getters.appointment.groupId,
-        placeId: item.placeId,
-        promiseId: store.getters.appointment.promiseId,
-        userId: this.$session.get('uid'),
-      },
-      {
-        headers: {
-          token: this.$session.get('token'),
+    async voteTo(item, idx) { // 해당 장소에 투표
+      EventBus.$emit('showOverlay');
+      await Promise.all([ // 0.5초 대기 & 비동기가 모두 끝날 때까지 로딩 오버레이
+        waitForMs(500),
+        api.post('/votes/to', {
+          groupId: store.getters.appointment.groupId,
+          placeId: item.placeId,
+          promiseId: store.getters.appointment.promiseId,
+          userId: this.$session.get('uid'),
         },
-      }).then(() => {
-        this.$toast.success('투표 성공');
-        this.getVotePlaceList();
-      }).catch((err) => {
-        console.error(err);
-        this.$toast.error('투표 실패, 다시 시도해주세요.');
-      });
+        {
+          headers: {
+            token: this.$session.get('token'),
+          },
+        })])
+        .then(() => {
+          this.items[idx].voted = true;
+          this.items[idx].voteNum += 1;
+          this.$toast.success(`${item.name}에 투표 성공`);
+        }).catch((values) => {
+          console.error(values[1]);
+          this.$toast.error(`${item.name}에 투표 실패, 다시 시도해주세요.`);
+        });
+      EventBus.$emit('closeOverlay');
     },
-    voteCancel(item) { // 투표 취소
+    async voteCancel(item, idx) { // 투표 취소
+      EventBus.$emit('showOverlay');
       const { groupId } = store.getters.appointment;
       const { promiseId } = store.getters.appointment;
       const { placeId } = item;
       const userId = this.$session.get('uid');
-      api.delete(`/votes/to/${groupId}/${promiseId}/${placeId}/${userId}`, {
-        headers: {
-          token: this.$session.get('token'),
-        },
-      }).then(() => {
-        this.$toast.success('투표 취소 성공');
-        this.getVotePlaceList();
-      }).catch((err) => {
-        console.error(err);
-        this.$toast.error('투표 취소 실패, 다시 시도해주세요.');
+      await Promise.all([
+        waitForMs(500),
+        api.delete(`/votes/to/${groupId}/${promiseId}/${placeId}/${userId}`, {
+          headers: {
+            token: this.$session.get('token'),
+          },
+        }),
+      ]).then(() => {
+        this.items[idx].voted = false;
+        this.items[idx].voteNum -= 1;
+        this.$toast.success(`${item.name}에 투표 취소 성공`);
+      }).catch((values) => {
+        console.error(values[1]);
+        this.$toast.error(`${item.name}에 투표 취소 실패, 다시 시도해주세요.`);
       });
+      EventBus.$emit('closeOverlay');
     },
   },
 };
