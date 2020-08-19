@@ -35,6 +35,9 @@
                     errorMessages: errors,
                     class:'custom-label-color',
                   }"
+                  :datePickerProps="{
+                    'allowed-dates': (val) => new Date(val) >= new Date(),
+                  }"
                 >
                   <template slot="dateIcon">
                     <v-icon>mdi-calendar</v-icon>
@@ -134,6 +137,8 @@ export default {
     },
     cancelModal() {
       store.dispatch('closeAppointmentDialog');
+      this.clearModalExisting();
+      this.clearModalNew();
     },
     isValidByNew() { // 내용이 다 작성되었는지 확인
       this.$refs.observerNew.validate()
