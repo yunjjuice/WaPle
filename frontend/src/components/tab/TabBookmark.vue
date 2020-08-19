@@ -13,6 +13,22 @@
         <span class="fa fa-spinner fa-spin"></span> Loading
       </div>
     </transition>
+    <div v-if="items.length == 0"
+      class="justify-space-between v-card__text"
+      style="color: gray">
+      아직 북마크를 추가하지 않으신 것 같아요! <br>
+      <br>
+      <!-- 960px 기준으로 검색 버튼 위치가 달라짐 -->
+      <template v-if="windowWidth >= 960">
+        우측 하단의 <v-icon>mdi-magnify</v-icon>검색 창에서
+      </template>
+      <template v-else>
+        상단 바의 <v-icon>mdi-magnify</v-icon> 버튼을 눌러
+      </template>
+      장소를 검색하고, <br>
+      <v-icon>mdi-bookmark-plus-outline</v-icon> 버튼을 누르면 <br>
+      북마크를 등록할 수 있어요 :)
+    </div>
     <v-row
       v-scroll:#scroll-target="onScroll"
       justify="center"
@@ -152,6 +168,7 @@ export default {
       filterFlag: false,
       filterData: [],
       noData: false,
+      windowWidth: window.innerWidth,
     };
   },
   components: {
@@ -162,6 +179,9 @@ export default {
     store.dispatch('getGroupsThemes');
     store.dispatch('getGroupTheme');
     this.callAll(this.limit, this.offset);
+    window.addEventListener('resize', () => {
+      this.windowWidth = window.innerWidth;
+    });
   },
   computed: {
     appointmentDialog: () => store.getters.appointmentDialog,
