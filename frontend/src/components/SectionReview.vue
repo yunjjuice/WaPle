@@ -33,8 +33,8 @@
 </template>
 
 <script>
-import api from '@/utils/api';
 import store from '@/store/index';
+import api from '@/utils/api';
 
 export default {
   data() {
@@ -56,7 +56,7 @@ export default {
       this.reviews = data;
     }).catch((err) => {
       console.error(err);
-      store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 조회 실패, 다시 시도해주세요.' });
+      this.$toast.error('리뷰 조회 실패, 다시 시도해주세요.');
     });
   },
   methods: {
@@ -73,7 +73,7 @@ export default {
         store.dispatch('changeReadDialog');
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('리뷰 조회 실패, 다시 시도해주세요.');
       });
     },
   },

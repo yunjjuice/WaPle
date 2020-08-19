@@ -102,8 +102,6 @@
 
 <script>
 import api from '@/utils/api';
-import store from '@/store/index';
-import ThemeMinusButton from '@/components/mypage/ThemeMinusButton.vue';
 
 export default {
   name: 'GroupDetail',
@@ -113,7 +111,7 @@ export default {
     groupName: String,
   },
   components: {
-    ThemeMinusButton,
+    ThemeMinusButton: () => import('@/components/mypage/ThemeMinusButton.vue'),
     ThemeAddModal: () => import('@/components/items/ThemeAddModal.vue'),
     ThemeEditModal: () => import('@/components/items/ThemeEditModal.vue'),
   },
@@ -138,7 +136,7 @@ export default {
         this.groupUsers = data;
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '그룹 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('그룹 조회 실패, 다시 시도해주세요.');
       });
       api.get(`themes/${this.groupId}`, {
         headers: {
@@ -148,7 +146,7 @@ export default {
         this.groupThemes = data;
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '그룹 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('테마 조회 실패, 다시 시도해주세요.');
       });
     },
     addGroupUser() {

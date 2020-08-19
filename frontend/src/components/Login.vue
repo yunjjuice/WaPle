@@ -232,10 +232,9 @@
 </template>
 
 <script>
-import store from '@/store/index';
-import api from '@/utils/api';
-import KakaoLogin from 'vue-kakao-login';
 import JWT from 'jwt-decode';
+import KakaoLogin from 'vue-kakao-login';
+import api from '@/utils/api';
 
 export default {
   data() {
@@ -289,7 +288,7 @@ export default {
     },
     onFailure(result) {
       console.error(result);
-      store.dispatch('showSnackbar', { color: 'error', msg: '로그인 실패, 다시 시도해주세요.' });
+      this.$toast.error('로그인 실패, 다시 시도해주세요.');
     },
     calculateSectionOffsets() { // 한 화면 크기 저장
       const sections = document.getElementsByClassName('fullpage');

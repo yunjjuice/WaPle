@@ -55,10 +55,10 @@
 </template>
 
 <script>
-import store from '@/store/index';
-import EventBus from '@/utils/EventBus';
-import api from '@/utils/api';
 import JWT from 'jwt-decode';
+import store from '@/store/index';
+import api from '@/utils/api';
+import EventBus from '@/utils/EventBus';
 
 export default {
   data() {
@@ -254,7 +254,7 @@ export default {
     },
     searchByWord() {
       if (this.keyword === '') {
-        alert('검색어를 입력해주세요');
+        this.$toast.error('검색어를 입력해주세요');
         return;
       }
       store.dispatch('updatePage', 1);
@@ -281,11 +281,11 @@ export default {
           this.$router.push('/');
           window.location.reload();
         } else {
-          store.dispatch('showSnackbar', { color: 'error', msg: '로그아웃 실패, 다시 시도해주세요.' });
+          this.$toast.error('로그아웃 실패, 다시 시도해주세요.');
         }
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '로그아웃 실패, 다시 시도해주세요.' });
+        this.$toast.error('로그아웃 실패, 다시 시도해주세요.');
       });
     },
   },

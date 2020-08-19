@@ -110,7 +110,6 @@
 
 <script>
 import api from '@/utils/api';
-import store from '@/store/index';
 
 export default {
   data() {
@@ -180,10 +179,10 @@ export default {
         this.$session.set('uname', this.uname);
         this.username = this.uname;
         // TODO 그룹 디테일 리로드
-        store.dispatch('showSnackbar', { color: 'success', msg: '회원 이름 변경 성공' });
+        this.$toast.success('회원 이름 변경 성공');
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '회원 이름 변경 실패, 다시 시도해주세요.' });
+        this.$toast.error('회원 이름 변경 실패, 다시 시도해주세요.');
       });
     },
   },

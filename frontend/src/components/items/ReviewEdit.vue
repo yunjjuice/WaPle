@@ -88,9 +88,9 @@
 </template>
 
 <script>
-import store from '@/store/index';
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
 import { required } from 'vee-validate/dist/rules';
+import store from '@/store/index';
 
 extend('required', {
   ...required,

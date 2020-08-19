@@ -115,12 +115,12 @@
 </template>
 
 <script>
-import store from '@/store/index';
-import api from '@/utils/api';
 import axios from 'axios';
 import VueUploadMultipleImage from 'vue-upload-multiple-image';
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
 import { required } from 'vee-validate/dist/rules';
+import store from '@/store/index';
+import api from '@/utils/api';
 
 extend('required', {
   ...required,
@@ -204,7 +204,7 @@ export default {
         // eslint-disable-next-line
         media += await this.uploadImage(data).catch((err) => {
           console.error(err);
-          store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 등록 실패, 다시 시도해주세요.' });
+          this.$toast.error('리뷰 등록 실패, 다시 시도해주세요.');
         });
         media += ';';
       }
@@ -222,24 +222,24 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(() => {
-        store.dispatch('showSnackbar', { color: 'success', msg: '리뷰 등록 성공' });
+        this.$toast.success('리뷰 등록 성공');
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '리뷰 등록 실패, 다시 시도해주세요.' });
+        this.$toast.error('리뷰 등록 실패, 다시 시도해주세요.');
       });
       this.close();
     },
     checkImageExtension(filename) {
       const extension = filename.slice(filename.lastIndexOf('.') + 1).toLowerCase();
       if (extension !== 'jpeg' && extension !== 'png' && extension !== 'jpg') {
-        store.dispatch('showSnackbar', { color: 'error', msg: 'jpg, jpeg, png 파일만 업로드 가능합니다.' });
+        this.$toast.error('jpg, jpeg, png 파일만 업로드 가능합니다.');
         return false;
       }
       return true;
     },
     checkImageSize(file) {
       if (file.size > this.maxImageSize) {
-        store.dispatch('showSnackbar', { color: 'error', msg: '파일이 너무 큽니다.' });
+        this.$toast.error('파일이 너무 큽니다.');
         return false;
       }
       return true;

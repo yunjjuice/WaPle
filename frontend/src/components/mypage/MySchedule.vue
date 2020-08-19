@@ -95,9 +95,8 @@
 </template>
 
 <script>
-import store from '@/store/index';
-import api from '@/utils/api';
 import moment from 'moment';
+import api from '@/utils/api';
 
 export default {
   data: () => ({
@@ -175,7 +174,7 @@ export default {
         }
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '일정 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('일정 조회 실패, 다시 시도해주세요.');
       });
       this.events = events;
     },
@@ -198,7 +197,7 @@ export default {
         this.selectedEvent.details = detail;
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '정보 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('정보 조회 실패, 다시 시도해주세요.');
       });
     },
   },

@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Main from '@/components/MainPage.vue';
-import Login from '@/components/Login.vue';
 
 Vue.use(VueRouter);
 
@@ -16,7 +14,7 @@ const requireAuth = () => (to, from, next) => {
 const routes = [
   {
     path: '/',
-    component: Main,
+    component: () => import('@/components/MainPage.vue'),
     beforeEnter: requireAuth(),
     children: [
       {
@@ -98,7 +96,7 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login,
+    component: () => import('@/components/Login.vue'),
     props: (route) => ({ redirect: route.query.redirect }),
   },
 ];

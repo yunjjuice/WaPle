@@ -81,8 +81,8 @@
 </template>
 
 <script>
-import store from '@/store/index';
 import moment from 'moment';
+import store from '@/store/index';
 
 export default {
   data() {

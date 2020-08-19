@@ -81,11 +81,11 @@ export default {
         .then(() => {
           this.$emit('addGroup');
           store.dispatch('getGroups');
-          store.dispatch('showSnackbar', { color: 'success', msg: '그룹 생성 성공' });
+          this.$toast.success('그룹 생성 성공');
         })
         .catch((err) => {
           console.error(err);
-          store.dispatch('showSnackbar', { color: 'error', msg: '그룹 생성 실패, 다시 시도해주세요.' });
+          this.$toast.error('그룹 생성 실패, 다시 시도해주세요.');
         });
       this.closeModal();
     },

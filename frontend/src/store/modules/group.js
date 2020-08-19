@@ -27,7 +27,7 @@ export default {
           commit('closeLeaveGroupDialog');
         }).catch((err) => {
           console.error(err);
-          dispatch('showSnackbar', { color: 'error', msg: '그룹 탈퇴 실패, 다시 시도해주세요.' });
+          Vue.$toast.error('그룹 탈퇴 실패, 다시 시도해주세요.');
         });
     },
   },

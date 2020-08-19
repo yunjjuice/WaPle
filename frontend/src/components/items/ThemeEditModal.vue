@@ -60,7 +60,6 @@
 </template>
 
 <script>
-import store from '@/store/index';
 import api from '@/utils/api';
 
 export default {
@@ -111,10 +110,10 @@ export default {
         },
       }).then(() => {
         this.$emit('update');
-        store.dispatch('showSnackbar', { color: 'success', msg: '테마 수정 성공' });
+        this.$toast.success('테마 수정 성공');
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '테마 수정 실패, 다시 시도해주세요.' });
+        this.$toast.error('테마 수정 실패, 다시 시도해주세요.');
       });
       this.closeModal();
     },

@@ -240,7 +240,7 @@ export default {
         }
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '북마크 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('북마크 조회 실패, 다시 시도해주세요.');
       });
     },
     setItem(index) {
@@ -263,7 +263,7 @@ export default {
         })
         .catch((err) => {
           console.error(err);
-          store.dispatch('showSnackbar', { color: 'error', msg: '테마 조회 실패, 다시 시도해주세요.' });
+          this.$toast.error('테마 조회 실패, 다시 시도해주세요.');
         });
     },
     closeMenu(index) {
@@ -318,7 +318,7 @@ export default {
         }
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '북마크 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('북마크 조회 실패, 다시 시도해주세요.');
       });
     },
     deleteCard(index) {

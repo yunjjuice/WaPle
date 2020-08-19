@@ -60,10 +60,9 @@
 </template>
 
 <script>
-import api from '@/utils/api';
-import store from '@/store/index';
 import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
 import { required } from 'vee-validate/dist/rules';
+import api from '@/utils/api';
 
 extend('required', {
   ...required,
@@ -104,7 +103,7 @@ export default {
         this.groups = data;
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '그룹 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('그룹 조회 실패, 다시 시도해주세요.');
       });
   },
   methods: {
@@ -121,7 +120,7 @@ export default {
         });
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '테마 조회 실패, 다시 시도해주세요.' });
+        this.$toast.error('테마 조회 실패, 다시 시도해주세요.');
       });
     },
     showThemeModal(theme) {
@@ -155,10 +154,10 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(() => {
-        store.dispatch('showSnackbar', { color: 'success', msg: '북마크 등록 성공' });
+        this.$toast.success('북마크 등록 성공');
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '북마크 등록 실패, 다시 시도해주세요.' });
+        this.$toast.error('북마크 등록 실패, 다시 시도해주세요.');
       });
       this.closeBookmarkModal();
     },

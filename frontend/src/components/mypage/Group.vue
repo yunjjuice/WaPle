@@ -78,9 +78,6 @@
 </template>
 
 <script>
-import GroupDetail from '@/components/mypage/GroupDetail.vue';
-import AddGroup from '@/components/mypage/AddGroup.vue';
-import LeaveGroupModal from '@/components/mypage/LeaveGroupModal.vue';
 import store from '@/store/index';
 import api from '@/utils/api';
 
@@ -91,9 +88,9 @@ export default {
     groupName: '',
   }),
   components: {
-    AddGroup,
-    GroupDetail,
-    LeaveGroupModal,
+    AddGroup: () => import('@/components/mypage/AddGroup.vue'),
+    GroupDetail: () => import('@/components/mypage/GroupDetail.vue'),
+    LeaveGroupModal: () => import('@/components/mypage/LeaveGroupModal.vue'),
   },
   computed: {
     groups: () => store.getters.groups,
@@ -124,10 +121,10 @@ export default {
             },
           }).then(() => {
             store.dispatch('getGroups');
-            store.dispatch('showSnackbar', { color: 'success', msg: '그룹 이름 수정 성공' });
+            this.$toast.success('그룹 이름 수정 성공');
           }).catch((err) => {
             console.error(err);
-            store.dispatch('showSnackbar', { color: 'error', msg: '그룹 이름 수정 실패, 다시 시도해주세요.' });
+            this.$toast.error('그룹 이름 수정 실패, 다시 시도해주세요.');
           });
         }
         this.makeFlag();

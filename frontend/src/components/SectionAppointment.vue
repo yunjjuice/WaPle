@@ -129,11 +129,11 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(() => {
-        store.dispatch('showSnackbar', { color: 'success', msg: '투표 성공' });
+        this.$toast.success('투표 성공');
         this.getVotePlaceList();
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '투표 실패, 다시 시도해주세요.' });
+        this.$toast.error('투표 실패, 다시 시도해주세요.');
       });
     },
     voteCancel(item) { // 투표 취소
@@ -146,11 +146,11 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(() => {
-        store.dispatch('showSnackbar', { color: 'success', msg: '투표 취소 성공' });
+        this.$toast.success('투표 취소 성공');
         this.getVotePlaceList();
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '투표 취소 실패, 다시 시도해주세요.' });
+        this.$toast.error('투표 취소 실패, 다시 시도해주세요.');
       });
     },
   },

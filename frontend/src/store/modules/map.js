@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 export default {
   state: {
     items: [], // 장소 정보를 저장
@@ -108,9 +110,11 @@ export default {
             commit('setBottom', { bottom: false });
           }
         } else if (status === window.kakao.maps.services.Status.ZERO_RESULT) {
-          alert('검색 결과가 존재하지 않습니다.');
+          Vue.$toast.error('검색 결과가 존재하지 않습니다.');
+          window.history.go(-1);
         } else if (status === window.kakao.maps.services.Status.ERROR) {
-          alert('검색 결과 중 오류가 발생했습니다.');
+          Vue.$toast.error('검색 중 오류가 발생했습니다.');
+          window.history.go(-1);
         }
       };
       places.keywordSearch(getters.keyword, callback, {

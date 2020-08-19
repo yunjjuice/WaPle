@@ -8,9 +8,8 @@
 </template>
 
 <script>
-import store from '@/store/index';
-import api from '@/utils/api';
 import JWT from 'jwt-decode';
+import api from '@/utils/api';
 
 export default {
   data() {
@@ -26,10 +25,10 @@ export default {
         userId: this.$session.get('uid'),
       }).then(() => {
         this.$router.push('/');
-        store.dispatch('showSnackbar', { color: 'success', msg: '그룹 가입 성공' });
+        this.$toast.success('그룹 가입 성공');
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '그룹 가입 실패, 다시 시도해주세요.' });
+        this.$toast.error('그룹 가입 실패, 다시 시도해주세요.');
       });
     },
   },

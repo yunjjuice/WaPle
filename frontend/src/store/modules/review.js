@@ -54,21 +54,21 @@ export default {
     selectReview({ commit }, review) {
       commit('setReview', review);
     },
-    removeReview({ getters, dispatch }) {
+    removeReview({ getters }) {
       api.delete(`/reviews/${getters.review.reviewId}`, {
         headers: {
           token: Vue.prototype.$session.get('token'),
         },
       }).then(() => {
-        dispatch('showSnackbar', { color: 'success', msg: '리뷰 삭제 완료' });
+        Vue.$toast.success('리뷰 삭제 완료');
         // TODO 리뷰 목록 refresh
       })
         .catch((err) => {
           console.error(err);
-          dispatch('showSnackbar', { color: 'error', msg: '리뷰 삭제 실패, 다시 시도해주세요.' });
+          Vue.$toast.error('리뷰 삭제 실패, 다시 시도해주세요.');
         });
     },
-    updateReview({ commit, dispatch }, review) { // 리뷰 수정
+    updateReview({ commit }, review) { // 리뷰 수정
       api.put('/reviews', review, {
         headers: {
           token: Vue.prototype.$session.get('token'),
@@ -76,10 +76,10 @@ export default {
       }).then(() => {
         // 다시 안 불러오고 야매로 선택된 데이터 수정했습니다
         commit('setUpdatedReview', { title: review.title, content: review.content });
-        dispatch('showSnackbar', { color: 'success', msg: '리뷰 수정 완료' });
+        Vue.$toast.success('리뷰 수정 완료');
       }).catch((err) => {
         console.error(err);
-        dispatch('showSnackbar', { color: 'error', msg: '리뷰 수정 실패, 다시 시도해주세요.' });
+        Vue.$toast.error('리뷰 수정 실패, 다시 시도해주세요.');
       });
     },
   },

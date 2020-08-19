@@ -16,7 +16,6 @@
 
 <script>
 import api from '@/utils/api';
-import store from '@/store/index';
 
 export default {
   props: ['dialog'],
@@ -36,7 +35,7 @@ export default {
         window.location.reload();
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '회원 탈퇴 실패, 다시 시도해주세요.' });
+        this.$toast.error('회원 탈퇴 실패, 다시 시도해주세요.');
       });
     },
   },

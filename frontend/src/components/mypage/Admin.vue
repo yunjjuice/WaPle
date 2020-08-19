@@ -13,9 +13,8 @@
 </template>
 
 <script>
-import store from '@/store/index';
-import api from '@/utils/api';
 import moment from 'moment';
+import api from '@/utils/api';
 
 export default {
   name: 'Admin',
@@ -46,7 +45,7 @@ export default {
         }
       }).catch((err) => {
         console.error(err);
-        store.dispatch('showSnackbar', { color: 'error', msg: '회원 목록 로드 실패, 다시 시도해주세요.' });
+        this.$toast.error('회원 목록 로드 실패, 다시 시도해주세요.');
       });
     },
     getFormatDate(datetime) {
