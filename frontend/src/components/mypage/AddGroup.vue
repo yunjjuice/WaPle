@@ -90,9 +90,7 @@ export default {
       this.closeModal();
     },
     closeModal() {
-      if (!this.valid) {
-        this.$refs.groupForm.reset();
-      }
+      this.$refs.groupForm.reset();
       this.dialog = false;
     },
   },
