@@ -14,7 +14,7 @@
       </div>
     </transition>
     <v-divider style="position: relative;top: 0rem; margin: 0;"></v-divider>
-    <div v-if="filteredArray.length == 0"
+    <div v-if="items.length == 0"
       class="justify-space-between v-card__text"
       style="color: gray">
       아직 작성된 리뷰가 없는 것 같아요! <br>
@@ -28,7 +28,7 @@
       v-scroll:#scroll-target="onScroll"
     >
       <v-col
-        v-for="(item, i) in filteredArray"
+        v-for="(item, i) in items"
         :key="i"
         cols="12"
         style="padding: 3px; height: 5.1rem;"
@@ -137,22 +137,6 @@ export default {
     uniquePlace() {
       return this.items.reduce((seed, cur) => Object.assign(seed, { [cur.placeId]: cur }), {});
     },
-    filteredArray() {
-      const ret = {};
-      for (let i = 0; i < this.items.length; i += 1) {
-        const key = this.items[i].placeId;
-        ret[key] = {
-          placeId: key,
-          name: this.items[i].name,
-          address: this.items[i].address,
-          lat: this.items[i].lat,
-          lng: this.items[i].lng,
-          url: this.items[i].url,
-          count: ret[key] && ret[key].count ? ret[key].count + 1 : 1,
-        };
-      }
-      return Object.values(ret);
-    },
   },
   watch: {
     bottom() {
@@ -166,7 +150,7 @@ export default {
   },
   methods: {
     infowindow(index) {
-      EventBus.$emit('moveMap', { lat: this.filteredArray[index].lat, lng: this.filteredArray[index].lng, index });
+      EventBus.$emit('moveMap', { lat: this.items[index].lat, lng: this.items[index].lng, index });
     },
     showDialog(item) {
       store.dispatch('selectPlace', item);
@@ -202,7 +186,7 @@ export default {
           } else {
             this.noData = false;
             this.items = this.items.concat(data);
-            this.$store.dispatch('doUpdate', this.filteredArray);
+            this.$store.dispatch('doUpdate', this.items);
           }
           this.loading = false;
         }, 500);
