@@ -10,7 +10,7 @@
         :key="index"
         style="margin-bottom: 1rem;"
       >
-        <v-expansion-panel-header dark
+        <v-expansion-panel-header
           style="font-size:20px; font-weight:570;"
         >
           <div class="d-inline">

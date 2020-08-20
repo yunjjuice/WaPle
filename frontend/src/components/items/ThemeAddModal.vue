@@ -34,7 +34,7 @@
                     required
                     :rules="[rules.required, rules.counter]"
                     counter
-                    @keyup.enter="isThemeValid"
+                    @keyup.enter.stop.prevent="isThemeValid"
                     maxlength="10"
                   />
                 </v-form>

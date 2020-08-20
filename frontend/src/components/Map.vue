@@ -84,6 +84,7 @@ export default {
   mounted() {
     store.dispatch('updateHeight', this.$refs.map.clientHeight);
     store.dispatch('updateWidth', this.$refs.map.clientWidth);
+    this.makeMap();
   },
   components: {
     ReviewWrite: () => import('@/components/items/ReviewWrite.vue'),
@@ -219,6 +220,15 @@ export default {
         infowindow.close(this.map, marker);
       }
       this.map.setBounds(bounds);
+    },
+    makeMap() {
+      const container = document.getElementById('map');
+      const options = {
+        center: new window.kakao.maps.LatLng('37.501245', '127.039592'),
+        level: 3,
+      };
+      this.map = new window.kakao.maps.Map(container, options);
+      this.map.setMapTypeId(window.kakao.maps.MapTypeId.ROADMAP);
     },
     clickInfo(map, marker, infowindow) {
       return () => {

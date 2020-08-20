@@ -18,6 +18,7 @@
                     :rules="[rules.required, rules.counter]"
                     counter
                     maxlength="15"
+                    @keypress.enter.stop.prevent="isValid"
                   />
                 </v-form>
               </v-col>
@@ -26,8 +27,8 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="closeModal">Close</v-btn>
-          <v-btn color="blue darken-1" text @click="isValid">Save</v-btn>
+          <v-btn color="green darken-1" text @click="closeModal">Close</v-btn>
+          <v-btn color="green darken-1" text @click="isValid">Save</v-btn>
         </v-card-actions>
       </v-card>
     </v-dialog>
