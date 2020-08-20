@@ -43,6 +43,7 @@
         <v-card
           @click="setItem(i)"
           style="height: 5rem; box-shadow: none !important;"
+          tile
         >
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
@@ -102,7 +103,7 @@
                     </v-list>
                   </v-menu>
                 </v-card-actions>
-                <v-card-actions>
+                <v-card-actions style="padding-bottom: 0px;">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
@@ -145,7 +146,7 @@
                 </v-card-actions>
               </div>
           </div>
-          <v-divider style="position: relative; top: -1.75rem;"></v-divider>
+          <v-divider style="position: relative; top: -1.2rem;"></v-divider>
         </v-card>
       </v-col>
     </v-row>

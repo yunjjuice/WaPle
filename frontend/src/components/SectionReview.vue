@@ -6,7 +6,7 @@
       </v-btn>
       <v-toolbar-title>{{ item.name }}</v-toolbar-title>
     </v-toolbar>
-    <v-container>
+    <v-container style="padding-top: 0rem;">
       <div v-if="reviews.length == 0"
         class="justify-space-between v-card__text"
         style="color: gray">
@@ -20,19 +20,30 @@
           v-for="(review, i) in reviews"
           :key="i"
           cols="12"
+          style="padding: 3px; height: 6rem;"
         >
-          <v-card @click="readReview(review)">
+          <v-card
+            @click="readReview(review)"
+            style="height: 6rem; box-shadow: none !important;"
+            tile
+          >
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
                 <v-card-title
                   class="headline"
                   v-text="review.title"
+                  style="font-size: 1rem !important; padding-top: 0.5rem; padding-bottom: 0;"
                 ></v-card-title>
                 <v-card-text>
+                  <span style="color: gray">{{ review.visitDate }}</span><br>
+                  <v-icon>mdi-account-group-outline </v-icon>
                   {{ review.groupName }}
+                  <v-icon>mdi-account-outline</v-icon>
+                  {{ review.userName }}<br>
                 </v-card-text>
               </div>
             </div>
+            <v-divider style="position: relative; top: -1.5rem;"></v-divider>
           </v-card>
         </v-col>
       </v-row>
@@ -65,6 +76,9 @@ export default {
       },
     }).then(({ data }) => {
       this.reviews = data;
+      for (let i = 0; i < this.reviews.length; i += 1) {
+        this.reviews[i].visitDate = moment(data[i].visitDate).add(1, 'days').format('YYYY-MM-DD');
+      }
     }).catch((err) => {
       console.error(err);
       this.$toast.error('리뷰 조회 실패, 다시 시도해주세요.');
@@ -94,6 +108,9 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.d-flex.flex-no-wrap.justify-space-between:hover{
+  background-color: #d2d2d4;
+  opacity: 0.8;
+}
 </style>
