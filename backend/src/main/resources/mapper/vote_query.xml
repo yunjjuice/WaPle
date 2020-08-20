@@ -7,12 +7,7 @@
     </insert>
 
     <select id="readAll" resultType="com.ssafy.waple.vote.dto.PromisePlaceResponseDto">
-        select P.PLACE_ID,
-               P.NAME,
-               ADDRESS,
-               LNG,
-               LAT,
-               URL,
+        select P.*,
                U.NAME                        pickedUserName,
                (select count(*)
                 from VOTES
@@ -24,7 +19,13 @@
                 where GROUP_ID = #{groupId}
                   and PROMISE_ID = #{promiseId}
                   and PLACE_ID = P.PLACE_ID
-                  and USER_ID = #{userId})   isVoted
+                  and USER_ID = #{userId})   isVoted,
+               (select ICON
+                from THEMES T
+                    inner join BOOKMARKS B on T.THEME_ID = B.THEME_ID and T.GROUP_ID = B.GROUP_ID
+                where T.GROUP_ID = #{groupId}
+                  and B.PLACE_ID = P.PLACE_ID
+                limit 1) ICON
         from PROMISES_AND_PLACES
                  inner join PLACES P on P.PLACE_ID = PROMISES_AND_PLACES.PLACE_ID
                  inner join USERS U on PROMISES_AND_PLACES.USER_ID = U.USER_ID

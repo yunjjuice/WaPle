@@ -31,14 +31,20 @@
     </select>
 
     <select id="readAllByUserId" parameterType="long" resultType="com.ssafy.waple.review.dto.ReviewPlaceDto">
-        select P.*, R.GROUP_ID
+        select P.*,
+               count(*) count,
+               (select ICON
+                from THEMES T
+                         inner join BOOKMARKS B on T.THEME_ID = B.THEME_ID and T.GROUP_ID = B.GROUP_ID
+                where T.GROUP_ID = R.GROUP_ID
+                  and B.PLACE_ID = P.PLACE_ID
+                limit 1) ICON
         from REVIEWS R
-                 inner join USERS U on R.USER_ID = U.USER_ID
                  inner join PLACES P on R.PLACE_ID = P.PLACE_ID
         where GROUP_ID IN (SELECT G.GROUP_ID
                            from GROUP_MEMBERS G
                            where G.USER_ID = #{userId})
-        ORDER BY R.PLACE_ID DESC;
+        GROUP BY R.PLACE_ID;
     </select>
 
     <select id="read" parameterType="int" resultType="com.ssafy.waple.review.dto.ReviewDto">

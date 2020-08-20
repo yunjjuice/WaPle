@@ -21,6 +21,15 @@ public class PromisePlaceResponseDto {
 	@ApiModelProperty(value = "장소 상세페이지 URL", example = "http://place.map.kakao.com/19781214")
 	private String url;
 
+	@ApiModelProperty(value = "전화번호", example = "02-123-1234")
+	private String tel;
+
+	@ApiModelProperty(value = "카테고리", example = "음식점")
+	private String category;
+
+	@ApiModelProperty(value = "아이콘", example = "gg.ico")
+	private  String icon;
+
 	@ApiModelProperty(value = "장소 추가한 유저 이름", example = "바나나먹는몽키")
 	private String pickedUserName;
 
@@ -102,6 +111,30 @@ public class PromisePlaceResponseDto {
 		isVoted = voted;
 	}
 
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
 	@Override
 	public String toString() {
 		return "PromisePlaceResponseDto{" +
@@ -111,6 +144,9 @@ public class PromisePlaceResponseDto {
 			", lng='" + lng + '\'' +
 			", lat='" + lat + '\'' +
 			", url='" + url + '\'' +
+			", tel='" + tel + '\'' +
+			", category='" + category + '\'' +
+			", icon='" + icon + '\'' +
 			", pickedUserName='" + pickedUserName + '\'' +
 			", voteNum=" + voteNum +
 			", isVoted=" + isVoted +
