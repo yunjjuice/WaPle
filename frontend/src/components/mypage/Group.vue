@@ -7,31 +7,23 @@
     <v-expansion-panels focusable>
       <v-expansion-panel
         v-for="(group, index) in groups"
-        :key="group.groupId"
+        :key="index"
         style="margin-bottom: 1rem;"
       >
-        <v-expansion-panel-header style="font-size:20px; font-weight:570;">
+        <v-expansion-panel-header dark
+          style="font-size:20px; font-weight:570;"
+        >
           <div class="d-inline">
             <v-row>
               <v-col cols="8">
-                <template v-if="!flag[index]">
-                  {{ group.name }}
-                </template>
-                <template v-if="flag[index]">
-                  <v-text-field
-                    v-model="groupName"
-                    outlined
-                    @click.stop
-                    style="width: 10rem;"
-                  ></v-text-field>
-                </template>
+                {{ group.name }}
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn
                       icon
                       v-bind="attrs"
                       v-on="on"
-                      @click.stop="modifyFlag(group, index)"
+                      @click.stop="showEditDialog(group)"
                     >
                       <v-icon
                         style="font-size: 0.8rem; position: relative; left: -0.7rem; top: -0.4rem;"
@@ -40,7 +32,7 @@
                       </v-icon>
                     </v-btn>
                   </template>
-                  <span>그룹명 변경</span>
+                  <span>그룹 이름 수정</span>
                 </v-tooltip>
               </v-col>
               <v-col cols="1">
@@ -72,6 +64,11 @@
       <add-group/>
     </v-expansion-panels>
     <leave-group-modal/>
+    <group-edit
+      :editDialog="editDialog"
+      :group="group"
+      @closeGroupEdit="editDialog = !editDialog"
+    />
     <br><br>
   </v-container>
 </v-main>
@@ -79,18 +76,25 @@
 
 <script>
 import store from '@/store/index';
-import api from '@/utils/api';
 
 export default {
   name: 'Group',
   data: () => ({
     flag: [],
     groupName: '',
+    groupValid: true,
+    rules: {
+      required: (value) => !!value || 'theme can not be empty',
+      counter: (value) => (value && value.length <= 15) || 'Max 15 chracters',
+    },
+    editDialog: false,
+    group: '',
   }),
   components: {
     AddGroup: () => import('@/components/mypage/AddGroup.vue'),
     GroupDetail: () => import('@/components/mypage/GroupDetail.vue'),
     LeaveGroupModal: () => import('@/components/mypage/LeaveGroupModal.vue'),
+    GroupEdit: () => import('@/components/items/GroupEdit.vue'),
   },
   computed: {
     groups: () => store.getters.groups,
@@ -99,36 +103,9 @@ export default {
     showLeaveGroupModal(group) {
       store.commit('openLeaveGroupDialog', group);
     },
-    makeFlag() {
-      this.flag = [];
-      for (let i = 0; i < this.groups.length; i += 1) {
-        this.flag.push(false);
-      }
-    },
-    modifyFlag(group, index) {
-      if (!this.flag[index]) {
-        this.groupName = group.name;
-        this.makeFlag();
-        this.flag.splice(index, 1, true);
-      } else {
-        if (group.name !== this.groupName) { // 값이 변했을 때만 수정
-          api.put('/groups', {
-            groupId: group.groupId,
-            name: this.groupName,
-          }, {
-            headers: {
-              token: this.$session.get('token'),
-            },
-          }).then(() => {
-            store.dispatch('getGroups');
-            this.$toast.success('그룹 이름 수정 성공');
-          }).catch((err) => {
-            console.error(err);
-            this.$toast.error('그룹 이름 수정 실패, 다시 시도해주세요.');
-          });
-        }
-        this.makeFlag();
-      }
+    showEditDialog(group) {
+      this.group = group;
+      this.editDialog = !this.editDialog;
     },
   },
   created() {
@@ -137,11 +114,23 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .panel-padding {
   padding-left: 100px;
   padding-right: 100px;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+.col-xl, .col-xl-auto, .col-xl-12, .col-xl-11, .col-xl-10, .col-xl-9, .col-xl-8,
+.col-xl-7, .col-xl-6, .col-xl-5, .col-xl-4, .col-xl-3, .col-xl-2, .col-xl-1, .col-lg,
+.col-lg-auto, .col-lg-12, .col-lg-11, .col-lg-10, .col-lg-9, .col-lg-8, .col-lg-7, .col-lg-6,
+.col-lg-5, .col-lg-4, .col-lg-3, .col-lg-2, .col-lg-1, .col-md, .col-md-auto, .col-md-12,
+.col-md-11, .col-md-10, .col-md-9, .col-md-8, .col-md-7, .col-md-6, .col-md-5, .col-md-4,
+.col-md-3, .col-md-2, .col-md-1, .col-sm, .col-sm-auto, .col-sm-12, .col-sm-11, .col-sm-10,
+.col-sm-9, .col-sm-8, .col-sm-7, .col-sm-6, .col-sm-5, .col-sm-4, .col-sm-3, .col-sm-2,
+.col-sm-1, .col, .col-auto, .col-12, .col-11, .col-10, .col-9, .col-8, .col-7, .col-6, .col-5,
+.col-4, .col-3, .col-2, .col-1 {
+  padding-top: 0px;
+  padding-bottom: 0px;
 }
 </style>
