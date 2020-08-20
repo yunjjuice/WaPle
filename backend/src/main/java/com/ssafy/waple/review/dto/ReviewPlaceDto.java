@@ -33,6 +33,9 @@ public class ReviewPlaceDto {
 	@ApiModelProperty(value = "카테고리", example = "음식점")
 	private String category;
 
+	@ApiModelProperty(value = "아이콘", example = "gg.ico")
+	private  String icon;
+
 	public String getPlaceId() {
 		return placeId;
 	}
@@ -81,6 +84,14 @@ public class ReviewPlaceDto {
 		this.url = url;
 	}
 
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
 	public int getGroupId() {
 		return groupId;
 	}
@@ -105,6 +116,14 @@ public class ReviewPlaceDto {
 		this.category = category;
 	}
 
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
+
 	@Override
 	public String toString() {
 		return "ReviewPlaceDto{" +
@@ -116,6 +135,9 @@ public class ReviewPlaceDto {
 			", url='" + url + '\'' +
 			", count=" + count +
 			", groupId=" + groupId +
+			", tel='" + tel + '\'' +
+			", category='" + category + '\'' +
+			", icon='" + icon + '\'' +
 			'}';
 	}
 }
