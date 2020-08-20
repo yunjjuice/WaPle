@@ -95,7 +95,6 @@
 </template>
 
 <script>
-import moment from 'moment';
 import api from '@/utils/api';
 
 export default {
@@ -161,10 +160,11 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
+        console.log('event', data);
         for (let i = 0; i < data.length; i += 1) {
           events.push({
             name: data[i].title,
-            start: this.getFormatDate(data[i].promiseDate),
+            start: data[i].promiseDate,
             color: this.colors[this.rnd(0, this.colors.length - 1)],
             details: '',
             groupId: data[i].groupId,
@@ -180,9 +180,6 @@ export default {
     },
     rnd(a, b) {
       return Math.floor((b - a + 1) * Math.random()) + a;
-    },
-    getFormatDate(datetime) {
-      return moment(datetime).format('YYYY-MM-DD hh:mm');
     },
     getVotes(groupId, promiseId) {
       let detail = '';
