@@ -79,18 +79,16 @@ export default {
     IconSelectModal: () => import('@/components/items/IconSelectModal.vue'),
   },
   watch: {
-    theme: {
-      deep: true,
-      handler(val) {
-        this.themeName = val.name;
-        this.marker.icon = val.icon;
-      },
-    },
     themeEditDialog() {
+      this.initModal();
       this.dialog = !this.dialog;
     },
   },
   methods: {
+    initModal() {
+      this.themeName = this.theme.name;
+      this.marker.icon = this.theme.icon;
+    },
     closeModal() {
       this.$emit('closeThemeEdit');
     },

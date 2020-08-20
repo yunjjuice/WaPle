@@ -1,5 +1,5 @@
 <template>
-<v-main>
+<v-main style="background:#e6e6e6">
   <v-container fluid fill-height class="fullpage" style="background:#e6e6e6">
     <v-layout row wrap align-center>
       <v-row
@@ -43,12 +43,14 @@
     </v-layout>
   </v-container>
   <v-container fluid fill-height class="fullpage">
-    <v-layout row wrap align-center>
+    <v-layout row wrap align-center
+      :data-aos="$vuetify.breakpoint.mdAndUp ? 'fade-right' : ''"
+      :data-aos-duration="$vuetify.breakpoint.mdAndUp ? '1000' : ''"
+    >
       <v-row align="center" justify="center">
         <v-col
           cols="12" sm="8" md="6"
           :align="textAlignment = $vuetify.breakpoint.mdAndUp ? 'right' : 'center'" justify="center"
-          data-aos="fade-right" data-aos-duration="1000"
         >
           <span
             :class="{'title': $vuetify.breakpoint.mdAndUp,
@@ -62,20 +64,19 @@
           카카오톡 메세지로 친구들을 초대해보세요<br>
           </span>
         </v-col>
-        <v-col cols="12" sm="8" md="6" align="center" justify="center"
-          data-aos="zoom-in" data-aos-duration="1000"
-        >
+        <v-col cols="12" sm="8" md="6" align="center" justify="center">
           <v-img src="/loginpage/makegroup.jpg" max-width="50vh" class="image"></v-img>
         </v-col>
       </v-row>
     </v-layout>
   </v-container>
   <v-container fluid fill-height class="fullpage">
-    <v-layout row wrap align-center data-aos="fade-left" data-aos-duration="1000">
+    <v-layout row wrap align-center
+      :data-aos="$vuetify.breakpoint.mdAndUp ? 'fade-left' : ''"
+      :data-aos-duration="$vuetify.breakpoint.mdAndUp ? '1000' : ''"
+    >
       <v-row align="center" justify="center">
-        <v-col cols="12" sm="8" md="6" align="center" justify="center"
-          data-aos="zoom-in" data-aos-duration="1000"
-        >
+        <v-col cols="12" sm="8" md="6" align="center" justify="center">
           <v-img src="/loginpage/maketheme.png" class="image"
             :max-width="max = $vuetify.breakpoint.mdAndUp ? '70vh' : '40vh'"
           ></v-img>
@@ -119,10 +120,11 @@
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="4" align="center" justify="center">
           <v-card
-            outlined fluid style="border:0px;"
-            data-aos="zoom" data-aos-duration="1000"
+            outlined fluid style="border:0px; background:#e6e6e6;"
+            :data-aos="$vuetify.breakpoint.mdAndUp ? 'zoom' : ''"
+            :data-aos-duration="$vuetify.breakpoint.mdAndUp ? '1000' : ''"
           >
-            <v-img src="/loginpage/search.PNG" class="image"
+            <v-img src="/loginpage/search.png" class="image"
               :max-width="max = $vuetify.breakpoint.mdAndUp ? '60vh' : '20vh'"
             ></v-img>
             <v-divider style="border:0px;"></v-divider>
@@ -131,10 +133,12 @@
         </v-col>
         <v-col cols="12" sm="8" md="4" align="center" justify="center">
           <v-card
-            outlined fluid style="border:0px;"
-            data-aos="zoom" data-aos-duration="1000" data-aos-delay="800"
+            outlined fluid style="border:0px; background:#e6e6e6;"
+            :data-aos="$vuetify.breakpoint.mdAndUp ? 'zoom' : ''"
+            :data-aos-duration="$vuetify.breakpoint.mdAndUp ? '1000' : ''"
+            :data-aos-delay="$vuetify.breakpoint.mdAndUp ? '800' : ''"
           >
-            <v-img src="/loginpage/bookmark.PNG" class="image"
+            <v-img src="/loginpage/addbookmark.png" class="image"
               :max-width="max = $vuetify.breakpoint.mdAndUp ? '60vh' : '20vh'"
             ></v-img>
             <v-divider style="border:0px;"></v-divider>
@@ -143,10 +147,12 @@
         </v-col>
         <v-col cols="12" sm="8" md="4" align="center" justify="center">
           <v-card
-            outlined fluid style="border:0px;"
-            data-aos="zoom" data-aos-duration="1000" data-aos-delay="1600"
+            outlined fluid style="border:0px; background:#e6e6e6;"
+            :data-aos="$vuetify.breakpoint.mdAndUp ? 'zoom' : ''"
+            :data-aos-duration="$vuetify.breakpoint.mdAndUp ? '1000' : ''"
+            :data-aos-delay="$vuetify.breakpoint.mdAndUp ? '1600' : ''"
           >
-            <v-img src="/loginpage/promise.PNG" class="image"
+            <v-img src="/loginpage/appointment.png" class="image"
               :max-width="max = $vuetify.breakpoint.mdAndUp ? '60vh' : '20vh'"
             ></v-img>
             <v-divider style="border:0px;"></v-divider>
@@ -157,11 +163,13 @@
     </v-flex>
   </v-container>
   <v-container fluid fill-height class="fullpage">
-    <v-layout row wrap align-center data-aos="fade-right" data-aos-duration="1000">
+    <v-layout row wrap align-center
+      :data-aos="$vuetify.breakpoint.mdAndUp ? 'fade-right' : ''"
+      :data-aos-duration="$vuetify.breakpoint.mdAndUp ? '1000' : ''">
       <v-row align="center" justify="center">
         <v-col
-          cols="12" sm="8" md="6"
-          :align="textAlignment = $vuetify.breakpoint.mdAndUp ? 'right' : 'center'" justify="center"
+          cols="12" sm="8" md="5"
+          :align="$vuetify.breakpoint.mdAndUp ? 'right' : 'center'" justify="center"
         >
           <span
             :class="{'title': $vuetify.breakpoint.mdAndUp,
@@ -175,25 +183,21 @@
           추억이 쌓인답니다<br>
           </span>
         </v-col>
-        <v-col cols="12" sm="8" md="6" align="center" justify="center"
-          data-aos="zoom-in" data-aos-duration="1000"
-        >
+        <v-col cols="12" sm="8" md="7" align="center" justify="center">
           <v-carousel
-            cycle
-            height="400"
-            hide-delimiter-background
-            show-arrows-on-hover
+            hide-delimiters
+            :style="{'width': $vuetify.breakpoint.mdAndUp ? '100vh' : '35vh'}"
+            height="auto"
           >
-            <v-carousel-item>
-              <v-img src="/loginpage/reviewread.PNG" class="image"
-                :max-width="max = $vuetify.breakpoint.mdAndUp ? '70vh' : '30vh'"
-              ></v-img>
-            </v-carousel-item>
-            <v-carousel-item>
-              <v-img src="/loginpage/reviewwrite.PNG" class="image"
-                :max-width="max = $vuetify.breakpoint.mdAndUp ? '70vh' : '30vh'"
-              ></v-img>
-            </v-carousel-item>
+            <v-carousel-item
+              src="/loginpage/reviewwrite.png"
+            ></v-carousel-item>
+            <v-carousel-item
+              src="/loginpage/reviewread.png"
+            ></v-carousel-item>
+            <v-carousel-item
+              src="/loginpage/reviewphoto.png"
+            ></v-carousel-item>
           </v-carousel>
         </v-col>
       </v-row>
@@ -204,17 +208,17 @@
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="6" align="center" justify="center">
           <span class="content">
-          한 개의 와플 위에<br>
-          각자의 취향에 맞는 토핑을 올려먹듯<br>
-          한 지도위에 기록을 담는<br>
+          <p>한 개의 와플 위에</p>
+          <p>각자의 취향에 맞는 토핑을 올려먹듯</p>
+          <p>한 지도위에 기록을 담는</p>
           </span>
-          <br>
+          <br><br><br>
           <span
             :class="{'title': $vuetify.breakpoint.mdAndUp,
             'titleSmDown': $vuetify.breakpoint.smAndDown}"
           >
             우리만의 플레이스
-          </span>
+          </span><br><br>
           <p
             class="popout"
             :class="{'mdUp': $vuetify.breakpoint.mdAndUp, 'smDown': $vuetify.breakpoint.smAndDown}"
@@ -353,9 +357,9 @@ html{
   background: white;
 }
 
-.image {
-  background-size: contain !important;
-}
+// .image {
+//   // background-size: contain !important;
+// }
 
 .fullpage {
   height: 100vh;

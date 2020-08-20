@@ -87,15 +87,20 @@ export default {
   watch: {
     themeDialog() {
       this.dialog = !this.dialog;
+      this.initModal();
     },
   },
   methods: {
-    closeModal() {
-      this.$refs.themeForm.reset();
+    initModal() {
+      if (this.$refs.themeForm) {
+        this.$refs.themeForm.reset();
+      }
       this.marker = {
         icon: '/markers/default.png',
         name: 'default',
       };
+    },
+    closeModal() {
       this.$emit('closeTheme');
     },
     selectMarker(marker) {

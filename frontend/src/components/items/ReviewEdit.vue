@@ -58,12 +58,14 @@
               :value="review.groupName"
               readonly
               outlined
+              disabled
             ></v-text-field>
             <v-text-field
               :value="review.visitDate"
-              label="날짜"
+              label="방문 날짜"
               readonly
               outlined
+              disabled
             ></v-text-field>
             <validation-provider v-slot="{ errors }" name="content" rules="required">
               <v-textarea
@@ -78,8 +80,8 @@
             </validation-provider>
           </validation-observer>
           <br>
-          <v-btn color="primary" @click="isValid">수정하기</v-btn>
-          <v-btn color="error" @click="close">취소하기</v-btn>
+          <v-btn color="error" @click="close" text>취소하기</v-btn>
+          <v-btn color="primary" @click="isValid" text>수정하기</v-btn>
         </v-container>
       </v-sheet>
     </v-bottom-sheet>

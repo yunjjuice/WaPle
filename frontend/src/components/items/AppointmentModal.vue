@@ -13,7 +13,7 @@
           새로운 약속
         </v-tab>
         <v-tab-item>
-          <v-card flat width="400" height="260" justify="center">
+          <v-card flat width="400" height="270" style="padding:2vh" justify="center">
             <validation-observer ref="observerNew">
               <validation-provider v-slot="{ errors }" name="name" rules="required">
                 <v-text-field
@@ -62,7 +62,7 @@
           기존 약속에 추가
         </v-tab>
         <v-tab-item>
-          <v-card flat width="400" height="250" align="center" justify="center">
+          <v-card flat width="400" height="270" style="padding:6vh" align="center" justify="center">
             <validation-observer ref="observerExisting">
               <validation-provider v-slot="{ errors }" name="appointment" rules="required">
                 <v-select
@@ -118,11 +118,9 @@ export default {
   watch: {
     appointmentDialog() {
       this.dialog = !this.dialog;
+      this.clearModalNew();
+      this.clearModalExisting();
     },
-  },
-  updated() {
-    this.clearModalNew();
-    this.clearModalExisting();
   },
   methods: {
     clearModalNew() {

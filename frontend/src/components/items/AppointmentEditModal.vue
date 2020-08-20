@@ -61,18 +61,16 @@ export default {
     ValidationProvider,
   },
   watch: {
-    appointment: {
-      deep: true,
-      handler(val) {
-        this.appointmentName = val.title;
-        this.appointmentDate = val.promiseDate.replace('T', ' ');
-      },
-    },
     editDialog() {
       this.dialog = !this.dialog;
+      this.initModal();
     },
   },
   methods: {
+    initModal() {
+      this.appointmentName = this.appointment.title;
+      this.appointmentDate = this.appointment.promiseDate.replace('T', ' ');
+    },
     clearModalNew() {
       requestAnimationFrame(() => {
         this.$refs.observer.reset();
@@ -91,7 +89,6 @@ export default {
     },
     closeModal() {
       this.$emit('close');
-      this.clearModalNew();
     },
     isValid() { // 내용이 다 작성되었는지 확인
       this.$refs.observer.validate()

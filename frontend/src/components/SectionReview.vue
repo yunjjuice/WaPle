@@ -36,9 +36,9 @@
                 ></v-card-title>
                 <v-card-text>
                   <span style="color: gray">{{ review.visitDate }}</span><br>
-                  <v-icon>mdi-account-group-outline </v-icon>
+                  <v-icon style="font-size: 1rem;">mdi-account-group-outline </v-icon>
                   {{ review.groupName }}
-                  <v-icon>mdi-account-outline</v-icon>
+                  <v-icon style="font-size: 1rem;">mdi-account-outline</v-icon>
                   {{ review.userName }}<br>
                 </v-card-text>
               </div>
