@@ -30,11 +30,11 @@
       v-for="(appointment, i) in appointmentDatas"
       :key="i"
       cols="12"
-      style="padding: 3px; height: 5.1rem;"
+      style="padding: 3px; height: 5.6rem;"
     >
       <v-card
         @click="appointmentToPlace(appointment)"
-        style="height: 5rem; box-shadow: none !important;"
+        style="height: 5.6rem; box-shadow: none !important;"
       >
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
@@ -117,8 +117,6 @@ export default {
   created() {
     store.dispatch('getAppointments');
     store.dispatch('invisibleBookmark');
-    this.getAppointment();
-    // this.appointmentDatas = this.appointments.slice(this.offset - 1, this.limit);
   },
   watch: {
     bottom() {
@@ -129,6 +127,13 @@ export default {
         this.loading = true;
         this.getAppointment();
       }
+    },
+    appointments: {
+      deep: true,
+      handler() {
+        this.appointmentDatas = []; // 초기화
+        this.getAppointment();
+      },
     },
   },
   methods: {
