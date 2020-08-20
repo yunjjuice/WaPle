@@ -29,11 +29,15 @@
           </p>
         </v-col>
         <v-col cols="12" sm="8" md="12" align="center" justify="center">
-          <kakao-login
-            api-key='0e8b85c161beec7b11ccccb161ab81ab'
-            :on-success=onSuccess
-            :on-failure=onFailure
-          />
+          <v-btn icon>
+            <kakao-login
+              api-key='0e8b85c161beec7b11ccccb161ab81ab'
+              :on-success=onSuccess
+              :on-failure=onFailure
+              :image="button = $vuetify.breakpoint.mdAndUp ?
+              'kakao_account_login_btn_medium_wide' : 'kakao_account_login_btn_medium_narrow'"
+            />
+          </v-btn>
         </v-col>
       </v-row>
     </v-layout>
@@ -97,7 +101,6 @@
     </v-layout>
   </v-container>
   <v-container fluid fill-height class="fullpage">
-    <!-- <v-layout align-center> -->
     <v-flex row wrap align="center" justify="center">
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="6" align="center" justify="center">
@@ -152,7 +155,6 @@
         </v-col>
       </v-row>
     </v-flex>
-    <!-- </v-layout> -->
   </v-container>
   <v-container fluid fill-height class="fullpage">
     <v-layout row wrap align-center data-aos="fade-right" data-aos-duration="1000">
@@ -243,7 +245,6 @@ export default {
       activeSection: 0,
       offsets: [],
       touchStartY: 0,
-      // textAlignment: '',
     };
   },
   components: {
@@ -256,21 +257,12 @@ export default {
     window.addEventListener('mousewheel', this.handleMouseWheel, {
       passive: false,
     }); // Other browsers
-    window.addEventListener('touchstart', this.touchStart, {
-      passive: false,
-    }); // mobile devices
-    window.addEventListener('touchmove', this.touchMove, {
-      passive: false,
-    }); // mobile devices
-    // this.textAlignment = this.$vuetify.breakpoint.mdAndUp ? 'right' : 'center';
   },
   destroyed() {
     window.removeEventListener('mousewheel', this.handleMouseWheel, {
       passive: false,
     }); // Other browsers
     window.removeEventListener('DOMMouseScroll', this.handleMouseWheelDOM); // Mozilla Firefox
-    window.removeEventListener('touchstart', this.touchStart); // mobile devices
-    window.removeEventListener('touchmove', this.touchMove); // mobile devices
   },
   methods: {
     onSuccess(result) {
@@ -339,32 +331,12 @@ export default {
       this.inMove = true;
       this.activeSection += 1;
 
-      // if (this.activeSection > this.offsets.length - 1) this.activeSection = 0;
-      if (this.activeSection > this.offsets.length - 1) {
-        this.activeSection = this.offsets.length - 1;
-      }
+      if (this.activeSection > this.offsets.length - 1) this.activeSection = 0;
+      // if (this.activeSection > this.offsets.length - 1) {
+      //   this.activeSection = this.offsets.length - 1;
+      // }
 
       this.scrollToSection(this.activeSection, true);
-    },
-    touchStart(e) {
-      e.preventDefault();
-
-      this.touchStartY = e.touches[0].clientY;
-    },
-    touchMove(e) {
-      if (this.inMove) return false;
-      e.preventDefault();
-
-      const currentY = e.touches[0].clientY;
-
-      if (this.touchStartY < currentY) {
-        this.moveDown();
-      } else {
-        this.moveUp();
-      }
-
-      this.touchStartY = 0;
-      return false;
     },
   },
 };
