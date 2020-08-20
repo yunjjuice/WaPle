@@ -25,6 +25,7 @@ export default {
         .then(() => {
           dispatch('getGroups');
           commit('closeLeaveGroupDialog');
+          Vue.$toast.success('그룹 탈퇴 성공');
         }).catch((err) => {
           console.error(err);
           Vue.$toast.error('그룹 탈퇴 실패, 다시 시도해주세요.');

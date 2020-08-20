@@ -20,11 +20,11 @@ Vue.use(Toast, {
   pauseOnHover: false,
   timeout: 3000,
   hideProgressBar: true,
-  filterBeforeCreate: (toast, toasts) => { // Discard duplicates
-    if (toasts.filter(
-      (t) => t.type === toast.type,
-    ).length !== 0) {
-      return false;
+  filterBeforeCreate: (toast, toasts) => {
+    // If same toast is already exist, remove old one.
+    const prev = toasts.find((t) => t.content === toast.content);
+    if (prev != null) {
+      Vue.$toast.dismiss(prev.id);
     }
     return toast;
   },

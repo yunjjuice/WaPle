@@ -13,6 +13,14 @@
     </div>
   </transition>
   <v-divider style="position: relative;top: 0rem; margin: 0;"></v-divider>
+    <div v-if="appointmentDatas.length == 0"
+      class="justify-space-between v-card__text"
+      style="color: gray">
+      아직 약속을 만들지 않으신 것 같아요! <br>
+      <br>
+      북마크 탭에서 <v-icon style="font-size: 1rem;">mdi-calendar-plus</v-icon> 버튼으로 <br>
+      새로운 약속을 만들 수 있어요 :)
+    </div>
   <v-row
     align='center'
     justify='center'

@@ -121,27 +121,24 @@ export default {
     updateBoookmark({ commit }, boookmark) {
       commit('setBoookmark', { boookmark });
     },
-    makeAppointment({ getters }) { // 새 약속 추가
-      api.post('/promises', {
-        groupId: getters.group.group.groupId,
-        promiseDate: getters.appointmentDate,
-        title: getters.appointmentName,
-      }).then(({ data }) => {
-        api.post('/votes', {
+    async makeAppointment({ getters }) { // 새 약속 추가
+      try {
+        const { data } = await api.post('/promises', {
+          groupId: getters.group.group.groupId,
+          promiseDate: getters.appointmentDate,
+          title: getters.appointmentName,
+        });
+        await api.post('/votes', {
           groupId: getters.group.group.groupId,
           placeId: getters.place.place.placeId,
           promiseId: data,
           userId: Vue.prototype.$session.get('uid'),
-        }).then(() => {
-          Vue.$toast.success('약속 추가 성공');
-        }).catch((err) => {
-          console.error(err);
-          Vue.$toast.error('약속 추가 실패, 다시 시도해주세요.');
         });
-      }).catch((err) => {
+        Vue.$toast.success('새로운 약속 만들기 성공');
+      } catch (err) {
         console.error(err);
-        Vue.$toast.error('약속 추가 실패, 다시 시도해주세요.');
-      });
+        Vue.$toast.error('약속 만들기 실패, 다시 시도해주세요.');
+      }
     },
     addAppointment({ getters }) { // 기존 약속 추가
       api.post('/votes', {
@@ -154,10 +151,10 @@ export default {
           token: Vue.prototype.$session.get('token'),
         },
       }).then(() => {
-        Vue.$toast.success('약속 추가 성공');
+        Vue.$toast.success('약속 장소 추가 성공');
       }).catch((err) => {
         console.error(err);
-        Vue.$toast.error('약속 추가 실패, 다시 시도해주세요.');
+        Vue.$toast.error('약속 장소 추가 실패, 다시 시도해주세요.');
       });
     },
     updateAppointmentInfo({ dispatch }, { appointment }) { // 약속 정보 업데이트

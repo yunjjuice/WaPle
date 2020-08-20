@@ -50,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	//JWT로 Token 생성하고 db에 삽입
-	private void generateToken(GroupCreateDto group) {
+	private void generateToken(GroupDto group) {
 		String token = JWT.create()
 			.withIssuer("Toppings")
 			.withSubject("Invite group")
@@ -87,6 +87,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public void update(GroupDto group) {
+		generateToken(group); //그룹 이름이 변경되면 토큰도 바뀌어야 한다
 		if (dao.update(group) < 1) {
 			throw new GroupNotFoundException(group.getGroupId());
 		}

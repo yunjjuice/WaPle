@@ -14,6 +14,14 @@
       </div>
     </transition>
     <v-divider style="position: relative;top: 0rem; margin: 0;"></v-divider>
+    <div v-if="filteredArray.length == 0"
+      class="justify-space-between v-card__text"
+      style="color: gray">
+      아직 작성된 리뷰가 없는 것 같아요! <br>
+      <br>
+      북마크 탭에서 <v-icon style="font-size: 1rem;">mdi-pencil-plus-outline</v-icon> 버튼으로 <br>
+      새로운 리뷰를 쓸 수 있어요 :)
+    </div>
     <v-row
       align='center'
       justify='center'

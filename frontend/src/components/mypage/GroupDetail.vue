@@ -136,7 +136,7 @@ export default {
         this.groupUsers = data;
       }).catch((err) => {
         console.error(err);
-        this.$toast.error('그룹 조회 실패, 다시 시도해주세요.');
+        this.$toast.error('멤버 목록 조회 실패, 다시 시도해주세요.');
       });
       api.get(`themes/${this.groupId}`, {
         headers: {
@@ -146,7 +146,7 @@ export default {
         this.groupThemes = data;
       }).catch((err) => {
         console.error(err);
-        this.$toast.error('테마 조회 실패, 다시 시도해주세요.');
+        this.$toast.error('테마 목록 조회 실패, 다시 시도해주세요.');
       });
     },
     addGroupUser() {
