@@ -33,8 +33,6 @@
             api-key='0e8b85c161beec7b11ccccb161ab81ab'
             :on-success=onSuccess
             :on-failure=onFailure
-            :image="button = $vuetify.breakpoint.mdAndUp ?
-            'kakao_account_login_btn_medium_wide' : 'kakao_account_login_btn_medium_narrow'"
           />
         </v-col>
       </v-row>
