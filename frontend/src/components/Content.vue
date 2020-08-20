@@ -37,6 +37,7 @@
 
 <script>
 import MapComp from '@/components/Map.vue';
+import EventBus from '@/utils/EventBus';
 
 export default {
   data() {
@@ -46,6 +47,11 @@ export default {
   },
   components: {
     MapComp,
+  },
+  created() {
+    EventBus.$on('toggle-drawer-1', () => {
+      this.drawer = true;
+    });
   },
 };
 </script>

@@ -86,6 +86,7 @@
 import JWT from 'jwt-decode';
 import store from '@/store/index';
 import api from '@/utils/api';
+import EventBus from '@/utils/EventBus';
 
 export default {
   data: () => ({
@@ -129,6 +130,9 @@ export default {
         console.error(err);
         this.$toast.error('로그아웃 실패, 다시 시도해주세요.');
       });
+    },
+    clickNavHeader() {
+      EventBus.$emit('toggle-drawer', 'click');
     },
   },
   created() {

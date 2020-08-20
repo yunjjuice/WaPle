@@ -44,6 +44,7 @@
 import moment from 'moment';
 import store from '@/store/index';
 import api from '@/utils/api';
+import EventBus from '@/utils/EventBus';
 
 export default {
   data() {
@@ -55,6 +56,7 @@ export default {
     item: () => store.getters.item,
   },
   created() {
+    EventBus.$emit('toggle-drawer-1');
     const userId = this.$session.get('uid');
     const { placeId } = store.getters.item;
     api.get(`/reviews/places/${userId}/${placeId}/10/1`, {

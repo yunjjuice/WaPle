@@ -29,10 +29,12 @@
               :key="i"
               cols="12"
               style="padding: 3px; height: 5.1rem;"
+              :class="{ mobile1: $vuetify.breakpoint.mdAndDown}"
             >
               <v-card
                 @click="clickCard(i)"
                 style="height: 5rem; box-shadow: none !important;"
+                :class="{ mobile2: $vuetify.breakpoint.mdAndDown}"
               >
                 <div>
                   <div class="d-flex flex-no-wrap justify-space-between">
@@ -67,8 +69,8 @@
                     </v-row>
                   </div>
                 </div>
-                <v-divider style="position: relative; top: -2.4rem;"></v-divider>
               </v-card>
+              <!-- <v-divider style="position: relative; top: -2.4rem;"></v-divider> -->
             </v-col>
           </v-row>
         </v-container>
@@ -108,6 +110,10 @@ export default {
   },
   components: {
     BookmarkAddModal: () => import('@/components/items/BookmarkAddModal.vue'),
+  },
+  created() {
+    EventBus.$emit('toggle-drawer-1');
+    EventBus.$emit('toggle-drawer-2');
   },
   watch: {
     bottom() {
@@ -175,5 +181,12 @@ export default {
 }
 .safari {
   height: calc(75vh - 50px) !important;
+}
+.mobile1 {
+  height: auto !important;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
+}
+.mobile2 {
+  height: auto !important;
 }
 </style>

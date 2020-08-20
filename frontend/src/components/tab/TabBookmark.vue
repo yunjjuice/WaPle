@@ -69,8 +69,12 @@
                         <v-icon>mdi-dots-vertical</v-icon>
                       </v-btn>
                     </template>
-                    <v-list>
-                      <v-list-item-group v-for="(theme, index) in themes" :key="index">
+                    <v-list style="height: 50vh; background-color: #fff">
+                      <v-list-item-group
+                        v-for="(theme, index) in themes"
+                        :key="index"
+                        style="background-color: #fff"
+                      >
                         <v-list-item-title hover class="ma-0 pa-1">
                           <v-checkbox
                             :value="theme"
@@ -91,8 +95,10 @@
                         :original="original"
                         :index="i"
                         v-on:close="closeMenu"
+                        style="background-color: #fff"
                       >
                       </bookmark-modal>
+                      <div style="background-color: #fff; height: 0.5rem;"/>
                     </v-list>
                   </v-menu>
                 </v-card-actions>
@@ -204,6 +210,7 @@ export default {
   },
   created() {
     store.dispatch('visibleBookmark');
+    EventBus.$emit('toggle-drawer-1');
     EventBus.$on('deleteCard', (data) => {
       this.deleteCard(data);
     });

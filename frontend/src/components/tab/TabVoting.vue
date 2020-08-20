@@ -91,6 +91,7 @@
 <script>
 import moment from 'moment';
 import store from '@/store/index';
+import EventBus from '@/utils/EventBus';
 
 export default {
   data() {
@@ -117,6 +118,7 @@ export default {
   created() {
     store.dispatch('getAppointments');
     store.dispatch('invisibleBookmark');
+    EventBus.$emit('toggle-drawer-1');
   },
   watch: {
     bottom() {
