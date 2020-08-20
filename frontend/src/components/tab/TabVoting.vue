@@ -30,11 +30,11 @@
       v-for="(appointment, i) in appointmentDatas"
       :key="i"
       cols="12"
-      style="padding: 3px; height: 5.1rem;"
+      style="padding: 3px; height: 5.6rem;"
     >
       <v-card
         @click="appointmentToPlace(appointment)"
-        style="height: 5rem; box-shadow: none !important;"
+        style="height: 5.6rem; box-shadow: none !important;"
       >
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
