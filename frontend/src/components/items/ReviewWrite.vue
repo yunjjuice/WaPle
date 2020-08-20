@@ -25,7 +25,7 @@
         <v-container
           id="scroll-target"
           class="overflow-y-auto"
-          style="max-height: 640px; padding:50px;"
+          :style="{ 'max-height': height - 50 + 'px', padding: '50px' }"
         >
           <v-row
             v-scroll:#scroll-target="onScroll"
