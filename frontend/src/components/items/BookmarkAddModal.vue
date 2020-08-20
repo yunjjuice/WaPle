@@ -6,7 +6,7 @@
     height="300"
   >
     <v-card align="center">
-      <v-card-title class="headline yellow lighten-3">북마크등록</v-card-title>
+      <v-card-title class="yellow lighten-3">북마크등록</v-card-title>
       <v-card-text>
       <validation-observer ref="observer">
         <v-row justify="center">

@@ -5,7 +5,7 @@
     width="500"
   >
     <v-card>
-      <v-card-title class="headline yellow lighten-3">아이콘 선택</v-card-title>
+      <v-card-title class="yellow lighten-3">아이콘 선택</v-card-title>
       <v-card-text style="height: 300px;">
         <v-item-group
           v-model="selected"

@@ -5,15 +5,18 @@ export default {
   state: {
     leaveGroupDialog: false,
     selectedGroupId: '',
+    selectedGroup: '',
   },
   getters: {
     leaveGroupDialog: (state) => state.leaveGroupDialog,
     selectedGroupId: (state) => state.selectedGroupId,
+    selectedGroup: (state) => state.selectedGroup,
   },
   mutations: {
     openLeaveGroupDialog(state, payload) {
       state.leaveGroupDialog = true;
-      state.selectedGroupId = payload;
+      state.selectedGroupId = payload.groupId;
+      state.selectedGroup = payload;
     },
     closeLeaveGroupDialog(state) {
       state.leaveGroupDialog = false;

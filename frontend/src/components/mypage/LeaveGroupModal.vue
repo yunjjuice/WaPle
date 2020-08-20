@@ -3,7 +3,7 @@
     <v-dialog v-model="dialog" persistent max-width="290">
       <v-card>
         <v-card-title class="headline"></v-card-title>
-        <v-card-text> <b>그룹을 지우시나요?</b></v-card-text>
+        <v-card-text> <b> {{ selectedGroup.name }} 그룹을 지우시나요?</b></v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="closeModal()">취소</v-btn>
@@ -20,6 +20,7 @@ import store from '@/store/index';
 export default {
   computed: {
     dialog: () => store.getters.leaveGroupDialog,
+    selectedGroup: () => store.getters.selectedGroup,
   },
   methods: {
     closeModal: () => store.commit('closeLeaveGroupDialog'),

@@ -18,9 +18,7 @@
       </template>
 
       <v-card>
-        <v-card-title>
-          <span class="headline">그룹 추가하기</span>
-        </v-card-title>
+        <v-card-title class="yellow lighten-3">그룹 추가하기</v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
