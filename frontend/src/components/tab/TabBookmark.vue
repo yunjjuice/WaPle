@@ -210,6 +210,7 @@ export default {
   },
   created() {
     store.dispatch('visibleBookmark');
+    EventBus.$emit('toggle-drawer-1');
     EventBus.$on('deleteCard', (data) => {
       this.deleteCard(data);
     });

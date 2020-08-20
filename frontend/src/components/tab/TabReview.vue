@@ -123,6 +123,7 @@ export default {
   },
   created() {
     store.dispatch('invisibleBookmark');
+    EventBus.$emit('toggle-drawer-1');
   },
   mounted() {
     this.readAllReview();

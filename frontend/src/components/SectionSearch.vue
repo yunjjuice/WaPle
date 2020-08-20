@@ -111,6 +111,10 @@ export default {
   components: {
     BookmarkAddModal: () => import('@/components/items/BookmarkAddModal.vue'),
   },
+  created() {
+    EventBus.$emit('toggle-drawer-1');
+    EventBus.$emit('toggle-drawer-2');
+  },
   watch: {
     bottom() {
       if (this.bottom && !this.noData) {

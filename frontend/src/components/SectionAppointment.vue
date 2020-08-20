@@ -100,6 +100,7 @@ export default {
   },
   created() {
     this.getVotePlaceList();
+    EventBus.$emit('toggle-drawer-1');
   },
   methods: {
     infowindow(index) {

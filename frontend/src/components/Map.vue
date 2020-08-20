@@ -39,6 +39,7 @@
       label="Search"
       class="hidden-sm-and-down"
       v-model="keyword"
+      @click.stop="doNothing"
       @keypress.enter="searchByWord"
       style="z-index: 2;
       position: absolute;
@@ -297,6 +298,9 @@ export default {
         console.error(err);
         this.$toast.error('로그아웃 실패, 다시 시도해주세요.');
       });
+    },
+    doNothing() {
+      EventBus.$emit('toggle-drawer-1');
     },
   },
 };
