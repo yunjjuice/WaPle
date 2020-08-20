@@ -160,7 +160,6 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
-        console.log('event', data);
         for (let i = 0; i < data.length; i += 1) {
           events.push({
             name: data[i].title,
