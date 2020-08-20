@@ -98,6 +98,7 @@
   </v-container>
   <v-container fluid fill-height class="fullpage">
     <!-- <v-layout align-center> -->
+    <v-flex row wrap align="center" justify="center">
       <v-row align="center" justify="center">
         <v-col cols="12" sm="8" md="6" align="center" justify="center">
           <span
@@ -119,7 +120,7 @@
             data-aos="zoom" data-aos-duration="1000"
           >
             <v-img src="/loginpage/search.PNG" class="image"
-              :max-width="max = $vuetify.breakpoint.mdAndUp ? '' : '20vh'"
+              :max-width="max = $vuetify.breakpoint.mdAndUp ? '60vh' : '20vh'"
             ></v-img>
             <v-divider style="border:0px;"></v-divider>
             검색
@@ -131,7 +132,7 @@
             data-aos="zoom" data-aos-duration="1000" data-aos-delay="800"
           >
             <v-img src="/loginpage/bookmark.PNG" class="image"
-              :max-width="max = $vuetify.breakpoint.mdAndUp ? '' : '20vh'"
+              :max-width="max = $vuetify.breakpoint.mdAndUp ? '60vh' : '20vh'"
             ></v-img>
             <v-divider style="border:0px;"></v-divider>
             북마크등록
@@ -143,13 +144,14 @@
             data-aos="zoom" data-aos-duration="1000" data-aos-delay="1600"
           >
             <v-img src="/loginpage/promise.PNG" class="image"
-              :max-width="max = $vuetify.breakpoint.mdAndUp ? '' : '20vh'"
+              :max-width="max = $vuetify.breakpoint.mdAndUp ? '60vh' : '20vh'"
             ></v-img>
             <v-divider style="border:0px;"></v-divider>
             약속 등록까지
           </v-card>
         </v-col>
       </v-row>
+    </v-flex>
     <!-- </v-layout> -->
   </v-container>
   <v-container fluid fill-height class="fullpage">
@@ -182,12 +184,12 @@
           >
             <v-carousel-item>
               <v-img src="/loginpage/reviewread.PNG" class="image"
-                :max-width="max = $vuetify.breakpoint.mdAndUp ? '70vh' : '40vh'"
+                :max-width="max = $vuetify.breakpoint.mdAndUp ? '70vh' : '30vh'"
               ></v-img>
             </v-carousel-item>
             <v-carousel-item>
               <v-img src="/loginpage/reviewwrite.PNG" class="image"
-                :max-width="max = $vuetify.breakpoint.mdAndUp ? '70vh' : '40vh'"
+                :max-width="max = $vuetify.breakpoint.mdAndUp ? '70vh' : '30vh'"
               ></v-img>
             </v-carousel-item>
           </v-carousel>

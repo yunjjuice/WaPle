@@ -161,20 +161,24 @@ export default {
       this.dialog = !this.dialog;
     },
   },
+  updated() {
+    this.initReview();
+  },
   methods: {
     close() {
-      this.initReview();
       store.dispatch('changeWriteDialog');
       this.dialog = !this.dialog;
       this.$emit('closeWrite');
-      this.$refs.reviewForm.reset();
     },
     onScroll(e) {
       this.offsetTop = e.target.scrollTop;
     },
     initReview() { // 내용 초기화
+      if (this.$refs.reviewForm) {
+        this.$refs.reviewForm.reset();
+      }
       this.title = '';
-      this.group = {};
+      this.group = '';
       this.visitDate = new Date().toISOString().substr(0, 10);
       this.content = '';
     },

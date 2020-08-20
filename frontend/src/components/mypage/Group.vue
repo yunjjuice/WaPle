@@ -54,7 +54,7 @@
                       icon
                       v-bind="attrs"
                       v-on="on"
-                      @click="showLeaveGroupModal(group.groupId)"
+                      @click.stop="showLeaveGroupModal(group)"
                     >
                       <v-icon>
                         mdi-delete
@@ -96,8 +96,8 @@ export default {
     groups: () => store.getters.groups,
   },
   methods: {
-    showLeaveGroupModal(groupId) {
-      store.commit('openLeaveGroupDialog', groupId);
+    showLeaveGroupModal(group) {
+      store.commit('openLeaveGroupDialog', group);
     },
     makeFlag() {
       this.flag = [];

@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import store from '@/store/index';
 import api from '@/utils/api';
 
@@ -69,7 +70,10 @@ export default {
           token: this.$session.get('token'),
         },
       }).then(({ data }) => {
-        store.dispatch('selectReview', data);
+        moment.locale('ko');
+        const item = data;
+        item.visitDate = moment(data.visitDate).add(1, 'days').format('YYYY-MM-DD dddd');
+        store.dispatch('selectReview', item);
         store.dispatch('changeReadDialog');
       }).catch((err) => {
         console.error(err);

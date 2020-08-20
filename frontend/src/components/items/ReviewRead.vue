@@ -20,7 +20,7 @@
                   icon
                   v-bind="attrs"
                   v-on="on"
-                  @click.stop="editDialog = true"
+                  @click.stop="editDialog = !editDialog"
                 >
                   <v-icon>mdi-pencil-outline</v-icon>
                 </v-btn>
@@ -81,8 +81,8 @@
   <div id="myModal" class="modal" @click=onClickModal>
     <img class="modal-content" id="modalImg">
   </div>
-  <remove-modal :dialog="removeDialog" @close="removeDialog = false; close()"></remove-modal>
-  <edit-sheet :dialog="editDialog" @close="editDialog = false"></edit-sheet>
+  <remove-modal :dialog="removeDialog" @close="removeDialog = false;"></remove-modal>
+  <edit-sheet :editDialog="editDialog" @close="editDialog = false"></edit-sheet>
 </v-main>
 </template>
 

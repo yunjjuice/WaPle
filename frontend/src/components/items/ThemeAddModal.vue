@@ -5,9 +5,7 @@
       max-width="600px"
     >
       <v-card>
-        <v-card-title>
-          <span class="headline">테마 추가하기</span>
-        </v-card-title>
+        <v-card-title class="yellow lighten-3">테마 추가하기</v-card-title>
         <v-card-text>
           <v-container>
             <v-row align="center" justify="center">

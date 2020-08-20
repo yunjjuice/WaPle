@@ -107,15 +107,21 @@ export default {
       title: '',
       content: '',
       valid: true,
+      dialog: false,
     };
   },
   props: [
-    'dialog',
+    'editDialog',
   ],
   computed: {
     review: () => store.getters.review,
     height: () => store.getters.height,
     width: () => store.getters.width,
+  },
+  watch: {
+    editDialog() {
+      this.dialog = !this.dialog;
+    },
   },
   methods: {
     close() {

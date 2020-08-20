@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="dialog" persistent width="500">
     <v-card align="center">
-      <v-card-title></v-card-title>
-      <v-tabs>
+      <v-card-title class="yellow lighten-3">약속 만들기</v-card-title>
+      <v-tabs fixed-tabs>
         <v-tab @click="clearModalNew">
           새로운 약속
         </v-tab>

@@ -1,8 +1,8 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="500">
     <v-card align="center">
-      <v-card-title>약속 수정</v-card-title>
-          <v-card flat max-width="400" height="200" justify="center">
+      <v-card-title class="yellow lighten-3">약속 수정</v-card-title>
+          <v-card flat max-width="400" height="220" justify="center" style="padding: 1rem;">
             <validation-observer ref="observer">
               <validation-provider v-slot="{ errors }" name="name" rules="required">
                 <v-text-field
@@ -87,6 +87,7 @@ export default {
     },
     closeModal() {
       this.$emit('close');
+      this.clearModalNew();
     },
     isValid() { // 내용이 다 작성되었는지 확인
       this.$refs.observer.validate()
