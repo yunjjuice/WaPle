@@ -97,7 +97,10 @@
         </v-card>
       </v-col>
     </v-row>
-    <appointment-modal :dialog="appointmentDialog" />
+    <appointment-modal
+      :appointmentDialog="appointmentDialog"
+      @closeAppointmentModal="appointmentDialog = !appointmentDialog"
+    />
   </v-container>
 </v-main>
 </template>
@@ -116,6 +119,7 @@ export default {
       noData: false,
       offset: 1,
       limit: 10,
+      appointmentDialog: false,
     };
   },
   components: {
@@ -129,7 +133,6 @@ export default {
     this.readAllReview();
   },
   computed: {
-    appointmentDialog: () => store.getters.appointmentDialog,
     isSafari: () => store.getters.isSafari,
     uniquePlace() {
       return this.items.reduce((seed, cur) => Object.assign(seed, { [cur.placeId]: cur }), {});
@@ -167,9 +170,9 @@ export default {
     },
     showDialog(item) {
       store.dispatch('selectPlace', item);
-      store.dispatch('openAppointmentDialog');
       store.dispatch('getGroups');
       store.dispatch('getAppointments');
+      this.appointmentDialog = !this.appointmentDialog;
     },
     readReview(item) {
       this.$store.dispatch('updateItem', item);

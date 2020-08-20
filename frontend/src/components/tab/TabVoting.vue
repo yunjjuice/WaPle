@@ -81,10 +81,14 @@
       </v-card>
     </v-col>
   </v-row>
-  <edit-modal :dialog="editDialog" :appointment="appointment" @close="editDialog=false">
-  </edit-modal>
-  <remove-modal :dialog="removeDialog" :appointment="appointment" @close="removeDialog=false">
-  </remove-modal>
+  <edit-modal
+    :editDialog="editDialog"
+    :appointment="appointment"
+    @close="editDialog=!editDialog"></edit-modal>
+  <remove-modal
+    :removeDialog="removeDialog"
+    :appointment="appointment"
+  @close="removeDialog=!removeDialog"></remove-modal>
 </v-container>
 </template>
 
@@ -149,11 +153,11 @@ export default {
     },
     edit(appointment) {
       this.appointment = appointment;
-      this.editDialog = true;
+      this.editDialog = !this.editDialog;
     },
     remove(appointment) {
       this.appointment = appointment;
-      this.removeDialog = true;
+      this.removeDialog = !this.removeDialog;
     },
     onScroll(e) {
       const { scrollTop, clientHeight, scrollHeight } = e.target;

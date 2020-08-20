@@ -149,7 +149,10 @@
         </v-card>
       </v-col>
     </v-row>
-    <appointment-modal :dialog="appointmentDialog" />
+    <appointment-modal
+      :appointmentDialog="appointmentDialog"
+      @closeAppointmentModal="appointmentDialog = !appointmentDialog"
+    />
   </v-container>
 </v-main>
 </template>
@@ -175,6 +178,7 @@ export default {
       filterData: [],
       noData: false,
       windowWidth: window.innerWidth,
+      appointmentDialog: false,
     };
   },
   components: {
@@ -190,7 +194,7 @@ export default {
     });
   },
   computed: {
-    appointmentDialog: () => store.getters.appointmentDialog,
+    // appointmentDialog: () => store.getters.appointmentDialog,
     themes: () => store.getters.groupTheme,
     isSafari: () => store.getters.isSafari,
   },
@@ -230,9 +234,10 @@ export default {
   methods: {
     showDialog(item) {
       store.dispatch('selectPlace', item);
-      store.dispatch('openAppointmentDialog');
+      // store.dispatch('openAppointmentDialog');
       store.dispatch('getGroups');
       store.dispatch('getAppointments');
+      this.appointmentDialog = !this.appointmentDialog;
     },
     readReview(item) {
       this.$store.dispatch('updateItem', item);

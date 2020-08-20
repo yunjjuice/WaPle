@@ -61,9 +61,10 @@
 import api from '@/utils/api';
 
 export default {
-  props: ['theme', 'dialog'],
+  props: ['theme', 'themeEditDialog'],
   data() {
     return {
+      dialog: false,
       themeName: '',
       marker: {},
       rules: {
@@ -85,10 +86,13 @@ export default {
         this.marker.icon = val.icon;
       },
     },
+    themeEditDialog() {
+      this.dialog = !this.dialog;
+    },
   },
   methods: {
     closeModal() {
-      this.$emit('close');
+      this.$emit('closeThemeEdit');
     },
     isThemeValid() {
       this.$refs.form.validate();

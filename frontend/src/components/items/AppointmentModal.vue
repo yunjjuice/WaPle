@@ -1,13 +1,19 @@
 <template>
-  <v-dialog v-model="dialog" persistent width="500">
+  <v-dialog v-model="dialog" width="500">
     <v-card align="center">
-      <v-card-title class="yellow lighten-3">약속 만들기</v-card-title>
-      <v-tabs fixed-tabs>
+      <v-card-title class="yellow lighten-3">약속 만들기
+      </v-card-title>
+      <v-tabs
+        fixed-tabs
+        background-color="#fff"
+        color="#808080"
+        light
+      >
         <v-tab @click="clearModalNew">
           새로운 약속
         </v-tab>
         <v-tab-item>
-          <v-card flat width="400" height="250" justify="center">
+          <v-card flat width="400" height="260" justify="center">
             <validation-observer ref="observerNew">
               <validation-provider v-slot="{ errors }" name="name" rules="required">
                 <v-text-field
@@ -48,8 +54,8 @@
                 </v-datetime-picker>
               </validation-provider>
             </validation-observer>
-            <v-btn @click="isValidByNew" color="primary">만들기</v-btn>
-            <v-btn @click="cancelModal" color="error">취소하기</v-btn>
+            <v-btn @click="cancelModal" color="error" text>취소하기</v-btn>
+            <v-btn @click="isValidByNew" color="primary" text>만들기</v-btn>
           </v-card>
         </v-tab-item>
         <v-tab @click="clearModalExisting">
@@ -70,8 +76,8 @@
               />
               </validation-provider>
             </validation-observer>
-            <v-btn @click="isValidByExisting" color="primary">추가하기</v-btn>
-            <v-btn @click="cancelModal" color="error">취소하기</v-btn>
+            <v-btn @click="cancelModal" color="error" text>취소하기</v-btn>
+            <v-btn @click="isValidByExisting" color="primary" text>추가하기</v-btn>
           </v-card>
         </v-tab-item>
       </v-tabs>
@@ -95,11 +101,12 @@ export default {
     return {
       appointmentName: '',
       group: null,
-      appointmentDate: null,
+      appointmentDate: '',
       appointment: null,
+      dialog: false,
     };
   },
-  props: ['dialog'],
+  props: ['appointmentDialog'],
   components: {
     ValidationObserver,
     ValidationProvider,
@@ -108,35 +115,44 @@ export default {
     groups: () => store.getters.groups,
     appointments: () => store.getters.appointments,
   },
+  watch: {
+    appointmentDialog() {
+      this.dialog = !this.dialog;
+    },
+  },
+  updated() {
+    this.clearModalNew();
+    this.clearModalExisting();
+  },
   methods: {
     clearModalNew() {
       this.appointmentName = '';
       this.group = null;
-      this.appointmentDate = null;
-      requestAnimationFrame(() => {
+      this.appointmentDate = '';
+      if (this.$refs.observerNew) {
         this.$refs.observerNew.reset();
-      });
+      }
     },
     clearModalExisting() {
-      this.appointment = null;
-      requestAnimationFrame(() => {
+      this.appointment = '';
+      if (this.$refs.observerExisting) {
         this.$refs.observerExisting.reset();
-      });
+      }
     },
     makeAppointment() { // 새 약속 만들기
       store.dispatch('updateAppointmentName', this.appointmentName);
       store.dispatch('updateGroup', this.group);
       store.dispatch('updateAppointmentDate', moment(this.appointmentDate).tz('Asia/Seoul').format());
       store.dispatch('makeAppointment');
-      store.dispatch('closeAppointmentDialog');
+      this.cancelModal();
     },
     addAppointment() { // 기존 약속에 추가하기
       store.dispatch('updateAppointment', this.appointment);
       store.dispatch('addAppointment');
-      store.dispatch('closeAppointmentDialog');
+      this.cancelModal();
     },
     cancelModal() {
-      store.dispatch('closeAppointmentDialog');
+      this.$emit('closeAppointmentModal');
       this.clearModalExisting();
       this.clearModalNew();
     },

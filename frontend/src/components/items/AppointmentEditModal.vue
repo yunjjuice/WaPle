@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="500">
+  <v-dialog v-model="dialog" max-width="500">
     <v-card align="center">
       <v-card-title class="yellow lighten-3">약속 수정</v-card-title>
           <v-card flat max-width="400" height="220" justify="center" style="padding: 1rem;">
@@ -29,8 +29,8 @@
                 </v-datetime-picker>
               </validation-provider>
             </validation-observer>
-            <v-btn @click="isValid" color="primary">수정하기</v-btn>
-            <v-btn @click="closeModal" color="error">취소하기</v-btn>
+            <v-btn @click="closeModal" color="error" text>취소하기</v-btn>
+            <v-btn @click="isValid" color="primary" text>수정하기</v-btn>
           </v-card>
     </v-card>
   </v-dialog>
@@ -52,9 +52,10 @@ export default {
     return {
       appointmentName: '',
       appointmentDate: null,
+      dialog: false,
     };
   },
-  props: ['dialog', 'appointment'],
+  props: ['editDialog', 'appointment'],
   components: {
     ValidationObserver,
     ValidationProvider,
@@ -66,6 +67,9 @@ export default {
         this.appointmentName = val.title;
         this.appointmentDate = val.promiseDate.replace('T', ' ');
       },
+    },
+    editDialog() {
+      this.dialog = !this.dialog;
     },
   },
   methods: {

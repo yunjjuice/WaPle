@@ -1,5 +1,5 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="290">
+  <v-dialog v-model="dialog" max-width="290">
     <v-card align="center">
       <v-card-title>약속을 삭제하시겠습니까?</v-card-title>
       <v-card-actions>
@@ -15,7 +15,17 @@
 import store from '@/store/index';
 
 export default {
-  props: ['dialog', 'appointment'],
+  data() {
+    return {
+      dialog: false,
+    };
+  },
+  props: ['removeDialog', 'appointment'],
+  watch: {
+    removeDialog() {
+      this.dialog = !this.dialog;
+    },
+  },
   methods: {
     closeModal() {
       this.$emit('close');
