@@ -179,6 +179,7 @@ export default {
       this.group = '';
       this.visitDate = new Date().toISOString().substr(0, 10);
       this.content = '';
+      this.images = [];
     },
     uploadImage(formData) {
       return new Promise((resolve, reject) => {
