@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.waple.theme.dto.ThemeGroupPlace;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -78,11 +79,9 @@ public class ThemeController {
 		return new ResponseEntity<>(service.read(token, groupId), HttpStatus.OK);
 	}
 
-	@RequestMapping(method = RequestMethod.PUT, value = "/{groupId}/{themeId}", produces = "application/json")
+	@RequestMapping(method = RequestMethod.PUT, produces = "application/json")
 	@ApiOperation(value = "테마 수정", notes = "테마의 이름 및 아이콘 수정", response = ThemeDto.class)
 	@ApiImplicitParams({
-		@ApiImplicitParam(name = "groupId", value = "그룹 아이디", example = "1"),
-		@ApiImplicitParam(name = "themeId", value = "테마 아이디", example = "1"),
 		@ApiImplicitParam(name = "token", value = "회원 토큰"),
 		@ApiImplicitParam(name = "theme", value = "수정 할 테마 정보", dataTypeClass = ThemeDto.class)
 	})
@@ -93,10 +92,9 @@ public class ThemeController {
 		@ApiResponse(code = 403, message = "권한이 없습니다"),
 		@ApiResponse(code = 404, message = "테마 수정 실패")
 	})
-	private ResponseEntity<?> update(@RequestBody ThemeDto theme, @PathVariable("groupId") int groupId,
-		@PathVariable("themeId") int themeId, @RequestHeader(value = "token") String token) {
+	private ResponseEntity<?> update(@RequestBody ThemeDto theme, @RequestHeader(value = "token") String token) {
 		logger.debug("테마 수정 호출");
-		service.update(token, groupId, themeId, theme);
+		service.update(token, theme);
 		return new ResponseEntity<>(theme, HttpStatus.CREATED);
 	}
 
@@ -143,4 +141,33 @@ public class ThemeController {
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
+	@RequestMapping(method = RequestMethod.GET, value = "/place/{userId}/{placeId}", produces = "application/json")
+	@ApiOperation(value = "해당 장소의 테마 및 그룹 전체 조회", notes = "해당 장소의 그룹 및 모든 테마를 조회",
+		response = ThemeGroupPlace.class)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "userId", value = "유저 아이디", example = "1412733569"),
+		@ApiImplicitParam(name = "placeId", value = "장소 아이디", example = "19781214"),
+		@ApiImplicitParam(name = "token", value = "회원 토큰")
+	})
+	@ApiResponses({
+		@ApiResponse(code = 204, message = "해당 장소의 테마 및 그룹 조회 성공"),
+		@ApiResponse(code = 400, message = "잘못된 요청입니다"),
+		@ApiResponse(code = 401, message = "로그인 후 이용해 주세요"),
+		@ApiResponse(code = 403, message = "권한이 없습니다"),
+		@ApiResponse(code = 404, message = "해당 장소의 테마 및 그룹 조회 실패")
+	})
+	private ResponseEntity<?> readAll(@PathVariable("placeId") String placeId, @PathVariable("userId") long userId,
+		@RequestHeader(value = "token") String token) {
+		logger.debug("해당 장소의 테마 및 그룹 전체 조회 호출");
+		List<ThemeGroupPlace> result = service.readAll(token, userId, placeId);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "/place/{userId}", produces = "application/json")
+	private ResponseEntity<?> readAllById(@PathVariable("userId") long userId,
+		@RequestHeader(value = "token") String token) {
+		logger.debug("해당 장소의 테마 및 그룹 전체 조회 호출");
+		List<ThemeGroupPlace> result = service.readAllById(token, userId);
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
 }

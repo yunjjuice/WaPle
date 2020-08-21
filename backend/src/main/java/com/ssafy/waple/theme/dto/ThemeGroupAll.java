@@ -8,6 +8,12 @@ public class ThemeGroupAll {
 	@ApiModelProperty(value = "그룹 아이디", example = "1")
 	private int groupId;
 
+	@ApiModelProperty(value = "그룹 이름들(합친것)", example = "먹방,찜질방")
+	private String groupName;
+
+	@ApiModelProperty(value = "그룹 이름들", example = "[먹방, 찜질방]")
+	private List<String> groupNames;
+
 	@ApiModelProperty(value = "테마 아이디들(합친것)", example = "1,2,3")
 	private String themes;
 
@@ -19,6 +25,12 @@ public class ThemeGroupAll {
 
 	@ApiModelProperty(value = "테마 이름들", example = "[하하하, 호호호, 히히히, 후후후]")
 	private List<String> themeNames;
+
+	@ApiModelProperty(value = "테마 아이콘들(합친것)", example = "default.png,default.png")
+	private String themeIcon;
+
+	@ApiModelProperty(value = "테마 아이콘들", example = "[default.png, default.png]")
+	private List<String> themeIcons;
 
 	public int getGroupId() {
 		return groupId;
@@ -58,5 +70,37 @@ public class ThemeGroupAll {
 
 	public void setThemeIds(List<Integer> themeIds) {
 		this.themeIds = themeIds;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public List<String> getGroupNames() {
+		return groupNames;
+	}
+
+	public void setGroupNames(List<String> groupNames) {
+		this.groupNames = groupNames;
+	}
+
+	public String getThemeIcon() {
+		return themeIcon;
+	}
+
+	public void setThemeIcon(String themeIcon) {
+		this.themeIcon = themeIcon;
+	}
+
+	public List<String> getThemeIcons() {
+		return themeIcons;
+	}
+
+	public void setThemeIcons(List<String> themeIcons) {
+		this.themeIcons = themeIcons;
 	}
 }

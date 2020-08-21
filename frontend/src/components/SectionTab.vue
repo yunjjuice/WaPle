@@ -1,30 +1,18 @@
 <template>
 <v-main>
   <v-tabs
-    fixed-tabs
-    background-color="#f5f5f5"
+    background-color="#fff"
     color="000080"
     light
+    fixed-tabs
+    height="2rem"
   >
     <v-tab to="/">북마크</v-tab>
     <v-tab to="/review">리뷰</v-tab>
     <v-tab to="/voting">약속</v-tab>
   </v-tabs>
-  <!-- TODO : 픽셀말고 높이 받아와서 스크롤 만들도록 수정 -->
-  <v-container
-    id="scroll-target"
-    style="max-height: 640px"
-    class="overflow-y-auto"
-  >
-    <v-row
-      v-scroll:#scroll-target="onScroll"
-      justify="center"
-      style="height: 640px"
-    >
-      <option-filter v-if="bookmark"></option-filter>
-      <router-view></router-view>
-    </v-row>
-  </v-container>
+  <option-filter v-if="bookmark"></option-filter>
+  <router-view></router-view>
 </v-main>
 </template>
 
@@ -40,20 +28,14 @@ export default {
   },
   data() {
     return {
-      // bookmark: true,
     };
   },
-  created() {
+  beforeCreate() {
     store.dispatch('getGroupsThemes');
-  },
-  methods: {
-    onScroll(e) {
-      this.offsetTop = e.target.scrollTop;
-    },
+    store.dispatch('getGroupTheme');
   },
 };
 </script>
 
 <style>
-
 </style>

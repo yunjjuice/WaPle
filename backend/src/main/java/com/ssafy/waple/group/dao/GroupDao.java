@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.ssafy.waple.group.dto.GroupCreateDto;
 import com.ssafy.waple.group.dto.GroupDto;
 import com.ssafy.waple.group.dto.GroupMemberDto;
 
@@ -13,13 +14,13 @@ public interface GroupDao {
 
 	List<GroupMemberDto> readGroupMembers(int groupId);
 
-	int isOwner(int groupId, long userId);
+	int numberOfMembers(int groupId);
 
 	int create(GroupDto group);
 
 	int updateToken(int groupId, String token);
 
-	int createMember(GroupDto group);
+	int createMember(GroupCreateDto group);
 
 	int update(GroupDto group);
 

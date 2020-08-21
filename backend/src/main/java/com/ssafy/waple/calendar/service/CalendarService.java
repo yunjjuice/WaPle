@@ -7,5 +7,5 @@ import com.ssafy.waple.calendar.dto.CalendarDto;
 public interface CalendarService {
 
 	// 스케줄 조회
-	List<CalendarDto> readAll(long userId, String unit, int year, int month, int day);
+	List<CalendarDto> readAll(String token, long userId);
 }

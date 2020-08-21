@@ -2,6 +2,7 @@ package com.ssafy.waple.group.service;
 
 import java.util.List;
 
+import com.ssafy.waple.group.dto.GroupCreateDto;
 import com.ssafy.waple.group.dto.GroupDto;
 import com.ssafy.waple.group.dto.GroupMemberDto;
 
@@ -10,11 +11,9 @@ public interface GroupService {
 
 	List<GroupMemberDto> readGroupMembers(int groupId);
 
-	boolean isOwner(int groupId, long userId);
+	void create(GroupCreateDto group);
 
-	void create(GroupDto group);
-
-	void createMember(GroupDto group);
+	void createMember(GroupCreateDto group);
 
 	void update(GroupDto group);
 

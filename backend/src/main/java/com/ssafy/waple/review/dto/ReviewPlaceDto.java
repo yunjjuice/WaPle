@@ -27,6 +27,15 @@ public class ReviewPlaceDto {
 	@ApiModelProperty(value = "그룹 아이디", example = "1")
 	private int groupId;
 
+	@ApiModelProperty(value = "전화번호", example = "02-123-1234")
+	private String tel;
+
+	@ApiModelProperty(value = "카테고리", example = "음식점")
+	private String category;
+
+	@ApiModelProperty(value = "아이콘", example = "gg.ico")
+	private  String icon;
+
 	public String getPlaceId() {
 		return placeId;
 	}
@@ -75,12 +84,44 @@ public class ReviewPlaceDto {
 		this.url = url;
 	}
 
+	public int getCount() {
+		return count;
+	}
+
+	public void setCount(int count) {
+		this.count = count;
+	}
+
 	public int getGroupId() {
 		return groupId;
 	}
 
 	public void setGroupId(int groupId) {
 		this.groupId = groupId;
+	}
+
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
+	public String getIcon() {
+		return icon;
+	}
+
+	public void setIcon(String icon) {
+		this.icon = icon;
 	}
 
 	@Override
@@ -94,6 +135,9 @@ public class ReviewPlaceDto {
 			", url='" + url + '\'' +
 			", count=" + count +
 			", groupId=" + groupId +
+			", tel='" + tel + '\'' +
+			", category='" + category + '\'' +
+			", icon='" + icon + '\'' +
 			'}';
 	}
 }

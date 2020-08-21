@@ -80,6 +80,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 		// Return Data
 		List<BookmarkDto> result = new ArrayList<>();
 
+		// 중복 체크용
+		List<String> compare = new ArrayList<>();
+
 		for (SearchType.Group group : list) {
 
 			// 원하는 데이터 크기 넘어가면 조회 종료
@@ -90,13 +93,27 @@ public class BookmarkServiceImpl implements BookmarkService {
 				throw new ThemeIsNullException();
 			}
 			try {
-				result.addAll(dao.read(group));
+				List<BookmarkDto> tempResult = dao.read(group);
+				int size = tempResult.size();
+				for (int i=0; i<size; i++) {
+					BookmarkDto tempDto = tempResult.get(i);
+					if(!compare.contains(tempDto.getPlaceId())) {
+						compare.add(tempDto.getPlaceId());
+						result.add(tempDto);
+					}
+				}
 			} catch (DataAccessException e) {
 				throw e;
 			}
 		}
+		// for (BookmarkDto dto: result) {
+		// 	System.out.println(dto.toString());
+		// }
 
-		if (result.size() < limit) {
+		if (result.size() < limit * offset) {
+			if(limit * (offset-1) >= result.size()) {
+				return new ArrayList<>();
+			}
 			return result.subList((offset - 1) * limit, result.size());
 		} else {
 			return result.subList((offset - 1) * limit, offset * limit);
@@ -114,7 +131,7 @@ public class BookmarkServiceImpl implements BookmarkService {
 	public List<BookmarkDto> readAll(String token, long userId, int limit, int offset) {
 		List<BookmarkDto> result = new ArrayList<>();
 		try {
-			result = dao.readAll(userId, limit, offset-1);
+			result = dao.readAll(userId, limit, (offset-1) * limit);
 		} catch (DataAccessException e) {
 			if(e.getMessage().contains(USER_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new UserNotFoundException(userId);

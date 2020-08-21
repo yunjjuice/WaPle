@@ -1,21 +1,26 @@
 <template>
   <v-main>
     <v-toolbar color="#f5f5f5" dense flat>
-      <v-btn icon class="hidden-xs-only" @click="moveBack">
+      <v-btn icon @click="moveBack">
         <v-icon>mdi-arrow-left</v-icon>
       </v-btn>
       <v-toolbar-title>{{ keyword }}</v-toolbar-title>
     </v-toolbar>
-    <!-- TODO : 픽셀말고 높이 받아와서 스크롤 만들도록 수정 -->
     <v-container
       id="scroll-target"
-      style="max-height: 640px"
+      style="height: 85vh"
       class="overflow-y-auto"
+      :class="{ safari: isSafari && $vuetify.breakpoint.mdAndDown}"
     >
+      <transition name="fade">
+        <div class="loading" v-show="loading">
+          <span class="fa fa-spinner fa-spin"></span> Loading
+        </div>
+      </transition>
+        <!-- @scroll="onScroll" -->
       <v-row
         v-scroll:#scroll-target="onScroll"
         justify="center"
-        style="height: 640px"
       >
         <v-container>
           <v-row align='center' justify='center'>
@@ -23,180 +28,165 @@
               v-for="(item, i) in searchResult"
               :key="i"
               cols="12"
+              style="padding: 3px; height: 5.1rem;"
+              :class="{ mobile1: $vuetify.breakpoint.mdAndDown}"
             >
-              <v-card>
-                <div class="d-flex flex-no-wrap justify-space-between">
-                  <div>
-                    <v-card-title
-                      class="headline"
-                      v-text="item.place_name"
-                    ></v-card-title>
-                    <v-card-text>
-                      {{ item.road_address_name }}
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-tooltip bottom>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-btn
-                            icon
-                            v-bind="attrs"
-                            v-on="on"
-                            @click.stop="showDialog(item)"
-                          >
-                            <v-icon>mdi-bookmark-plus-outline</v-icon>
-                          </v-btn>
-                        </template>
-                        <span>북마크 등록</span>
-                      </v-tooltip>
-                    </v-card-actions>
+              <v-card
+                @click="clickCard(i)"
+                style="height: 5rem; box-shadow: none !important;"
+                :class="{ mobile2: $vuetify.breakpoint.mdAndDown}"
+              >
+                <div>
+                  <div class="d-flex flex-no-wrap justify-space-between">
+                    <v-row>
+                      <v-col cols="9">
+                        <v-card-title
+                          class="headline"
+                          v-text="item.place_name"
+                          style="font-size: 1rem !important; padding-top: 0.5rem;padding-bottom:0;"
+                        ></v-card-title>
+                        <v-card-text>
+                          {{ item.road_address_name }}
+                        </v-card-text>
+                      </v-col>
+                      <v-col cols="3">
+                        <v-card-actions>
+                          <v-tooltip bottom>
+                            <template v-slot:activator="{ on, attrs }">
+                              <v-btn
+                                icon
+                                v-bind="attrs"
+                                v-on="on"
+                                @click.stop="showBookmarkDialog(item)"
+                              >
+                                <v-icon>mdi-bookmark-plus-outline</v-icon>
+                              </v-btn>
+                            </template>
+                            <span>북마크 등록</span>
+                          </v-tooltip>
+                        </v-card-actions>
+                      </v-col>
+                    </v-row>
                   </div>
                 </div>
               </v-card>
+              <!-- <v-divider style="position: relative; top: -2.4rem;"></v-divider> -->
             </v-col>
           </v-row>
-          <v-dialog
-            v-model="dialog"
-            width="400"
-            height="300"
-          >
-            <v-card align="center">
-              <v-card-title class="headline yellow lighten-3">북마크등록</v-card-title>
-              <validation-observer ref="observer">
-                <v-row justify="center">
-                  <v-col cols="15" sm="6">
-                    <validation-provider v-slot="{ errors }" name="group" rules="required">
-                      <v-select
-                        :items="groups"
-                        v-model="group"
-                        item-text="name"
-                        label="group"
-                        return-object
-                        required
-                        :error-messages="errors"
-                        @change="findTheme"
-                      ></v-select>
-                    </validation-provider>
-                  </v-col>
-                </v-row>
-                <v-row justify="center">
-                  <v-col class="d-flex" cols="15" sm="6">
-                    <validation-provider v-slot="{ errors }" name="theme" rules="required">
-                      <v-select
-                        :items="themes"
-                        v-model="theme"
-                        item-text="name"
-                        label="theme"
-                        return-object
-                        required
-                        :error-messages="errors"
-                      ></v-select>
-                    </validation-provider>
-                  </v-col>
-                </v-row>
-                <v-row justify="center">
-                  <v-btn depressed color="primary" @click="isValid">추가하기</v-btn>
-                </v-row>
-              </validation-observer>
-            </v-card>
-          </v-dialog>
         </v-container>
       </v-row>
+      <bookmark-add-modal
+        :bookmarkDialog="bookmarkDialog"
+        :bookmarkPlace="place"
+      ></bookmark-add-modal>
     </v-container>
   </v-main>
 </template>
 
 <script>
 import store from '@/store/index';
-import api from '@/utils/api';
-import { ValidationObserver, ValidationProvider, extend } from 'vee-validate';
-import { required } from 'vee-validate/dist/rules';
-
-extend('required', {
-  ...required,
-  message: '{_field_} can not be empty',
-});
+import EventBus from '@/utils/EventBus';
 
 export default {
   data() {
     return {
       dialog: false,
+      themeDialog: false,
       place: {}, // 선택된 장소 정보
       groups: [], // 데이터에서 받아온 그룹 목록
       group: {}, // 선택된 그룹
       themes: [], // 데이터에서 받아온 테마 목록
       theme: {}, // 선택된 테마
+      themeName: '',
+      rules: {
+        required: (value) => !!value || 'theme can not be empty',
+        counter: (value) => (value && value.length <= 50) || 'Max 50 chracters',
+      },
+      themeValid: true,
+      loading: false,
+      page: 1,
+      bookmarkDialog: false,
     };
   },
   components: {
-    ValidationObserver,
-    ValidationProvider,
+    BookmarkAddModal: () => import('@/components/items/BookmarkAddModal.vue'),
+  },
+  created() {
+    EventBus.$emit('toggle-drawer-1');
+    EventBus.$emit('toggle-drawer-2');
+  },
+  watch: {
+    bottom() {
+      if (this.bottom && !this.noData) {
+        store.dispatch('updateNoData', true);
+        store.dispatch('updateBottom', false);
+        this.loading = true;
+        setTimeout(() => {
+          store.dispatch('updatePage', this.page += 1);
+          store.dispatch('search', this.keyword);
+          this.loading = false;
+        }, 500);
+      }
+    },
   },
   computed: {
     searchResult: () => store.getters.result,
     keyword: () => store.getters.keyword,
+    noData: () => store.getters.noData,
+    bottom: () => store.getters.bottom,
+    isSafari: () => store.getters.isSafari,
   },
   methods: {
     moveBack() {
       this.$router.go(-1);
     },
-    findTheme() {
-      api.get(`/themes/${this.group.groupId}`, { headers: { token: this.$session.get('token') } })
-        .then(({ data }) => {
-          this.themes = data;
-        });
-    },
-    showDialog(item) {
-      this.dialog = true;
+    showBookmarkDialog(item) {
       this.place = item;
-      this.themes = [];
-      this.group = null;
-      this.theme = null;
-      requestAnimationFrame(() => {
-        this.$refs.observer.reset();
-      });
+      this.bookmarkDialog = !this.bookmarkDialog;
     },
-    makeBookmark() {
-      // 북마크 등록
-      api.post('/bookmarks', {
-        address: this.place.road_address_name,
-        groupId: this.group.groupId,
-        lat: this.place.y,
-        lng: this.place.x,
-        name: this.place.place_name,
-        placeId: this.place.id,
-        themeId: this.theme.themeId,
-        url: this.place.place_url,
-        userId: this.$session.get('uid'),
-      }, {
-        headers: {
-          token: this.$session.get('token'),
-        },
-      }).then((res) => {
-        if (res.status === 201) {
-          const payload = { color: 'success', msg: '북마크가 등록되었습니다' };
-          store.dispatch('showSnackbar', payload);
-        }
-      });
-      this.dialog = false;
+    clickCard(index) {
+      EventBus.$emit('moveMap', { lat: this.searchResult[index].y, lng: this.searchResult[index].x, index });
     },
-    isValid() { // 그룹과 테마가 다 선택되었는지 확인
-      this.$refs.observer.validate()
-        .then((result) => {
-          if (result) { // 입력이 다 되었다면 요청 보내기
-            this.makeBookmark();
-          }
-        });
+    onScroll(e) {
+      const { scrollTop, clientHeight, scrollHeight } = e.target;
+      if (scrollTop + clientHeight >= scrollHeight) {
+        store.dispatch('updateBottom', true);
+      }
     },
-  },
-  created() {
-    api.get(`/groups/of/${this.$session.get('uid')}`)
-      .then(({ data }) => {
-        this.groups = data;
-      });
   },
 };
 </script>
 
-<style>
-
+<style scoped>
+.loading {
+  text-align: center;
+  position: absolute;
+  color: #fff;
+  z-index: 9;
+  background: grey;
+  padding: 8px 18px;
+  border-radius: 5px;
+  left: calc(50% - 45px);
+  top: calc(50% - 18px);
+}
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s
+}
+.fade-enter, .fade-leave-to {
+  opacity: 0
+}
+.d-flex.flex-no-wrap.justify-space-between:hover{
+  background-color: #d2d2d4;
+  opacity: 0.8;
+}
+.safari {
+  height: calc(75vh - 50px) !important;
+}
+.mobile1 {
+  height: auto !important;
+  border-bottom: 0.5px solid rgba(0, 0, 0, 0.12);
+}
+.mobile2 {
+  height: auto !important;
+}
 </style>

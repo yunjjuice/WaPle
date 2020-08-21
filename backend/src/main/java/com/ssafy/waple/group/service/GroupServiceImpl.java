@@ -10,10 +10,9 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
 import com.ssafy.waple.group.dao.GroupDao;
+import com.ssafy.waple.group.dto.GroupCreateDto;
 import com.ssafy.waple.group.dto.GroupDto;
 import com.ssafy.waple.group.dto.GroupMemberDto;
-import com.ssafy.waple.group.exception.DuplicateMemberException;
-import com.ssafy.waple.group.exception.GroupIsNotEmptyException;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
 import com.ssafy.waple.group.exception.InvalidGroupTokenException;
 import com.ssafy.waple.group.exception.MemberNotFoundException;
@@ -44,12 +43,7 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	public boolean isOwner(int groupId, long userId) {
-		return dao.isOwner(groupId, userId) == 1;
-	}
-
-	@Override
-	public void create(GroupDto group) {
+	public void create(GroupCreateDto group) {
 		dao.create(group);
 		generateToken(group);
 		createMember(group);
@@ -63,11 +57,13 @@ public class GroupServiceImpl implements GroupService {
 			.withClaim("groupId", group.getGroupId())
 			.withClaim("name", group.getName())
 			.sign(Algorithm.HMAC256("waple_project"));
-		dao.updateToken(group.getGroupId(), token);
+		if (dao.updateToken(group.getGroupId(), token) < 1) {
+			throw new GroupNotFoundException(group.getGroupId());
+		}
 	}
 
 	@Override
-	public void createMember(GroupDto group) {
+	public void createMember(GroupCreateDto group) {
 		try {
 			dao.createMember(group);
 		} catch (DataAccessException e) {
@@ -77,11 +73,13 @@ public class GroupServiceImpl implements GroupService {
 			if (e.getMessage().contains(USER_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new UserNotFoundException(group.getUserId());
 			}
-			if (e.getMessage().contains(PRIMARY_KEY_CONSTRAINT_MSG)) {
-				throw new DuplicateMemberException(group.getGroupId(), group.getUserId());
-			}
 			if (e.getMessage().contains(INVALID_TOKEN_MSG)) {
 				throw new InvalidGroupTokenException();
+			}
+			if (e.getMessage().contains(PRIMARY_KEY_CONSTRAINT_MSG)) {
+				// throw new DuplicateMemberException(group.getGroupId(), group.getUserId());
+				// 에러로 처리 안하겠습니다
+				return;
 			}
 			throw e;
 		}
@@ -89,6 +87,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public void update(GroupDto group) {
+		generateToken(group); //그룹 이름이 변경되면 토큰도 바뀌어야 한다
 		if (dao.update(group) < 1) {
 			throw new GroupNotFoundException(group.getGroupId());
 		}
@@ -96,16 +95,8 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public void delete(int groupId, long userId) {
-		boolean isOwner = isOwner(groupId, userId);
-		if (isOwner) {
-			List<GroupMemberDto> members = readGroupMembers(groupId);
-			if (members.size() > 1 || members.get(0).getUserId() != userId) {
-				throw new GroupIsNotEmptyException(groupId);
-			}
-		}
-
 		deleteMember(groupId, userId);
-		if (isOwner && dao.delete(groupId) < 1) {
+		if (dao.numberOfMembers(groupId) == 0 && dao.delete(groupId) < 1) {
 			throw new GroupNotFoundException(groupId);
 		}
 	}
