@@ -43,6 +43,7 @@
         <v-card
           @click="setItem(i)"
           style="height: 5rem; box-shadow: none !important;"
+          tile
         >
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
@@ -102,7 +103,7 @@
                     </v-list>
                   </v-menu>
                 </v-card-actions>
-                <v-card-actions>
+                <v-card-actions style="padding-bottom: 0px;">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
@@ -145,11 +146,14 @@
                 </v-card-actions>
               </div>
           </div>
-          <v-divider style="position: relative; top: -1.75rem;"></v-divider>
+          <v-divider style="position: relative; top: -1.2rem;"></v-divider>
         </v-card>
       </v-col>
     </v-row>
-    <appointment-modal :dialog="appointmentDialog" />
+    <appointment-modal
+      :appointmentDialog="appointmentDialog"
+      @closeAppointmentModal="appointmentDialog = !appointmentDialog"
+    />
   </v-container>
 </v-main>
 </template>
@@ -175,6 +179,7 @@ export default {
       filterData: [],
       noData: false,
       windowWidth: window.innerWidth,
+      appointmentDialog: false,
     };
   },
   components: {
@@ -190,7 +195,7 @@ export default {
     });
   },
   computed: {
-    appointmentDialog: () => store.getters.appointmentDialog,
+    // appointmentDialog: () => store.getters.appointmentDialog,
     themes: () => store.getters.groupTheme,
     isSafari: () => store.getters.isSafari,
   },
@@ -230,9 +235,10 @@ export default {
   methods: {
     showDialog(item) {
       store.dispatch('selectPlace', item);
-      store.dispatch('openAppointmentDialog');
+      // store.dispatch('openAppointmentDialog');
       store.dispatch('getGroups');
       store.dispatch('getAppointments');
+      this.appointmentDialog = !this.appointmentDialog;
     },
     readReview(item) {
       this.$store.dispatch('updateItem', item);

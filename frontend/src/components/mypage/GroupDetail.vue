@@ -92,9 +92,9 @@
       @updateTheme="getGroupInfo()"
     ></theme-add-modal>
     <theme-edit-modal
-      :dialog="themeEditDialog"
+      :themeEditDialog="themeEditDialog"
       :theme="selectedTheme"
-      @close="themeEditDialog = false"
+      @closeThemeEdit="themeEditDialog = !themeEditDialog"
       @update="getGroupInfo()"
     ></theme-edit-modal>
   </v-expansion-panel-content>
@@ -119,8 +119,6 @@ export default {
     return {
       groupUsers: null, // 특정 그룹에 속한 유저들 가져오기
       groupThemes: null, // 특정 그룹에 속한 테마들 가져오기
-      themeName: '',
-      flag: [],
       themeDialog: false,
       themeEditDialog: false,
       selectedTheme: {},
@@ -159,15 +157,9 @@ export default {
         },
       });
     },
-    makeFlag() {
-      this.flag = [];
-      for (let i = 0; i < this.groupThemes.length; i += 1) {
-        this.flag.push(false);
-      }
-    },
     openModifyModal(theme) {
       this.selectedTheme = theme;
-      this.themeEditDialog = true;
+      this.themeEditDialog = !this.themeEditDialog;
     },
   },
   created() {

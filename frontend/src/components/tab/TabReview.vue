@@ -14,7 +14,7 @@
       </div>
     </transition>
     <v-divider style="position: relative;top: 0rem; margin: 0;"></v-divider>
-    <div v-if="filteredArray.length == 0"
+    <div v-if="items.length == 0"
       class="justify-space-between v-card__text"
       style="color: gray">
       아직 작성된 리뷰가 없는 것 같아요! <br>
@@ -28,7 +28,7 @@
       v-scroll:#scroll-target="onScroll"
     >
       <v-col
-        v-for="(item, i) in filteredArray"
+        v-for="(item, i) in items"
         :key="i"
         cols="12"
         style="padding: 3px; height: 5.1rem;"
@@ -36,6 +36,7 @@
         <v-card
           @click="infowindow(i)"
           style="height: 5rem; box-shadow: none !important;"
+          tile
         >
           <div class="d-flex flex-no-wrap justify-space-between">
             <div>
@@ -45,7 +46,7 @@
                 style="font-size: 1rem !important; padding-top: 0.5rem; padding-bottom: 0;"
               >
                 </v-card-title>
-                <v-card-actions>
+                <v-card-actions style="padding-bottom: 0px;">
                   <v-tooltip bottom>
                     <template v-slot:activator="{ on, attrs }">
                       <v-btn
@@ -93,11 +94,14 @@
                 </v-card-actions>
               </div>
           </div>
-          <v-divider style="position: relative; top: -1.75rem;"></v-divider>
+          <v-divider style="position: relative; top: -1.2rem;"></v-divider>
         </v-card>
       </v-col>
     </v-row>
-    <appointment-modal :dialog="appointmentDialog" />
+    <appointment-modal
+      :appointmentDialog="appointmentDialog"
+      @closeAppointmentModal="appointmentDialog = !appointmentDialog"
+    />
   </v-container>
 </v-main>
 </template>
@@ -116,6 +120,7 @@ export default {
       noData: false,
       offset: 1,
       limit: 10,
+      appointmentDialog: false,
     };
   },
   components: {
@@ -129,27 +134,7 @@ export default {
     this.readAllReview();
   },
   computed: {
-    appointmentDialog: () => store.getters.appointmentDialog,
     isSafari: () => store.getters.isSafari,
-    uniquePlace() {
-      return this.items.reduce((seed, cur) => Object.assign(seed, { [cur.placeId]: cur }), {});
-    },
-    filteredArray() {
-      const ret = {};
-      for (let i = 0; i < this.items.length; i += 1) {
-        const key = this.items[i].placeId;
-        ret[key] = {
-          placeId: key,
-          name: this.items[i].name,
-          address: this.items[i].address,
-          lat: this.items[i].lat,
-          lng: this.items[i].lng,
-          url: this.items[i].url,
-          count: ret[key] && ret[key].count ? ret[key].count + 1 : 1,
-        };
-      }
-      return Object.values(ret);
-    },
   },
   watch: {
     bottom() {
@@ -163,13 +148,13 @@ export default {
   },
   methods: {
     infowindow(index) {
-      EventBus.$emit('moveMap', { lat: this.filteredArray[index].lat, lng: this.filteredArray[index].lng, index });
+      EventBus.$emit('moveMap', { lat: this.items[index].lat, lng: this.items[index].lng, index });
     },
     showDialog(item) {
       store.dispatch('selectPlace', item);
-      store.dispatch('openAppointmentDialog');
       store.dispatch('getGroups');
       store.dispatch('getAppointments');
+      this.appointmentDialog = !this.appointmentDialog;
     },
     readReview(item) {
       this.$store.dispatch('updateItem', item);
@@ -199,7 +184,7 @@ export default {
           } else {
             this.noData = false;
             this.items = this.items.concat(data);
-            this.$store.dispatch('doUpdate', this.filteredArray);
+            this.$store.dispatch('doUpdate', this.items);
           }
           this.loading = false;
         }, 500);

@@ -61,9 +61,10 @@
 import api from '@/utils/api';
 
 export default {
-  props: ['theme', 'dialog'],
+  props: ['theme', 'themeEditDialog'],
   data() {
     return {
+      dialog: false,
       themeName: '',
       marker: {},
       rules: {
@@ -78,17 +79,18 @@ export default {
     IconSelectModal: () => import('@/components/items/IconSelectModal.vue'),
   },
   watch: {
-    theme: {
-      deep: true,
-      handler(val) {
-        this.themeName = val.name;
-        this.marker.icon = val.icon;
-      },
+    themeEditDialog() {
+      this.initModal();
+      this.dialog = !this.dialog;
     },
   },
   methods: {
+    initModal() {
+      this.themeName = this.theme.name;
+      this.marker.icon = this.theme.icon;
+    },
     closeModal() {
-      this.$emit('close');
+      this.$emit('closeThemeEdit');
     },
     isThemeValid() {
       this.$refs.form.validate();

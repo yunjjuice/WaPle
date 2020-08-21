@@ -3,7 +3,6 @@ import api from '@/utils/api';
 
 export default {
   state: {
-    appointmentDialog: false, // 약속창 다이얼로그
     appointmentName: '', // 새로 만들 약속명
     groups: [], // 사용자의 그룹 목록
     group: {}, // 선택된 그룹
@@ -15,9 +14,6 @@ export default {
     groupTheme: [],
   },
   getters: {
-    appointmentDialog(state) {
-      return state.appointmentDialog;
-    },
     appointmentName(state) {
       return state.appointmentName;
     },
@@ -50,12 +46,6 @@ export default {
     },
   },
   mutations: {
-    trueAppointmentDialog(state) {
-      state.appointmentDialog = true;
-    },
-    falseAppointmentDialog(state) {
-      state.appointmentDialog = false;
-    },
     setAppointmentName(state, payload) {
       state.appointmentName = payload.appointmentName;
     },
@@ -85,9 +75,6 @@ export default {
     },
   },
   actions: {
-    openAppointmentDialog({ commit }) {
-      commit('trueAppointmentDialog'); // 창 열기
-    },
     // 그룹 목록 가져옴
     getGroups({ commit }) {
       api.get(`/groups/of/${Vue.prototype.$session.get('uid')}`)
@@ -101,9 +88,6 @@ export default {
         .then(({ data }) => {
           commit('setAppointments', { data });
         });
-    },
-    closeAppointmentDialog({ commit }) {
-      commit('falseAppointmentDialog'); // 창 닫기
     },
     // 선택된 값으로 업데이트 시켜줌
     updateAppointmentName({ commit }, appointmentName) {

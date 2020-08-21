@@ -22,6 +22,7 @@
           <v-card
             @click="infowindow(i)"
             style="height: 5rem; box-shadow: none !important;"
+            tile
           >
             <div class="d-flex flex-no-wrap justify-space-between">
               <div>
@@ -33,10 +34,6 @@
                 <v-card-text>
                   <span style="color: gray;">{{ item.address }}</span> <br>
                   {{ item.pickedUserName }}'s pick<br>
-                  <!--
-                    TODO : 투표하기
-                    투표 후에 items를 다시 싹 업데이트 해야 voted가 잘 넘어올 텐데 ..?
-                  -->
                   <div style="position: absolute; bottom: 1%; right: 5%">
                   <template v-if="!item.voted">
                     <v-tooltip bottom>

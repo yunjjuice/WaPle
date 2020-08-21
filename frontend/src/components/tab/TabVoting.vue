@@ -30,11 +30,12 @@
       v-for="(appointment, i) in appointmentDatas"
       :key="i"
       cols="12"
-      style="padding: 3px; height: 5.6rem;"
+      style="padding: 3px; height: 5.7rem;"
     >
       <v-card
         @click="appointmentToPlace(appointment)"
-        style="height: 5.6rem; box-shadow: none !important;"
+        style="height: 5.7rem; box-shadow: none !important;"
+        tile
       >
         <div class="d-flex flex-no-wrap justify-space-between">
           <div>
@@ -43,11 +44,11 @@
               v-text="appointment.title"
               style="font-size: 1rem !important; padding-top: 0.5rem; padding-bottom: 0;"
             />
-            <v-card-text>
+            <v-card-text style="padding-bottom:0.9rem">
               {{ appointment.name }}<br>
               {{ getFormatDate(appointment.promiseDate) }}
             </v-card-text>
-            <v-card-actions style="position: absolute; bottom: 1%; right: 1%">
+            <v-card-actions style="position: absolute; bottom: 1%; right: 1%; padding-bottom:0;">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on, attrs }">
                   <v-btn
@@ -77,14 +78,18 @@
             </v-card-actions>
           </div>
         </div>
-        <v-divider style="position: relative; top: -1.75rem;"></v-divider>
+        <v-divider style="position: relative; top: -1.45rem;"></v-divider>
       </v-card>
     </v-col>
   </v-row>
-  <edit-modal :dialog="editDialog" :appointment="appointment" @close="editDialog=false">
-  </edit-modal>
-  <remove-modal :dialog="removeDialog" :appointment="appointment" @close="removeDialog=false">
-  </remove-modal>
+  <edit-modal
+    :editDialog="editDialog"
+    :appointment="appointment"
+    @close="editDialog=!editDialog"></edit-modal>
+  <remove-modal
+    :removeDialog="removeDialog"
+    :appointment="appointment"
+  @close="removeDialog=!removeDialog"></remove-modal>
 </v-container>
 </template>
 
@@ -149,11 +154,11 @@ export default {
     },
     edit(appointment) {
       this.appointment = appointment;
-      this.editDialog = true;
+      this.editDialog = !this.editDialog;
     },
     remove(appointment) {
       this.appointment = appointment;
-      this.removeDialog = true;
+      this.removeDialog = !this.removeDialog;
     },
     onScroll(e) {
       const { scrollTop, clientHeight, scrollHeight } = e.target;

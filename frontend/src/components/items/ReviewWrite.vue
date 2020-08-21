@@ -65,7 +65,7 @@
               <template v-slot:activator="{ on, attrs }">
                 <v-text-field
                   v-model="visitDate"
-                  label="날짜"
+                  label="방문 날짜"
                   readonly
                   v-bind="attrs"
                   v-on="on"
@@ -105,8 +105,8 @@
             ></vue-upload-multiple-image>
           </div>
           <br>
-          <v-btn color="primary" @click="isValid">작성하기</v-btn>
-          <v-btn color="error" @click="close">취소하기</v-btn>
+          <v-btn color="error" @click="close" text>취소하기</v-btn>
+          <v-btn color="primary" @click="isValid" text>작성하기</v-btn>
         </v-container>
       </v-sheet>
     </v-bottom-sheet>
@@ -159,10 +159,8 @@ export default {
   watch: {
     writeDialog() {
       this.dialog = !this.dialog;
+      this.initReview();
     },
-  },
-  updated() {
-    this.initReview();
   },
   methods: {
     close() {
