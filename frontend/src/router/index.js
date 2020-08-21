@@ -1,7 +1,5 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Main from '@/components/MainPage.vue';
-import Login from '@/components/Login.vue';
 
 Vue.use(VueRouter);
 
@@ -10,40 +8,32 @@ const requireAuth = () => (to, from, next) => {
   if (Vue.prototype.$session.exists('uid')) {
     return next();
   }
-  return next('/login');
+  return next(`/login?redirect=${to.path}`);
 };
 
 const routes = [
   {
     path: '/',
-    name: 'Main',
-    component: Main,
+    component: () => import('@/components/MainPage.vue'),
     beforeEnter: requireAuth(),
     children: [
       {
         path: '',
-        name: 'Content',
         component: () => import('@/components/Content.vue'),
         children: [
           {
-            name: 'section-default',
             path: '',
             component: () => import('@/components/SectionTab.vue'),
             children: [
               {
-                name: 'TabAll',
+                name: 'TabBookmark',
                 path: '',
-                component: () => import('@/components/tab/TabAll.vue'),
+                component: () => import('@/components/tab/TabBookmark.vue'),
               },
               {
-                name: 'TabWent',
-                path: '/went',
-                component: () => import('@/components/tab/TabWent.vue'),
-              },
-              {
-                name: 'TabWish',
-                path: '/wish',
-                component: () => import('@/components/tab/TabWish.vue'),
+                name: 'TabReview',
+                path: '/review',
+                component: () => import('@/components/tab/TabReview.vue'),
               },
               {
                 name: 'TabVoting',
@@ -54,7 +44,7 @@ const routes = [
           },
           {
             name: 'section-appointment',
-            path: '/appointment/:id',
+            path: '/appointment',
             component: () => import('@/components/SectionAppointment.vue'),
           },
           {
@@ -62,18 +52,18 @@ const routes = [
             path: '/search',
             component: () => import('@/components/SectionSearch.vue'),
           },
+          {
+            name: 'section-review',
+            path: '/reviewlist',
+            component: () => import('@/components/SectionReview.vue'),
+          },
         ],
       },
       {
         path: '/mypage',
-        name: 'MyPage',
+        redirect: '/mypage/group',
         component: () => import('@/components/MyPage.vue'),
         children: [
-          {
-            path: '',
-            name: 'my-info',
-            component: () => import('@/components/mypage/MyInfo.vue'),
-          },
           {
             path: 'group',
             name: 'group',
@@ -92,6 +82,11 @@ const routes = [
         ],
       },
       {
+        path: 'invite/:code',
+        component: () => import('@/components/Invite.vue'),
+        props: true,
+      },
+      {
         path: 'toppings',
         name: 'toppings',
         component: () => import('@/components/Topping.vue'),
@@ -101,7 +96,8 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
-    component: Login,
+    component: () => import('@/components/Login.vue'),
+    props: (route) => ({ redirect: route.query.redirect }),
   },
 ];
 
@@ -109,6 +105,9 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes,
+  scrollBehavior() {
+    return { x: 0, y: 0 };
+  },
 });
 
 export default router;

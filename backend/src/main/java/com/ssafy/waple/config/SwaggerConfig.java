@@ -15,6 +15,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 
 import com.ssafy.waple.bookmark.dto.SearchType;
 import com.ssafy.waple.group.controller.GroupController;
+import com.ssafy.waple.promise.controller.PromiseController;
 import com.ssafy.waple.user.controller.UserController;
 
 //http://localhost:9999/swagger-ui/
@@ -30,8 +31,11 @@ public class SwaggerConfig {
 			.additionalModels(resolver.resolve(SearchType.class))
 			.additionalModels(resolver.resolve(UserController.AccessToken.class))
 			.additionalModels(resolver.resolve(UserController.RefreshToken.class))
-			.additionalModels(resolver.resolve(GroupController.GroupDtoExample.class))
-			.additionalModels(resolver.resolve(GroupController.GroupMemberDtoExample.class))
+			.additionalModels(resolver.resolve(GroupController.GroupCreateRequest.class))
+			.additionalModels(resolver.resolve(GroupController.MemberCreateRequest.class))
+			.additionalModels(resolver.resolve(GroupController.GroupUpdateRequest.class))
+			.additionalModels(resolver.resolve(PromiseController.PromiseCreateRequest.class))
+			.additionalModels(resolver.resolve(PromiseController.PromiseUpdateRequest.class))
 			.useDefaultResponseMessages(false)
 			.apiInfo(apiInfo())
 			.select()

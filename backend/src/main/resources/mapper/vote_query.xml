@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssafy.waple.vote.dao.VoteDao">
+    <insert id="create" parameterType="com.ssafy.waple.vote.dto.PromisePlaceDto">
+        insert into PROMISES_AND_PLACES (GROUP_ID, PROMISE_ID, USER_ID, PLACE_ID)
+        values (#{groupId}, #{promiseId}, #{userId}, #{placeId})
+    </insert>
+
+    <select id="readAll" resultType="com.ssafy.waple.vote.dto.PromisePlaceResponseDto">
+        select P.*,
+               U.NAME                        pickedUserName,
+               (select count(*)
+                from VOTES
+                where GROUP_ID = #{groupId}
+                  and PROMISE_ID = #{promiseId}
+                  and PLACE_ID = P.PLACE_ID) voteNum,
+               (select count(*) = 1
+                from VOTES
+                where GROUP_ID = #{groupId}
+                  and PROMISE_ID = #{promiseId}
+                  and PLACE_ID = P.PLACE_ID
+                  and USER_ID = #{userId})   isVoted,
+               (select ICON
+                from THEMES T
+                    inner join BOOKMARKS B on T.THEME_ID = B.THEME_ID and T.GROUP_ID = B.GROUP_ID
+                where T.GROUP_ID = #{groupId}
+                  and B.PLACE_ID = P.PLACE_ID
+                limit 1) ICON
+        from PROMISES_AND_PLACES
+                 inner join PLACES P on P.PLACE_ID = PROMISES_AND_PLACES.PLACE_ID
+                 inner join USERS U on PROMISES_AND_PLACES.USER_ID = U.USER_ID
+        where GROUP_ID = #{groupId}
+          and PROMISE_ID = #{promiseId}
+        order by voteNum desc
+    </select>
+
+    <insert id="createVote" parameterType="com.ssafy.waple.vote.dto.VoteDto">
+        insert into VOTES (GROUP_ID, PROMISE_ID, USER_ID, PLACE_ID)
+        values (#{groupId}, #{promiseId}, #{userId}, #{placeId});
+    </insert>
+
+    <delete id="deleteVote">
+        delete
+        from VOTES
+        where GROUP_ID = #{groupId}
+          and PROMISE_ID = #{promiseId}
+          and PLACE_ID = #{placeId}
+          and USER_ID = #{userId}
+    </delete>
+</mapper>

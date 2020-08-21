@@ -1,32 +1,41 @@
 <template>
-  <v-app>
-    <v-main>
-    <v-tabs
+<v-main>
+  <v-tabs
+    background-color="#fff"
+    color="000080"
+    light
     fixed-tabs
-    background-color="gray"
-    color="yellow"
-    dark
-    >
-      <v-tab to="/">ALL</v-tab>
-      <v-tab to="/went">REVIEW</v-tab>
-      <v-tab to="/wish">BOOKMARK</v-tab>
-      <v-tab to="/voting">VOTE</v-tab>
-    </v-tabs>
-    </v-main>
-    <router-view></router-view>
-  </v-app>
+    height="2rem"
+  >
+    <v-tab to="/">북마크</v-tab>
+    <v-tab to="/review">리뷰</v-tab>
+    <v-tab to="/voting">약속</v-tab>
+  </v-tabs>
+  <option-filter v-if="bookmark"></option-filter>
+  <router-view></router-view>
+</v-main>
 </template>
 
 <script>
-import TabAll from '@/components/tab/TabAll.vue';
+import store from '@/store/index';
 
 export default {
-  templates: {
-    TabAll,
+  components: {
+    OptionFilter: () => import('@/components/items/OptionFilter.vue'),
+  },
+  computed: {
+    bookmark: () => store.getters.bookmark,
+  },
+  data() {
+    return {
+    };
+  },
+  beforeCreate() {
+    store.dispatch('getGroupsThemes');
+    store.dispatch('getGroupTheme');
   },
 };
 </script>
 
 <style>
-
 </style>

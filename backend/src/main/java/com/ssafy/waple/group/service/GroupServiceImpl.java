@@ -6,11 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+
 import com.ssafy.waple.group.dao.GroupDao;
+import com.ssafy.waple.group.dto.GroupCreateDto;
 import com.ssafy.waple.group.dto.GroupDto;
-import com.ssafy.waple.group.exception.DuplicatedMemberException;
-import com.ssafy.waple.group.exception.GroupIsNotEmptyException;
+import com.ssafy.waple.group.dto.GroupMemberDto;
 import com.ssafy.waple.group.exception.GroupNotFoundException;
+import com.ssafy.waple.group.exception.InvalidGroupTokenException;
 import com.ssafy.waple.group.exception.MemberNotFoundException;
 import com.ssafy.waple.user.exception.UserNotFoundException;
 
@@ -19,6 +23,8 @@ public class GroupServiceImpl implements GroupService {
 	private static final String GROUP_FOREIGN_KEY_CONSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`GROUP_MEMBERS`, CONSTRAINT `FK_GROUPS_GROUP_MEMBERS` FOREIGN KEY (`GROUP_ID`) REFERENCES `GROUPS` (`GROUP_ID`)";
 	private static final String USER_FOREIGN_KEY_CONSTRAINT_MSG = "a foreign key constraint fails (`WAPLE`.`GROUP_MEMBERS`, CONSTRAINT `FK_USERS_GROUP_MEMBERS` FOREIGN KEY (`USER_ID`) REFERENCES `USERS` (`USER_ID`)";
 	private static final String PRIMARY_KEY_CONSTRAINT_MSG = "for key 'PRIMARY'";
+	private static final String INVALID_TOKEN_MSG = "Column 'GROUP_ID' cannot be null";
+
 	@Autowired
 	GroupDao dao;
 
@@ -28,27 +34,36 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	@Override
-	public List<GroupDto> readGroupMembers(int groupId) {
-		List<GroupDto> groups = dao.readGroupMembers(groupId);
-		if (groups == null || groups.size() < 1) { //그룹에 멤버는 최소 1명 (그룹장)
+	public List<GroupMemberDto> readGroupMembers(int groupId) {
+		List<GroupMemberDto> members = dao.readGroupMembers(groupId);
+		if (members == null || members.size() < 1) { //그룹에 멤버는 최소 1명 (그룹장)
 			throw new GroupNotFoundException(groupId);
 		}
-		return groups;
+		return members;
 	}
 
 	@Override
-	public boolean isOwner(int groupId, long userId) {
-		return dao.isOwner(groupId, userId) == 1;
-	}
-
-	@Override
-	public void create(GroupDto group) {
+	public void create(GroupCreateDto group) {
 		dao.create(group);
+		generateToken(group);
 		createMember(group);
 	}
 
+	//JWT로 Token 생성하고 db에 삽입
+	private void generateToken(GroupDto group) {
+		String token = JWT.create()
+			.withIssuer("Toppings")
+			.withSubject("Invite group")
+			.withClaim("groupId", group.getGroupId())
+			.withClaim("name", group.getName())
+			.sign(Algorithm.HMAC256("waple_project"));
+		if (dao.updateToken(group.getGroupId(), token) < 1) {
+			throw new GroupNotFoundException(group.getGroupId());
+		}
+	}
+
 	@Override
-	public void createMember(GroupDto group) {
+	public void createMember(GroupCreateDto group) {
 		try {
 			dao.createMember(group);
 		} catch (DataAccessException e) {
@@ -58,8 +73,13 @@ public class GroupServiceImpl implements GroupService {
 			if (e.getMessage().contains(USER_FOREIGN_KEY_CONSTRAINT_MSG)) {
 				throw new UserNotFoundException(group.getUserId());
 			}
+			if (e.getMessage().contains(INVALID_TOKEN_MSG)) {
+				throw new InvalidGroupTokenException();
+			}
 			if (e.getMessage().contains(PRIMARY_KEY_CONSTRAINT_MSG)) {
-				throw new DuplicatedMemberException(group.getGroupId(), group.getUserId());
+				// throw new DuplicateMemberException(group.getGroupId(), group.getUserId());
+				// 에러로 처리 안하겠습니다
+				return;
 			}
 			throw e;
 		}
@@ -67,6 +87,7 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public void update(GroupDto group) {
+		generateToken(group); //그룹 이름이 변경되면 토큰도 바뀌어야 한다
 		if (dao.update(group) < 1) {
 			throw new GroupNotFoundException(group.getGroupId());
 		}
@@ -74,16 +95,8 @@ public class GroupServiceImpl implements GroupService {
 
 	@Override
 	public void delete(int groupId, long userId) {
-		boolean isOwner = isOwner(groupId, userId);
-		if (isOwner) {
-			List<GroupDto> members = readGroupMembers(groupId);
-			if (members.size() > 1 || members.get(0).getUserId() != userId) {
-				throw new GroupIsNotEmptyException(groupId);
-			}
-		}
-
 		deleteMember(groupId, userId);
-		if (isOwner && dao.delete(groupId) < 1) {
+		if (dao.numberOfMembers(groupId) == 0 && dao.delete(groupId) < 1) {
 			throw new GroupNotFoundException(groupId);
 		}
 	}

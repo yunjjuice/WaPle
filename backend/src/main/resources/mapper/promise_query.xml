@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ssafy.waple.promise.dao.PromiseDao">
+    <insert id="create" parameterType="com.ssafy.waple.promise.dto.PromiseDto">
+        <selectKey keyProperty="promiseId" resultType="int" order="BEFORE">
+            select ifnull((select p.PROMISE_ID + 1 from PROMISES p
+            where p.GROUP_ID = #{groupId}
+            order by PROMISE_ID desc
+            limit 1), 1)
+        </selectKey>
+        insert into PROMISES (GROUP_ID, TITLE, PROMISE_DATE, PROMISE_ID)
+        VALUES (#{groupId}, #{title}, #{promiseDate}, #{promiseId})
+    </insert>
+
+    <select id="readAll" resultType="com.ssafy.waple.promise.dto.PromiseDto">
+        select G.GROUP_ID, NAME, PROMISE_ID, TITLE, PROMISE_DATE
+        from PROMISES
+                 inner join `GROUPS` G on PROMISES.GROUP_ID = G.GROUP_ID
+        where G.GROUP_ID in (select GROUP_MEMBERS.GROUP_ID from GROUP_MEMBERS where GROUP_MEMBERS.USER_ID = #{userId})
+          and PROMISE_DATE > current_time()
+        order by PROMISE_DATE;
+    </select>
+
+    <update id="update" parameterType="com.ssafy.waple.promise.dto.PromiseDto">
+        update PROMISES
+        set TITLE        = #{title},
+            PROMISE_DATE = #{promiseDate}
+        where GROUP_ID = #{groupId}
+          and PROMISE_ID = #{promiseId}
+    </update>
+
+    <delete id="delete">
+        delete
+        from PROMISES
+        where GROUP_ID = #{groupId}
+          and PROMISE_ID = #{promiseId}
+    </delete>
+</mapper>

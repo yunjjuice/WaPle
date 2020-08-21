@@ -4,6 +4,6 @@ import com.ssafy.waple.error.exception.EntityNotFoundException;
 
 public class UserNotFoundException extends EntityNotFoundException {
 	public UserNotFoundException(long userId) {
-		super(userId + "is not found");
+		super("User " + userId + " is not found");
 	}
 }

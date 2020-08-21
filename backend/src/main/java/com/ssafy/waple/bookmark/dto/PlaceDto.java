@@ -21,6 +21,26 @@ public class PlaceDto {
 	@ApiModelProperty(value = "장소 상세페이지 URL", example = "http://place.map.kakao.com/19781214")
 	private String url;
 
+	@ApiModelProperty(value = "전화번호", example = "02-123-1234")
+	private String tel;
+
+	@ApiModelProperty(value = "카테고리", example = "음식점")
+	private  String category;
+
+	public PlaceDto() {}
+
+	public PlaceDto(String placeId, String name, String address, String lng, String lat, String url, String tel,
+		String category) {
+		this.placeId = placeId;
+		this.address = address;
+		this.lat = lat;
+		this.lng = lng;
+		this.url = url;
+		this.name = name;
+		this.tel = tel;
+		this.category = category;
+	}
+
 	public String getPlaceId() {
 		return placeId;
 	}
@@ -69,15 +89,33 @@ public class PlaceDto {
 		this.url = url;
 	}
 
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
+	}
+
 	@Override
 	public String toString() {
 		return "PlaceDto{" +
 			"placeId='" + placeId + '\'' +
 			", name='" + name + '\'' +
 			", address='" + address + '\'' +
-			", lng(경도)='" + lng + '\'' +
-			", lat(위도)='" + lat + '\'' +
+			", lng='" + lng + '\'' +
+			", lat='" + lat + '\'' +
 			", url='" + url + '\'' +
+			", tel='" + tel + '\'' +
+			", category='" + category + '\'' +
 			'}';
 	}
 }

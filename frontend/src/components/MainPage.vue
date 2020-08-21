@@ -1,7 +1,10 @@
 <template>
 <v-app>
-    <nav-header></nav-header>
-    <router-view></router-view>
+  <nav-header @toggle-drawer="$refs.drawer.drawer = !$refs.drawer.drawer" class="hidden-md-and-up">
+  <!-- <nav-header class="hidden-md-and-up"> -->
+  </nav-header>
+  <router-view ref="drawer"></router-view>
+  <!-- <router-view></router-view> -->
 </v-app>
 </template>
 
@@ -16,5 +19,7 @@ export default {
 </script>
 
 <style>
-
+.v-navigation-drawer__content {
+  overflow-y: hidden !important;
+}
 </style>
